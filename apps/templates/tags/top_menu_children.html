@@ -1,0 +1,9 @@
+{% load navigation_tags wagtailcore_tags %}
+
+<ul class="dropdown-menu" role="menu" aria-labelledby="dropdown03">
+  {% for item in menuitems_children %}
+    {% with child=item.localized %}
+      <li><a class="dropdown-item" href="{% pageurl child %}" role="menuitem">{{ child.title }}</a></li>
+    {% endwith %}
+  {% endfor %}
+</ul>

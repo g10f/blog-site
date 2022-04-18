@@ -1,0 +1,17 @@
+{% load navigation_tags wagtailcore_tags %}
+{% get_site_root as site_root %}
+
+{% for item in menuitems %}
+  {% with menuitem=item.localized %}
+    <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}" role="none">
+      {% if menuitem.show_dropdown %}
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+        {% top_menu_children parent=menuitem %}
+        {# Used to display child menu items #}
+      {% else %}
+        <a class="nav-link{% if menuitem.active %} active{% endif %}{#% if forloop.first %} ps-0{% endif %#}" href="{% pageurl menuitem %}" role="menuitem"
+           aria-current="page">{{ menuitem.title }}</a>
+      {% endif %}
+    </li>
+  {% endwith %}
+{% endfor %}

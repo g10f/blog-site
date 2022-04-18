@@ -1,0 +1,73 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-13 09:31+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: search/views.py:33 templates/search/search_results.html:8
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+#: templates/artworks/artwork_index_page.html:23
+msgid "Type"
+msgstr "Typ"
+
+#: templates/artworks/artwork_index_page.html:26
+msgid "Artist"
+msgstr "Künstler"
+
+#: templates/blog/blog_index_page.html:36
+msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
+msgstr ""
+"Oh verdammt. Anscheinend waren wir zu beschäftigt, um "
+"irgendwelche Blogbeiträge zu schreiben. Verzeihung."
+
+#: templates/includes/footer.html:22
+msgid "Visit us on"
+msgstr "Besuchen Sie uns auf"
+
+#: templates/includes/header.html:13 templates/includes/header.html:39
+msgid "Search the site"
+msgstr "Durchsuche die Seite"
+
+#: templates/includes/pagination.html:8
+msgid "Previous"
+msgstr "Vorherige"
+
+#: templates/includes/pagination.html:21
+msgid "Next"
+msgstr "Nächste"
+
+#: templates/search/search_results.html:11
+msgid "You searched for"
+msgstr "Sie suchten nach"
+
+#: templates/search/search_results.html:16
+msgid "Blog post"
+msgstr "Artikel"
+
+#: templates/search/search_results.html:18
+msgid "Artwork"
+msgstr "Kunstwerk"
+
+#: templates/search/search_results.html:26
+msgid "No results found"
+msgstr "Keine Ergebnisse gefunden"
+
+#: templates/search/search_results.html:28
+msgid "You didn’t search for anything!"
+msgstr "Sie haben nichts gesucht!"

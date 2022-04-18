@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n wagtailcore_tags %}
+
+{% block content %}
+  <div class="container-lg">
+    <div class="row">
+      <div class="col-12">
+        <h1>{% translate 'Search results' %}</h1>
+
+        {% if search_results %}
+          <p>{% translate 'You searched for' %}: <span class="fst-italic">{{ search_query }}</span></p>
+          <ul class="list-unstyled">
+            {% for result in search_results %}
+              <li>
+                  {% if result.specific.content_type.model == "blogpage" %}
+                    {% translate 'Blog post' %}:
+                  {% else %}
+                    {% translate 'Artwork' %}:
+                  {% endif %}
+                  <a href="{% pageurl result.specific %}">{{ result.specific }}</a>
+                {% if result.specific.search_description %}{{ result.specific.search_description|safe }}{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% elif search_query %}
+          {% translate 'No results found' %}
+        {% else %}
+          {% translate 'You didn’t search for anything!' %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

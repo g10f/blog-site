@@ -1,0 +1,30 @@
+{% load i18n navigation_tags wagtailsettings_tags static %}
+{% get_settings %}
+
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+  <div class="col-md-4 d-flex align-items-center">
+    <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+      <svg class="bi" width="30" height="24">
+        <title>{{ wagtail_site_name }}</title>
+        <use xlink:href="#easel"></use>
+      </svg>
+    </a>
+    <div class="text-muted">{% get_footer_text %}</div>
+  </div>
+
+  <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+    {% for social_media in settings.base.SocialMediaSettings.social_media %}
+      {% if social_media.url %}
+        <li class="ms-3">
+          <a class="text-muted" href="{{ social_media.url }}">
+            <svg class="bi" width="24" height="24">
+              <title>{{ social_media.id }}</title>
+              <desc>{% translate 'Visit us on' %} {{ social_media.id }}</desc>
+              <use xlink:href="#{{ social_media.id }}"></use>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</footer>

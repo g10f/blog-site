@@ -1,0 +1,4 @@
+wagtail
+dj-database-url
+psycopg2
+gunicorn

@@ -1,0 +1,19 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% image page.image fill-1920x480-c100 format-webp as image %}
+{% if image %}
+  <div class="mb-2 text-center text-light hero"
+       style="background-image:url('{{ image.url }}');">
+    <h1 class="">{{ page.title }}</h1>
+    {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+  </div>
+{% else %}
+  <div class="container-lg">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>{{ page.title }}</h1>
+        {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}

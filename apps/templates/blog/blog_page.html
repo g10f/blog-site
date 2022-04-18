@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load navigation_tags wagtailimages_tags %}
+
+{% block content %}
+
+  {% include "base/include/header-hero.html" %}
+
+  <div class="container-lg">
+    <div class="row">
+      <div class="col-12">
+        {% if page.introduction %}
+          <p class="intro">{{ page.introduction }}</p>
+        {% endif %}
+
+        <div class="mb-2">
+          {% if page.authors %}
+            <ul class="list-inline">
+              {% for author in page.authors %}
+                {% image author.image fill-100x100-c100 format-webp as author_img %}
+                <li class="list-inline-item">
+                  <img src="{{ author_img.url }}" width="50px" alt="{{ author_img.alt }}" class="rounded-circle"/>
+                  {{ author.first_name }} {{ author.last_name }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if page.date_published %}
+            <small class="text-muted"> {{ page.date_published }}</small>
+          {% endif %}
+        </div>
+
+        {{ page.body }}
+
+        {% if page.get_tags %}
+          <nav class="mb-2">
+            {% for tag in page.get_tags %}
+              <a class="btn btn-sm btn-outline-secondary" role="button"
+                 href="{{ tag.url }}">{{ tag }}</a>
+            {% endfor %}
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

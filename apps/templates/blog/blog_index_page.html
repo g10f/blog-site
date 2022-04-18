@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
+
+{% block content %}
+  {% include "base/include/header-index.html" %}
+
+  <div class="container-lg">
+    {% if page.get_child_tags %}
+      <nav class="mb-2">
+        <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button" href="{% pageurl page %}">All</a>
+        {% for child_tag in page.get_child_tags %}
+          <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button" href="{{ child_tag.url }}">{{ child_tag }}</a>
+        {% endfor %}
+      </nav>
+    {% endif %}
+
+    <div class="row">
+      {% if posts %}
+        {% for blog in posts %}
+          {% image blog.image fill-850x450-c50 format-webp as image %}
+          <div class="col-sm-6 col-md-4">
+            <div class="card mb-3">
+              <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
+              <div class="card-body">
+                <h2 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{% pageurl blog %}">{{ blog.title }}</a></h2>
+                <p class="card-text">{{ blog.introduction|truncatewords:15 }}</p>
+                <p class="card-text">
+                  <small class="text-muted">{% if blog.date_published %}{{ blog.date_published }} by {% endif %}{{ blog.authors|join:", " }}</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <p>{% translate 'Oh, snap. Looks like we were too busy to write any blog posts. Sorry.' %}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}

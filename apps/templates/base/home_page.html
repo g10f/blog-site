@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags wagtailcore_tags %}
+
+{% block content %}
+  <div class="homepage">
+    {# hero #}
+    {% image page.image fill-1920x600 format-webp as image %}
+    <div class="px-4 py-5 text-center text-light"
+         style="background-image:url('{{ image.url }}');background-repeat: no-repeat;background-size: cover;background-position: center">
+      <h1 class="display-5 fw-bold">{{ page.title }}</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">{{ page.hero_text }}</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          {% if page.hero_cta_link %}
+            <a href="{% pageurl page.hero_cta_link %}" class="btn btn-primary btn-lg px-4 gap-3">{{ page.hero_cta }}</a>
+          {% else %}
+            {{ page.hero_cta }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+
+    {# featured section 1 #}
+    {% if page.featured_section_1 %}
+      <div class="container-lg">
+        {# promo #}
+        <div class="row">
+          <div class="col-lg-5 promo text-center">
+            {% if page.promo_image or page.promo_title or page.promo_text %}
+              {% image page.promo_image fill-800x800-c100 format-webp as promo_image %}
+              <div class="card border-0 bg-light bg-gradient ">
+                <img src="{{ promo_image.url }}" alt="{{ promo_image.alt }}" class="card-img-top p-2 p-sm-3 p-md-4"/>
+                <div class="card-body">
+                  <h2 class="card-title">{{ page.promo_title }}</h2>
+                  {{ page.promo_text|richtext }}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="col-lg-7 pt-2 pt-sm-3 pt-md-4">
+            <h2>{{ page.featured_section_1_title }}</h2>
+            <div class="featured-children">
+              {% for childpage in page.featured_section_1.localized.specific.children|slice:"3" %}
+                {% image childpage.image fill-800x800-c100 format-webp as child_image %}
+                <div class="card mb-3">
+                  <div class="row g-0">
+                    <div class="col-sm-4"><img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/></div>
+                    <div class="col-sm-8">
+                      <div class="card-body">
+                        <h3><a class="stretched-link text-reset text-decoration-none" href="{{ childpage.url }}">{{ childpage.title }}</a></h3>
+                        <p class="card-text">{{ childpage.introduction }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {# body #}
+    {% if page.body %}
+      <div class="container-fluid mt-sm-2 pt-3 bg-brand bg-gradient text-light">
+        <div class="container-lg">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              {{ page.body }}
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+    {% endif %}
+
+    {#  featured section 2 #}
+    <div class="container-lg">
+      {% if page.featured_section_2 %}
+        <h2>{{ page.featured_section_2_title }}</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+          {% for childpage in page.featured_section_2.specific.localized.children|slice:"6" %}
+            {% image childpage.image fill-800x800-c100 format-webp as child_image %}
+            <div class="col">
+              <div class="card text-white">
+                {% if image %}<img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img"/>{% endif %}
+                <div class="card-img-overlay">
+                  <h3 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{{ childpage.url }}">{{ childpage.title }}</a></h3>
+                  <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
