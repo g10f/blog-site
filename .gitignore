@@ -1,8 +1,7 @@
 */settings/local.py
 __pycache__
-!.gitignore
 node_modules/
 htdocs/
 tmp/
 demo-data
-
+data
