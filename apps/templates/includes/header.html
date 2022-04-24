@@ -16,8 +16,8 @@
   </div>
   <nav class="navbar navbar-expand-sm bg-light navbar-light mb-2" aria-label="navbar">
     <div class="container-lg ps-sm-0">
-      <a class="navbar-brand d-sm-none" href="/{{ LANGUAGE_CODE }}/">
-         <img src="{% static 'img/afd-im-regionalverband.png' %}" width="350" class="me-3">
+      <a class="navbar-brand d-sm-none" href="{% url 'wagtail_serve' '' %}">
+         <img src="{% static 'img/afd-im-regionalverband.png' %}" alt="afd-im-regionalverband" width="350" class="me-3">
         <!--{{ wagtail_site_name }}-->
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"

@@ -101,8 +101,7 @@ class FooterText(TranslatableMixin, models.Model):
 
 class StandardPage(Page):
     """
-    A generic content page. On this demo site we use it for an about page but
-    it could be used for any type of page content that only needs a title,
+    A generic content page. It could be used for any type of page content that only needs a title,
     image, introduction and body field
     """
 
