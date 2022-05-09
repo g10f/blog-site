@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name='core_userprofile')
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name='oidc_userprofile')
     roles = models.CharField(_("roles"), max_length=512)
     subject = models.CharField(_("subject"),  unique=True, max_length=254)
 

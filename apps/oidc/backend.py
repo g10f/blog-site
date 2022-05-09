@@ -26,7 +26,7 @@ class MyOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         if not sub:
             return self.UserModel.objects.none()
 
-        return self.UserModel.objects.filter(core_userprofile__subject=sub)
+        return self.UserModel.objects.filter(oidc_userprofile__subject=sub)
 
     def create_user(self, claims):
         email = claims.get('email')
@@ -66,7 +66,7 @@ class MyOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
         roles = claims.get('roles', '')
         desired_roles = set(roles.split())
-        current_roles = set(user.core_userprofile.roles.split())
+        current_roles = set(user.oidc_userprofile.roles.split())
 
         remove_groups = current_roles - desired_roles
         if remove_groups:
