@@ -244,6 +244,11 @@ CSRF_REQUIRED_PATHS = (
     "/django-admin",
 )
 
+# mozilla-django-oidc settings
+LOGIN_REDIRECT_URL = "/admin"
+LOGOUT_REDIRECT_URL = "/admin"
+OIDC_RP_SIGN_ALGO = 'RS256'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
