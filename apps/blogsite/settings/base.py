@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'blogsite.base',
     'blogsite.search',
     'blogsite.blog',
+    'oidc',
 
     'wagtail.contrib.settings',
     'wagtail.contrib.forms',
@@ -77,6 +78,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'mozilla_django_oidc'
+]
+
+# Add 'mozilla_django_oidc' authentication backend
+AUTHENTICATION_BACKENDS = [
+    'oidc.backend.MyOIDCAuthenticationBackend',
+    "django.contrib.auth.backends.ModelBackend"
 ]
 
 MIDDLEWARE = [

@@ -111,6 +111,10 @@ class StandardPage(Page):
     body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
     content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), StreamFieldPanel('body'), ImageChooserPanel('image'), ]
 
+    search_fields = Page.search_fields + [
+        index.SearchField('introduction'),
+        index.SearchField('body'),
+    ]
 
 class HomePage(Page):
     """
@@ -161,6 +165,10 @@ class HomePage(Page):
             [MultiFieldPanel([FieldPanel('featured_section_1_title'), PageChooserPanel('featured_section_1'), ]),
              MultiFieldPanel([FieldPanel('featured_section_2_title'), PageChooserPanel('featured_section_2'), ]), ], heading="Featured homepage sections",
             classname="collapsible")]
+
+    search_fields = Page.search_fields + [
+        index.SearchField('body'),
+    ]
 
     def __str__(self):
         return self.title
