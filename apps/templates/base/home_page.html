@@ -25,7 +25,7 @@
       <div class="container-lg">
         {# promo #}
         <div class="row">
-          <div class="col-lg-5 promo text-center">
+          <div class="col-md-5 promo text-center">
             {% if page.promo_image or page.promo_title or page.promo_text %}
               {% image page.promo_image fill-800x800-c100 format-webp as promo_image %}
               <div class="card border-0 bg-light bg-gradient ">
@@ -38,7 +38,7 @@
             {% endif %}
           </div>
 
-          <div class="col-lg-7 pt-2 pt-sm-3 pt-md-4">
+          <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">
             <h2>{{ page.featured_section_1_title }}</h2>
             <div class="featured-children">
               {% for childpage in page.featured_section_1.localized.specific.children|slice:"3" %}
