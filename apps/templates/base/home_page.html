@@ -45,8 +45,10 @@
                 {% image childpage.image fill-800x800-c100 format-webp as child_image %}
                 <div class="card mb-3">
                   <div class="row g-0">
-                    <div class="col-sm-4"><img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/></div>
-                    <div class="col-sm-8">
+                    {% if child_image %}
+                      <div class="col-sm-4"><img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/></div>
+                    {% endif %}
+                    <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
                       <div class="card-body">
                         <h3><a class="stretched-link text-reset text-decoration-none" href="{{ childpage.url }}">{{ childpage.title }}</a></h3>
                         <p class="card-text">{{ childpage.introduction }}</p>

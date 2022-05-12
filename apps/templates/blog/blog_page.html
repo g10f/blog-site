@@ -8,10 +8,6 @@
   <div class="container-lg">
     <div class="row">
       <div class="col-12">
-        {% if page.introduction %}
-          <p class="intro">{{ page.introduction }}</p>
-        {% endif %}
-
         <div class="mb-2">
           {% if page.authors %}
             <ul class="list-inline">
@@ -28,6 +24,10 @@
             <small class="text-muted"> {{ page.date_published }}</small>
           {% endif %}
         </div>
+
+        {% if page.introduction %}
+          <p class="intro">{{ page.introduction }}</p>
+        {% endif %}
 
         {{ page.body }}
 

@@ -76,7 +76,7 @@ class MyOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         add_groups = desired_roles - current_roles
         if add_groups:
             groups = set()
-            for group_name in filter(lambda x: x not in self.superuser_roles, add_groups):
+            for group_name in filter(lambda x: x != self.superuser_role, add_groups):
                 groups.add(Group.objects.get_or_create(name=group_name)[0])
             user.groups.add(*groups)
 
