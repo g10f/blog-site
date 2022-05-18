@@ -1,8 +1,8 @@
-from wagtail.images.blocks import ImageChooserBlock
-from wagtail.embeds.blocks import EmbedBlock
 from wagtail.core.blocks import (
     CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
 )
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 
 class ImageBlock(StructBlock):
@@ -47,6 +47,17 @@ class BlockQuote(StructBlock):
     class Meta:
         icon = "openquote"
         template = "blocks/blockquote.html"
+
+
+class PersonBlock(StructBlock):
+    first_name = CharBlock()
+    surname = CharBlock()
+    photo = ImageChooserBlock(required=False)
+    biography = RichTextBlock(features=['h2', 'h3', 'h4', 'bold', 'italic', 'link', 'ol', 'ul', 'document-link'])
+
+    class Meta:
+        icon = 'user'
+        template = 'blocks/person.html'
 
 
 # StreamBlocks

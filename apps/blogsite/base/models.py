@@ -14,7 +14,7 @@ from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
-from .blocks import BaseStreamBlock
+from .blocks import BaseStreamBlock, PersonBlock
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +115,25 @@ class StandardPage(Page):
         index.SearchField('introduction'),
         index.SearchField('body'),
     ]
+
+
+class PersonsPage(Page):
+    """
+    A generic content page. It could be used for any type of page content that only needs a title,
+    image, introduction and body field
+    """
+
+    introduction = models.TextField(help_text='Text to describe the page', blank=True)
+    image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
+                              help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
+    body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True)
+    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), ImageChooserPanel('image'), StreamFieldPanel('body'), ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField('introduction'),
+        index.SearchField('body'),
+    ]
+
 
 class HomePage(Page):
     """

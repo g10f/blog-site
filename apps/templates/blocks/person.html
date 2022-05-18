@@ -1,0 +1,12 @@
+{% load wagtailimages_tags %}
+<div class="clearfix">
+  {% image self.photo fill-1200x1200 format-webp as img_obj %}
+  <div class="col-md-6 px-md-3 pb-3 float-md-{{ alignment|default:'start' }} ">
+    <img src="{{ img_obj.url }}" class="rounded img-fluid"/>
+  </div>
+  <h2 class="mb-4">{{ self.first_name }} {{ self.surname }}</h2>
+  <p class="mt-3 pt-xxxl-5">
+    {{ self.biography }}
+  </p>
+</div>
+
