@@ -47,6 +47,7 @@ def top_menu(context, parent, calling_page=None):
         # if the variable passed as calling_page does not exist.
         menuitem.active = (calling_page.url_path.startswith(menuitem.url_path) if calling_page else False)
     return {
+        'is_home': (calling_page.url_path == parent.url_path if calling_page else False),
         'calling_page': calling_page,
         'menuitems': menuitems,
         # required by the pageurl tag that we want to use within this template

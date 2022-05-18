@@ -1,6 +1,10 @@
-{% load navigation_tags wagtailcore_tags %}
+{% load navigation_tags wagtailcore_tags i18n %}
 {% get_site_root as site_root %}
-
+{% if site_root.show_in_menus %}
+  <li class="nav-item" role="none">
+    <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}" role="menuitem" aria-current="page">{% translate 'Homepage' %}</a>
+  </li>
+{% endif %}
 {% for item in menuitems %}
   {% with menuitem=item.localized %}
     <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}" role="none">
