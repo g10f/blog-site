@@ -8,8 +8,8 @@
     <div class="row">
       <div class="col-12">
         {% for block in page.body %}
-          {% cycle 'start' 'end' as alignment silent %}
-          <section>{% include_block block with alignment=alignment %}</section>
+          {% cycle 'first' 'last' as order silent %}
+          <section>{% include_block block with order=order %}</section>
           {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}
       </div>
