@@ -15,7 +15,7 @@
                   {% if result.specific.content_type.model == "blogpage" %}
                     {% translate 'Blog post' %}:
                   {% else %}
-                    {% translate 'Artwork' %}:
+                    {% translate 'Page' %}:
                   {% endif %}
                   <a href="{% pageurl result.specific %}">{{ result.specific }}</a>
                 {% if result.specific.search_description %}{{ result.specific.search_description|safe }}{% endif %}
