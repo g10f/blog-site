@@ -18,7 +18,7 @@
       {% if posts %}
         {% for blog in posts %}
           {% image blog.image fill-850x450-c50 format-webp as image %}
-          <div class="col-sm-6 col-md-4">
+          <div class="col-md-6">
             <div class="card mb-3">
               <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
               <div class="card-body">
