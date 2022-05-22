@@ -29,7 +29,7 @@
           <p class="intro">{{ page.introduction }}</p>
         {% endif %}
 
-        {{ page.body }}
+        {% include 'includes/body.html' %}
 
         {% if page.get_tags %}
           <nav class="mb-2">

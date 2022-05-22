@@ -32,12 +32,12 @@ html {
 @include media-breakpoint-down(sm) {
   // enable background for the full width
   .navbar-collapse {
-    margin-right:  var(- --bs-gutter-x, -0.75rem);
-    margin-left:  var(- --bs-gutter-x, -0.75rem);
+    margin-right: var(- --bs-gutter-x, -0.75rem);
+    margin-left: var(- --bs-gutter-x, -0.75rem);
   }
   .navbar .nav-link {
-    padding-right:  var(--bs-gutter-x, 0.75rem) !important;
-    padding-left:  var(--bs-gutter-x, 0.75rem) !important;
+    padding-right: var(--bs-gutter-x, 0.75rem) !important;
+    padding-left: var(--bs-gutter-x, 0.75rem) !important;
   }
 }
 

@@ -108,7 +108,7 @@ class StandardPage(Page):
     introduction = models.TextField(help_text='Text to describe the page', blank=True)
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
-    body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
+    body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
     content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), StreamFieldPanel('body'), ImageChooserPanel('image'), ]
 
     search_fields = Page.search_fields + [
@@ -126,7 +126,7 @@ class PersonsPage(Page):
     introduction = models.TextField(help_text='Text to describe the page', blank=True)
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
-    body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True)
+    body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True, use_json_field=True)
     content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), ImageChooserPanel('image'), StreamFieldPanel('body'), ]
 
     search_fields = Page.search_fields + [
@@ -154,7 +154,7 @@ class HomePage(Page):
                                       help_text='Choose a page to link to for the Call to Action')
 
     # Body section of the HomePage
-    body = StreamField(BaseStreamBlock(), verbose_name="Home content block", blank=True)
+    body = StreamField(BaseStreamBlock(), verbose_name="Home content block", blank=True, use_json_field=True)
 
     # Promo section of the HomePage
     promo_image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', help_text='Promo image')
@@ -227,7 +227,7 @@ class CustomFormBuilder(FormBuilder):
 class FormPage(AbstractEmailForm):
     form_builder = CustomFormBuilder
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
-    body = StreamField(BaseStreamBlock())
+    body = StreamField(BaseStreamBlock(), use_json_field=True)
     thank_you_text = RichTextField(blank=True)
 
     # Note how we include the FormField object via an InlinePanel using the
