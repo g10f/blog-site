@@ -9,6 +9,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=60)
 # }
+SITE_NAME = os.getenv('SITE_NAME', SITE_NAME)
 STATIC_ROOT = os.getenv('STATIC_ROOT', STATIC_ROOT)
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', MEDIA_ROOT)
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
