@@ -16,7 +16,7 @@ from pathlib import Path
 
 import dj_database_url
 
-SITE_NAME = 'The Blog Site'
+SITE_NAME = os.getenv('SITE_NAME', 'The Blog Site')
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
