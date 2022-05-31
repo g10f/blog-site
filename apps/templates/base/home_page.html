@@ -43,7 +43,7 @@
             <div class="featured-children">
               {% for childpage in page.featured_section_1.localized.specific.children|slice:"3" %}
                 {% image childpage.image fill-800x800-c100 format-webp as child_image %}
-                <div class="card mb-3">
+                <div class="card mb-3 shadow">
                   <div class="row g-0">
                     {% if child_image %}
                       <div class="col-sm-4"><img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/></div>

@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -11,6 +12,7 @@ from wagtail.contrib.settings.registry import register_setting
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page, TranslatableMixin, _copy
 from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
@@ -33,13 +35,17 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     to the database.
     https://github.com/wagtail/django-modelcluster
     """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL)
+
     first_name = models.CharField("First name", max_length=254)
     last_name = models.CharField("Last name", max_length=254)
     job_title = models.CharField("Job title", max_length=254)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
-    panels = [MultiFieldPanel([FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
+    panels = [FieldPanel('user'), FieldPanel('site'),
+              MultiFieldPanel([FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
               FieldPanel('job_title'), ImageChooserPanel('image')]
 
     search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]

@@ -2,8 +2,8 @@
 from django.utils.translation import gettext_lazy as _
 from wagtail.images.formats import Format, register_image_format, unregister_image_format
 
-#unregister_image_format
-#register_image_format(Format('thumbnail', 'Thumbnail', 'richtext-image thumbnail', 'max-120x120'))
+# unregister_image_format
+# register_image_format(Format('thumbnail', 'Thumbnail', 'richtext-image thumbnail', 'max-120x120'))
 unregister_image_format('fullwidth')
 unregister_image_format('left')
 unregister_image_format('right')

@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from .models import UserProfile
 
 
-class MyOIDCAuthenticationBackend(OIDCAuthenticationBackend):
+class AuthenticationBackend(OIDCAuthenticationBackend):
     staff_roles = {'Staff', 'Superuser'}
     user_roles = {'Staff', 'Superuser'}
     superuser_role = 'Superuser'

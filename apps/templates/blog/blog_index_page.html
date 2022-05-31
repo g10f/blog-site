@@ -19,14 +19,15 @@
         {% for blog in posts %}
           {% image blog.image fill-850x450-c50 format-webp as image %}
           <div class="col-md-6">
-            <div class="card mb-3">
+            <div class="card mb-3 shadow">
               <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
               <div class="card-body">
-                <h2 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{% pageurl blog %}">{{ blog.title }}</a></h2>
+                <h2 class="card-title">{{ blog.title }}</h2>
                 <p class="card-text">{{ blog.introduction|truncatewords:15 }}</p>
                 <p class="card-text">
                   <small class="text-muted">{% if blog.date_published %}{{ blog.date_published }} by {% endif %}{{ blog.authors|join:", " }}</small>
                 </p>
+                <a href="{% pageurl blog %}?tag={{ tag }}" class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
               </div>
             </div>
           </div>
@@ -38,4 +39,14 @@
       {% endif %}
     </div>
   </div>
+  {% if posts.paginator.count > 1 %}
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-12">
+          {% include "includes/pagination.html" with subpages=posts %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 {% endblock content %}

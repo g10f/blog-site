@@ -1,4 +1,7 @@
+import logging
+
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import models
 from django.shortcuts import redirect, render
 from modelcluster.contrib.taggit import ClusterTaggableManager
@@ -13,6 +16,8 @@ from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from ..base.blocks import BaseStreamBlock
+
+logger = logging.getLogger(__name__)
 
 
 class BlogPeopleRelationship(Orderable, models.Model):
@@ -78,6 +83,7 @@ class BlogPage(Page):
         index.SearchField('introduction'),
         index.SearchField('body'),
     ]
+    tag = None
 
     def authors(self):
         """
@@ -116,6 +122,38 @@ class BlogPage(Page):
     # Empty list means that no child content types are allowed.
     subpage_types = []
 
+    def serve(self, request, *args, **kwargs):
+        tag = request.GET.get('tag')
+        if tag:
+            try:
+                self.tag = Tag.objects.get(slug=request.GET.get('tag'))
+            except Tag.DoesNotExist:
+                msg = f'There is no tag "{tag}"'
+                messages.add_message(request, messages.INFO, msg)
+                logger.warning(f'tag {tag} does not exist')
+
+        return super().serve(request, *args, **kwargs)
+
+    def get_siblings(self, inclusive=True):
+        """
+        Returns a  BlogPage queryset instead of Page queryset, so that we can filter by tag.
+        """
+        return BlogPage.objects.sibling_of(self, inclusive)
+
+    def _first_filtered_by_tag(self, func):
+        qs = func()
+        if self.tag:
+            qs = qs.filter(tags=self.tag)
+        return qs.first()
+
+    @property
+    def next(self):
+        return self._first_filtered_by_tag(self.get_next_siblings)
+
+    @property
+    def previous(self):
+        return self._first_filtered_by_tag(self.get_prev_siblings)
+
 
 class BlogIndexPage(RoutablePageMixin, Page):
     """
@@ -151,14 +189,26 @@ class BlogIndexPage(RoutablePageMixin, Page):
     def children(self):
         return self.get_children().specific().live()
 
+    # Pagination for the index page. We use the `django.core.paginator` as any
+    # standard Django app would, but the difference here being we have it as a
+    # method on the model rather than within a view function
+    def paginate(self, request, posts):
+        page = request.GET.get('page')
+        paginator = Paginator(posts, 2)
+        try:
+            pages = paginator.page(page)
+        except PageNotAnInteger:
+            pages = paginator.page(1)
+        except EmptyPage:
+            pages = paginator.page(paginator.num_pages)
+        return pages
+
     # Overrides the context to list all child items, that are live, by the
     # date that they were published
     # https://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
     def get_context(self, request):
         context = super(BlogIndexPage, self).get_context(request)
-        context['posts'] = BlogPage.objects.descendant_of(
-            self).live().order_by(
-            '-date_published')
+        context['posts'] = self.paginate(request, self.get_posts())
         return context
 
     # This defines a Custom view that utilizes Tags. This view will return all
@@ -168,7 +218,6 @@ class BlogIndexPage(RoutablePageMixin, Page):
     @route(r'^tags/$', name='tag_archive')
     @route(r'^tags/([\w-]+)/$', name='tag_archive')
     def tag_archive(self, request, tag=None):
-
         try:
             tag = Tag.objects.get(slug=tag)
         except Tag.DoesNotExist:
@@ -177,13 +226,10 @@ class BlogIndexPage(RoutablePageMixin, Page):
                 messages.add_message(request, messages.INFO, msg)
             return redirect(self.url)
 
-        posts = self.get_posts(tag=tag)
-        context = {
-            'self': self,
-            'page': self,
-            'tag': tag,
-            'posts': posts
-        }
+        posts = self.paginate(request, self.get_posts(tag=tag))
+        context = super(BlogIndexPage, self).get_context(request)
+        context['tag'] = tag
+        context['posts'] = posts
         return render(request, 'blog/blog_index_page.html', context)
 
     def serve_preview(self, request, mode_name):
