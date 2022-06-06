@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailimages_tags wagtailcore_tags %}
+{% load i18n wagtailimages_tags wagtailcore_tags %}
 
 {% block content %}
   <div class="homepage">
@@ -25,7 +25,7 @@
       <div class="container-lg">
         {# promo #}
         <div class="row">
-          <div class="col-md-5 promo text-center">
+          <div class="col-md-5 promo">
             {% if page.promo_image or page.promo_title or page.promo_text %}
               {% image page.promo_image fill-800x800-c100 format-webp as promo_image %}
               <div class="card border-0 bg-light bg-gradient ">
@@ -40,6 +40,16 @@
 
           <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">
             <h2>{{ page.featured_section_1_title }}</h2>
+
+            {% if page.featured_section_1.localized.specific.get_child_tags %}
+              <nav class="mb-2">
+                <a class="btn btn-sm btn-outline-primary" role="button" href="{% pageurl page.featured_section_1.localized.specific %}">{% translate 'All' %}</a>
+                {% for child_tag in page.featured_section_1.localized.specific.get_child_tags %}
+                  <a class="btn btn-sm btn-outline-secondary" role="button" href="{{ child_tag.url }}">{{ child_tag }}</a>
+                {% endfor %}
+              </nav>
+            {% endif %}
+
             <div class="featured-children">
               {% for childpage in page.featured_section_1.localized.specific.children|slice:"3" %}
                 {% image childpage.image fill-800x800-c100 format-webp as child_image %}

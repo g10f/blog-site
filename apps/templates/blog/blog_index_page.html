@@ -7,7 +7,7 @@
   <div class="container-lg">
     {% if page.get_child_tags %}
       <nav class="mb-2">
-        <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button" href="{% pageurl page %}">All</a>
+        <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button" href="{% pageurl page %}">{% translate 'All' %}</a>
         {% for child_tag in page.get_child_tags %}
           <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button" href="{{ child_tag.url }}">{{ child_tag }}</a>
         {% endfor %}
