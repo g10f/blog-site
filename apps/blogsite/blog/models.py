@@ -1,4 +1,5 @@
 import logging
+import urllib.parse
 
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -44,6 +45,11 @@ class BlogPageTag(TaggedItemBase):
     content_object = ParentalKey('BlogPage', related_name='tagged_items', on_delete=models.CASCADE)
 
 
+class AuthorPanel(InlinePanel):
+    def on_model_bound(self):
+        super().on_model_bound()
+
+
 class BlogPage(Page):
     """
     A Blog Page
@@ -72,7 +78,7 @@ class BlogPage(Page):
         ImageChooserPanel('image'),
         StreamFieldPanel('body'),
         FieldPanel('date_published'),
-        InlinePanel(
+        AuthorPanel(
             'blog_person_relationship', label="Author(s)",
             panels=None, min_num=1),
         FieldPanel('tags'),
@@ -108,11 +114,7 @@ class BlogPage(Page):
         """
         tags = self.tags.all()
         for tag in tags:
-            tag.url = '/' + '/'.join(s.strip('/') for s in [
-                self.get_parent().url,
-                'tags',
-                tag.slug
-            ])
+            tag.url = urllib.parse.urljoin(self.get_parent().url, f'tags/{tag.slug}')
         return tags
 
     # Specifies parent to BlogPage as being BlogIndexPages
