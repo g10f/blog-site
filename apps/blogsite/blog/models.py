@@ -196,7 +196,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # method on the model rather than within a view function
     def paginate(self, request, posts):
         page = request.GET.get('page')
-        paginator = Paginator(posts, 2)
+        paginator = Paginator(posts, 6)
         try:
             pages = paginator.page(page)
         except PageNotAnInteger:
