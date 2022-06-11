@@ -1,6 +1,10 @@
 {% load wagtailimages_tags %}
-
-<figure>
-  {% image self.image fill-600x600 format-webp %}
-  <figcaption>{{ self.caption }} - {{ self.attribution }}</figcaption>
+<figure class="figure">
+  {% image self.image fill-3000x2000 format-webp as img_obj %}
+  <img src="{{ img_obj.url }}" class="rounded img-fluid"/>
+  {% if self.caption %}
+    <figcaption class="figure-caption">{{ self.caption }}{% if self.attribution %}- {{ self.attribution }}{% endif %}</figcaption>
+  {% elif self.attribution %}
+    <figcaption class="figure-caption">{{ self.attribution }}</figcaption>
+  {% endif %}
 </figure>
