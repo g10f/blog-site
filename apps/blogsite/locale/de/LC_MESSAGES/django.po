@@ -40,7 +40,7 @@ msgid "All"
 msgstr ""
 
 msgid "Read more"
-msgstr ""
+msgstr "Weiterlesen"
 
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
