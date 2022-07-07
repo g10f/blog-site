@@ -8,14 +8,13 @@ from django.shortcuts import redirect, render
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
+
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
-
 from ..base.blocks import BaseStreamBlock
 
 logger = logging.getLogger(__name__)
@@ -75,7 +74,7 @@ class BlogPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel('subtitle', classname="full"),
         FieldPanel('introduction', classname="full"),
-        ImageChooserPanel('image'),
+        FieldPanel('image'),
         StreamFieldPanel('body'),
         FieldPanel('date_published'),
         AuthorPanel(
@@ -180,7 +179,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('introduction', classname="full"),
-        ImageChooserPanel('image'),
+        FieldPanel('image'),
     ]
 
     # Specifies that only BlogPage objects can live under this index page
@@ -189,7 +188,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
     def children(self):
-        return self.get_children().specific().live()
+        return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
 
     # Pagination for the index page. We use the `django.core.paginator` as any
     # standard Django app would, but the difference here being we have it as a
@@ -241,7 +240,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
-        posts = BlogPage.objects.live().descendant_of(self)
+        posts = BlogPage.objects.live().descendant_of(self).order_by('-date_published')
         if tag:
             posts = posts.filter(tags=tag)
         return posts

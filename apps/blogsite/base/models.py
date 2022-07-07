@@ -4,18 +4,18 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel, FieldRowPanel, InlinePanel
+
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel, FieldRowPanel, \
+    InlinePanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.settings.models import BaseSetting
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page, TranslatableMixin, _copy
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
-
 from .blocks import BaseStreamBlock, PersonBlock
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
     panels = [FieldPanel('user'), FieldPanel('site'),
               MultiFieldPanel([FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
-              FieldPanel('job_title'), ImageChooserPanel('image')]
+              FieldPanel('job_title'), FieldPanel('image')]
 
     search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
 
@@ -115,7 +115,7 @@ class StandardPage(Page):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), StreamFieldPanel('body'), ImageChooserPanel('image'), ]
+    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), StreamFieldPanel('body'), FieldPanel('image'), ]
 
     search_fields = Page.search_fields + [
         index.SearchField('introduction'),
@@ -133,7 +133,7 @@ class PersonsPage(Page):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), ImageChooserPanel('image'), StreamFieldPanel('body'), ]
+    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), FieldPanel('image'), StreamFieldPanel('body'), ]
 
     search_fields = Page.search_fields + [
         index.SearchField('introduction'),
@@ -182,10 +182,10 @@ class HomePage(Page):
                                            help_text='Second featured section for the homepage. Will display up to three child items.',
                                            verbose_name='Featured section 2')
 
-    content_panels = Page.content_panels + [MultiFieldPanel([ImageChooserPanel('image'), FieldPanel('hero_text', classname="full"),
+    content_panels = Page.content_panels + [MultiFieldPanel([FieldPanel('image'), FieldPanel('hero_text', classname="full"),
                                                              MultiFieldPanel([FieldPanel('hero_cta'), PageChooserPanel('hero_cta_link'), ]), ],
                                                             heading="Hero section"),
-                                            MultiFieldPanel([ImageChooserPanel('promo_image'), FieldPanel('promo_title'), FieldPanel('promo_text'), ],
+                                            MultiFieldPanel([FieldPanel('promo_image'), FieldPanel('promo_title'), FieldPanel('promo_text'), ],
                                                             heading="Promo section"), StreamFieldPanel('body'), MultiFieldPanel(
             [MultiFieldPanel([FieldPanel('featured_section_1_title'), PageChooserPanel('featured_section_1'), ]),
              MultiFieldPanel([FieldPanel('featured_section_2_title'), PageChooserPanel('featured_section_2'), ]), ], heading="Featured homepage sections",
@@ -238,7 +238,7 @@ class FormPage(AbstractEmailForm):
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
-    content_panels = AbstractEmailForm.content_panels + [ImageChooserPanel('image'), StreamFieldPanel('body'), InlinePanel('form_fields', label="Form fields"),
+    content_panels = AbstractEmailForm.content_panels + [FieldPanel('image'), StreamFieldPanel('body'), InlinePanel('form_fields', label="Form fields"),
                                                          FieldPanel('thank_you_text', classname="full"), MultiFieldPanel(
             [FieldRowPanel([FieldPanel('from_address', classname="col6"), FieldPanel('to_address', classname="col6"), ]), FieldPanel('subject'), ], "Email"), ]
 
