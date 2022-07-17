@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import models
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
@@ -69,7 +70,7 @@ class BlogPage(Page):
     body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
     subtitle = models.CharField(blank=True, max_length=255)
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    date_published = models.DateField("Date article published", blank=True, null=True)
+    date_published = models.DateField("Date article published", default=timezone.now)
 
     content_panels = Page.content_panels + [
         FieldPanel('subtitle', classname="full"),
@@ -135,25 +136,25 @@ class BlogPage(Page):
 
         return super().serve(request, *args, **kwargs)
 
-    def get_siblings(self, inclusive=True):
-        """
-        Returns a  BlogPage queryset instead of Page queryset, so that we can filter by tag.
-        """
-        return BlogPage.objects.sibling_of(self, inclusive)
-
-    def _first_filtered_by_tag(self, func):
-        qs = func()
+    def _first_filtered_by_tag(self, next):
+        if self.date_published is None:
+            return None
+        qs = BlogPage.objects.sibling_of(self, inclusive=False)
+        if next:
+            qs = qs.filter(date_published__gte=self.date_published).order_by('date_published')
+        else:
+            qs = qs.filter(date_published__lte=self.date_published).order_by('-date_published')
         if self.tag:
             qs = qs.filter(tags=self.tag)
         return qs.first()
 
     @property
     def next(self):
-        return self._first_filtered_by_tag(self.get_next_siblings)
+        return self._first_filtered_by_tag(next=True)
 
     @property
     def previous(self):
-        return self._first_filtered_by_tag(self.get_prev_siblings)
+        return self._first_filtered_by_tag(next=False)
 
 
 class BlogIndexPage(RoutablePageMixin, Page):

@@ -18,7 +18,6 @@ from pathlib import Path
 
 import dj_database_url
 
-SITE_NAME = os.getenv('SITE_NAME', 'The Blog Site')
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
@@ -211,9 +210,8 @@ MEDIA_URL = '/media/'
 
 # Wagtail settings
 
-WAGTAIL_SITE_NAME = SITE_NAME
-
 # WAGTAIL_I18N_ENABLED = True
+WAGTAIL_SITE_NAME = os.getenv('WAGTAIL_SITE_NAME', 'The Blog Site')
 
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ('en', "English"),
@@ -232,7 +230,7 @@ WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-BASE_URL = 'http://example.com'
+WAGTAILADMIN_BASE_URL = 'http://example.com'
 
 # We require CSRF only on authenticated paths. This setting is handled by our
 # core.middleware.PathBasedCsrfViewMiddleware.
