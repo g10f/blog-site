@@ -136,25 +136,25 @@ class BlogPage(Page):
 
         return super().serve(request, *args, **kwargs)
 
-    def _first_filtered_by_tag(self, next):
-        if self.date_published is None:
-            return None
-        qs = BlogPage.objects.sibling_of(self, inclusive=False)
-        if next:
-            qs = qs.filter(date_published__gte=self.date_published).order_by('date_published')
-        else:
-            qs = qs.filter(date_published__lte=self.date_published).order_by('-date_published')
+    def get_siblings(self, inclusive=True):
+        """
+        Returns a  BlogPage queryset instead of Page queryset, so that we can filter by tag.
+        """
+        return BlogPage.objects.sibling_of(self, inclusive)
+
+    def _first_filtered_by_tag(self, func):
+        qs = func()
         if self.tag:
             qs = qs.filter(tags=self.tag)
         return qs.first()
 
     @property
     def next(self):
-        return self._first_filtered_by_tag(next=True)
+        return self._first_filtered_by_tag(self.get_next_siblings)
 
     @property
     def previous(self):
-        return self._first_filtered_by_tag(next=False)
+        return self._first_filtered_by_tag(self.get_prev_siblings)
 
 
 class BlogIndexPage(RoutablePageMixin, Page):
@@ -189,7 +189,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
     def children(self):
-        return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
+        return self.get_children().specific().live().order_by('-path')
+        # return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
 
     # Pagination for the index page. We use the `django.core.paginator` as any
     # standard Django app would, but the difference here being we have it as a
@@ -241,7 +242,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
-        posts = BlogPage.objects.live().descendant_of(self).order_by('-date_published')
+        posts = BlogPage.objects.live().descendant_of(self).order_by('-path')
+        # posts = BlogPage.objects.live().descendant_of(self).order_by('-date_published')
         if tag:
             posts = posts.filter(tags=tag)
         return posts
