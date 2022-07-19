@@ -243,7 +243,6 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
         posts = BlogPage.objects.live().descendant_of(self).order_by('-path')
-        # posts = BlogPage.objects.live().descendant_of(self).order_by('-date_published')
         if tag:
             posts = posts.filter(tags=tag)
         return posts
