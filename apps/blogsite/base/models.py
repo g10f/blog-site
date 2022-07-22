@@ -1,7 +1,9 @@
 import logging
 
+from captcha.fields import ReCaptchaField
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 
@@ -212,6 +214,8 @@ class FormField(AbstractFormField):
 
 
 class CustomFormBuilder(FormBuilder):
+    CAPTCHA_FIELD_NAME = 'wagtailcaptcha'
+
     def get_create_field_function(self, type):
         """
         Override the method to prepare a wrapped function that will call the original
@@ -224,10 +228,22 @@ class CustomFormBuilder(FormBuilder):
         def wrapped_create_field_function(field, options):
             created_field = create_field_function(field, options)
             created_field.widget.attrs.update({"class": 'form-control'})
-
             return created_field
 
         return wrapped_create_field_function
+
+    @property
+    def formfields(self):
+        # Add ReCaptcha to formfields property
+        fields = super().formfields
+        fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(label=_("Captcha"))
+
+        return fields
+
+
+def remove_captcha_field(form):
+    form.fields.pop(CustomFormBuilder.CAPTCHA_FIELD_NAME, None)
+    form.cleaned_data.pop(CustomFormBuilder.CAPTCHA_FIELD_NAME, None)
 
 
 class FormPage(AbstractEmailForm):
@@ -235,6 +251,10 @@ class FormPage(AbstractEmailForm):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
     body = StreamField(BaseStreamBlock(), use_json_field=True)
     thank_you_text = RichTextField(blank=True)
+
+    def process_form_submission(self, form):
+        remove_captcha_field(form)
+        return super().process_form_submission(form)
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
