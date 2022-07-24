@@ -54,3 +54,12 @@ html {
     border-bottom: math.div($navbar-padding-y, 2) solid $brand;
   }
 }
+
+$utilities: map-merge(
+  $utilities, (
+    "width": map-merge(
+      map-get($utilities, "width"),
+      ( responsive: true ),
+    ),
+  )
+);
