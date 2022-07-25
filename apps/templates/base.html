@@ -17,7 +17,7 @@
     <link rel="alternate icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="{% if debug %}{% static 'css/main.css' %}{% else %}{% static 'css/main.min.css' %}{% endif %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow">
-    <link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet">
+    {# <link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet"> #}
   {% endblock head %}
 </head>
 
@@ -55,6 +55,8 @@
 
 <script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Barlow" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow"></noscript>
 {% include "includes/symbols.html" %}
 </body>
 
