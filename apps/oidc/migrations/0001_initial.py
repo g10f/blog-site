@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('roles', models.CharField(max_length=512, verbose_name='roles')),
+                ('roles', models.CharField(max_length=512, verbose_name='roles', blank=True)),
                 ('subject', models.CharField(max_length=254, unique=True, verbose_name='subject')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='core_userprofile', to=settings.AUTH_USER_MODEL)),
             ],
