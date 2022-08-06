@@ -143,7 +143,7 @@ class BlogPage(Page):
         return BlogPage.objects.sibling_of(self, inclusive)
 
     def _first_filtered_by_tag(self, func):
-        qs = func()
+        qs = func().live()
         if self.tag:
             qs = qs.filter(tags=self.tag)
         return qs.first()
