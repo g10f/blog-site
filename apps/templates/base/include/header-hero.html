@@ -1,6 +1,6 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-{% image page.image width-1920 format-webp as image %}
+{% image page.image fill-1920x600 format-webp as image %}
 {% if image %}
   <div class="px-4 py-5 mb-2 text-center text-light"
        style="min-height: 250px; background-image:url('{{ image.url }}');background-repeat: no-repeat;background-size: cover;background-position: center">
