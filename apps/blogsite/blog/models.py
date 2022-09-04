@@ -9,13 +9,12 @@ from django.utils import timezone
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
-
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
 from wagtail.search import index
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
+
 from ..base.blocks import BaseStreamBlock
 
 logger = logging.getLogger(__name__)
@@ -32,7 +31,7 @@ class BlogPeopleRelationship(Orderable, models.Model):
     page = ParentalKey('BlogPage', related_name='blog_person_relationship', on_delete=models.CASCADE)
     people = models.ForeignKey('base.People', related_name='person_blog_relationship', on_delete=models.CASCADE)
     panels = [
-        SnippetChooserPanel('people')
+        FieldPanel('people')
     ]
 
 
@@ -67,16 +66,16 @@ class BlogPage(Page):
         related_name='+',
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
     )
-    body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
+    body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
     subtitle = models.CharField(blank=True, max_length=255)
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
     date_published = models.DateField("Date article published", default=timezone.now)
 
     content_panels = Page.content_panels + [
-        FieldPanel('subtitle', classname="full"),
-        FieldPanel('introduction', classname="full"),
+        FieldPanel('subtitle'),
+        FieldPanel('introduction'),
         FieldPanel('image'),
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
         FieldPanel('date_published'),
         AuthorPanel(
             'blog_person_relationship', label="Author(s)",
@@ -179,7 +178,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel('introduction', classname="full"),
+        FieldPanel('introduction'),
         FieldPanel('image'),
     ]
 
@@ -209,8 +208,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Overrides the context to list all child items, that are live, by the
     # date that they were published
     # https://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
-    def get_context(self, request):
-        context = super(BlogIndexPage, self).get_context(request)
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
         context['posts'] = self.paginate(request, self.get_posts())
         return context
 

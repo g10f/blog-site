@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.settings',
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
-    'wagtail.contrib.styleguide',
+    # 'wagtail.contrib.styleguide',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'wagtail.core',
     'wagtail.locales',
+    # "wagtail.contrib.modeladmin",
     'wagtail.contrib.simple_translation',
     "wagtail.contrib.routable_page",
 

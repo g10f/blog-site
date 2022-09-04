@@ -6,18 +6,18 @@ from django.db import models
 from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel, FieldRowPanel, \
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, \
     InlinePanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
-from wagtail.contrib.settings.models import BaseSetting
+from wagtail.contrib.settings.models import BaseSetting, BaseSiteSetting
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page, TranslatableMixin, _copy
 from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
+
 from .blocks import BaseStreamBlock, PersonBlock
 
 logger = logging.getLogger(__name__)
@@ -117,7 +117,10 @@ class StandardPage(Page):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), StreamFieldPanel('body'), FieldPanel('image'), ]
+    content_panels = Page.content_panels + [
+        FieldPanel('introduction'),
+        FieldPanel('body'),
+        FieldPanel('image'), ]
 
     search_fields = Page.search_fields + [
         index.SearchField('introduction'),
@@ -135,7 +138,7 @@ class PersonsPage(Page):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel('introduction', classname="full"), FieldPanel('image'), StreamFieldPanel('body'), ]
+    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('image'), FieldPanel('body'), ]
 
     search_fields = Page.search_fields + [
         index.SearchField('introduction'),
@@ -184,14 +187,37 @@ class HomePage(Page):
                                            help_text='Second featured section for the homepage. Will display up to three child items.',
                                            verbose_name='Featured section 2')
 
-    content_panels = Page.content_panels + [MultiFieldPanel([FieldPanel('image'), FieldPanel('hero_text', classname="full"),
-                                                             MultiFieldPanel([FieldPanel('hero_cta'), PageChooserPanel('hero_cta_link'), ]), ],
-                                                            heading="Hero section"),
-                                            MultiFieldPanel([FieldPanel('promo_image'), FieldPanel('promo_title'), FieldPanel('promo_text'), ],
-                                                            heading="Promo section"), StreamFieldPanel('body'), MultiFieldPanel(
-            [MultiFieldPanel([FieldPanel('featured_section_1_title'), PageChooserPanel('featured_section_1'), ]),
-             MultiFieldPanel([FieldPanel('featured_section_2_title'), PageChooserPanel('featured_section_2'), ]), ], heading="Featured homepage sections",
-            classname="collapsible")]
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel('image'),
+                FieldPanel('hero_text'),
+                MultiFieldPanel(
+                    [
+                        FieldPanel('hero_cta'),
+                        PageChooserPanel('hero_cta_link'),
+                    ]),
+            ], heading="Hero section"),
+        MultiFieldPanel(
+            [
+                FieldPanel('promo_image'),
+                FieldPanel('promo_title'),
+                FieldPanel('promo_text'),
+            ], heading="Promo section"),
+        FieldPanel('body'),
+        MultiFieldPanel(
+            [
+                MultiFieldPanel(
+                    [
+                        FieldPanel('featured_section_1_title'),
+                        PageChooserPanel('featured_section_1'),
+                    ]),
+                MultiFieldPanel(
+                    [
+                        FieldPanel('featured_section_2_title'),
+                        PageChooserPanel('featured_section_2'),
+                    ]),
+            ], heading="Featured homepage sections", classname="collapsible")]
 
     search_fields = Page.search_fields + [
         index.SearchField('body'),
@@ -258,13 +284,13 @@ class FormPage(AbstractEmailForm):
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
-    content_panels = AbstractEmailForm.content_panels + [FieldPanel('image'), StreamFieldPanel('body'), InlinePanel('form_fields', label="Form fields"),
-                                                         FieldPanel('thank_you_text', classname="full"), MultiFieldPanel(
+    content_panels = AbstractEmailForm.content_panels + [FieldPanel('image'), FieldPanel('body'), InlinePanel('form_fields', label="Form fields"),
+                                                         FieldPanel('thank_you_text'), MultiFieldPanel(
             [FieldRowPanel([FieldPanel('from_address', classname="col6"), FieldPanel('to_address', classname="col6"), ]), FieldPanel('subject'), ], "Email"), ]
 
 
 @register_setting
-class SocialMediaSettings(BaseSetting):
+class SocialMediaSettings(BaseSiteSetting):
     facebook = models.URLField(blank=True, help_text='Your Facebook page URL')
     instagram = models.URLField(blank=True, help_text='Your Instagram URL')
     youtube = models.URLField(blank=True, help_text='Your YouTube channel or user account URL')
