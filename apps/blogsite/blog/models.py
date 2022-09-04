@@ -245,7 +245,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
-        posts = BlogPage.objects.live().descendant_of(self) #.order_by('-path')
+        posts = BlogPage.objects.live().descendant_of(self).order_by('-path')
         if tag:
             posts = posts.filter(tags=tag)
         return posts
