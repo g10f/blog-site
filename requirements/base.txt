@@ -1,5 +1,6 @@
 wagtail
-django
+# tagging does not work with 4.1
+django<4.1
 dj-database-url
 psycopg2
 gunicorn

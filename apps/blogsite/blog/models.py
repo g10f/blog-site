@@ -135,6 +135,10 @@ class BlogPage(Page):
 
         return super().serve(request, *args, **kwargs)
 
+    # unklar ob das nötig ist https://docs.wagtail.org/en/stable/releases/4.0.html#changes-to-page-serve-and-page-serve-preview-methods
+    # def serve_preview(self, request, mode_name):
+    #     return self.serve(request)
+
     def get_siblings(self, inclusive=True):
         """
         Returns a  BlogPage queryset instead of Page queryset, so that we can filter by tag.
@@ -241,7 +245,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
-        posts = BlogPage.objects.live().descendant_of(self).order_by('-path')
+        posts = BlogPage.objects.live().descendant_of(self) #.order_by('-path')
         if tag:
             posts = posts.filter(tags=tag)
         return posts
