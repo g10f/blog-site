@@ -232,7 +232,7 @@ WAGTAILSEARCH_BACKENDS = {
 WAGTAILFRONTENDCACHE = {
     'varnish': {
         'BACKEND': 'wagtail.contrib.frontend_cache.backends.HTTPBackend',
-        'LOCATION': os.getenv('WAGTAILFRONTENDCACHE_LOCATION', 'http://localhost:8000'),
+        'LOCATION': os.getenv('WAGTAILFRONTENDCACHE_LOCATION', 'http://localhost:6081'),
     },
 }
 
