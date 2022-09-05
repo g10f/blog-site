@@ -247,7 +247,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         yield '/'
 
         # make sure all pages are purged
-        for tag in Tag.objects.all():
+        for tag in Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct():
             yield f'/tags/{tag.slug}/'
 
     def serve_preview(self, request, mode_name):
