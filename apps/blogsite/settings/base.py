@@ -232,7 +232,7 @@ WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = 'http://example.com'
+WAGTAILADMIN_BASE_URL = os.getenv('WAGTAILADMIN_BASE_URL', 'https://example.com')
 
 # We require CSRF only on authenticated paths. This setting is handled by our
 # core.middleware.PathBasedCsrfViewMiddleware.
