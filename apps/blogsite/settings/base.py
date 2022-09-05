@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     # "wagtail.contrib.modeladmin",
     'wagtail.contrib.simple_translation',
     "wagtail.contrib.routable_page",
+    "wagtail.contrib.frontend_cache",
 
     'modelcluster',
     'taggit',
@@ -226,6 +227,13 @@ WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.database',
     }
+}
+
+WAGTAILFRONTENDCACHE = {
+    'varnish': {
+        'BACKEND': 'wagtail.contrib.frontend_cache.backends.HTTPBackend',
+        'LOCATION': os.getenv('WAGTAILFRONTENDCACHE_LOCATION', 'http://localhost:8000'),
+    },
 }
 
 WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
