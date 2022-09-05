@@ -4,16 +4,20 @@ import urllib.parse
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
 from wagtail.search import index
+from wagtail.signals import page_published
 
 from ..base.blocks import BaseStreamBlock
 
@@ -238,6 +242,14 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context['posts'] = posts
         return render(request, 'blog/blog_index_page.html', context)
 
+    def get_cached_paths(self):
+        # Yield the main URL
+        yield '/'
+
+        # make sure all pages are purged
+        for tag in Tag.objects.all():
+            yield f'/tags/{tag.slug}/'
+
     def serve_preview(self, request, mode_name):
         # Needed for previews to work
         return self.serve(request)
@@ -258,3 +270,24 @@ class BlogIndexPage(RoutablePageMixin, Page):
             tags += post.get_tags
         tags = sorted(set(tags))
         return tags
+
+
+def blog_page_changed(blog_page):
+    # Find all the live BlogIndexPages that contain this blog_page
+    batch = PurgeBatch()
+    for blog_index in BlogIndexPage.objects.live():
+        if blog_page in blog_index.get_posts():
+            batch.add_page(blog_index)
+
+    # Purge all the blog indexes we found in a single request
+    batch.purge()
+
+
+@receiver(page_published, sender=BlogPage)
+def blog_published_handler(instance, **kwargs):
+    blog_page_changed(instance)
+
+
+@receiver(pre_delete, sender=BlogPage)
+def blog_deleted_handler(instance, **kwargs):
+    blog_page_changed(instance)
