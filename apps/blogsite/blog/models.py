@@ -20,6 +20,7 @@ from wagtail.search import index
 from wagtail.signals import page_published
 
 from ..base.blocks import BaseStreamBlock
+from ..base.models import HomePage
 
 logger = logging.getLogger(__name__)
 
@@ -273,13 +274,19 @@ class BlogIndexPage(RoutablePageMixin, Page):
 
 
 def blog_page_changed(blog_page):
-    # Find all the live BlogIndexPages that contain this blog_page
+    # Find all the live BlogIndexPages and HomePages that contain this blog_page
     batch = PurgeBatch()
+
+    home_pages = list(HomePage.objects.live())
     for blog_index in BlogIndexPage.objects.live():
         if blog_page in blog_index.get_posts():
             batch.add_page(blog_index)
+            for home_page in home_pages.copy():
+                if blog_index.page_ptr in [home_page.featured_section_1, home_page.featured_section_2]:
+                    batch.add_page(home_page)
+                    home_pages.remove(home_page)
 
-    # Purge all the blog indexes we found in a single request
+    # Purge all the blog indexes and home pages we found in a single request
     batch.purge()
 
 
