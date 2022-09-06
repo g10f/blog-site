@@ -60,7 +60,7 @@
                     {% endif %}
                     <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
                       <div class="card-body">
-                        <h3><a class="stretched-link text-reset text-decoration-none" href="{{ childpage.url }}">{{ childpage.title }}</a></h3>
+                        <h3><a class="stretched-link text-reset text-decoration-none" href="{% pageurl childpage %}">{{ childpage.title }}</a></h3>
                         <p class="card-text">{{ childpage.introduction }}</p>
                       </div>
                     </div>
@@ -98,7 +98,7 @@
               <div class="card text-white">
                 {% if image %}<img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img"/>{% endif %}
                 <div class="card-img-overlay">
-                  <h3 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{{ childpage.url }}">{{ childpage.title }}</a></h3>
+                  <h3 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{% pageurl childpage %}">{{ childpage.title }}</a></h3>
                   <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
                 </div>
               </div>

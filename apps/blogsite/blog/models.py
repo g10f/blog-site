@@ -118,7 +118,7 @@ class BlogPage(Page):
         """
         tags = self.tags.all()
         for tag in tags:
-            tag.url = urllib.parse.urljoin(self.get_parent().url, f'tags/{tag.slug}')
+            tag.url = urllib.parse.urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
         return tags
 
     # Specifies parent to BlogPage as being BlogIndexPages
