@@ -126,7 +126,7 @@ class BlogPage(Page):
         yield '/'
 
         # make sure all pages are purged
-        for tag in self.tags.all().distinct():
+        for tag in self.tags.all():
             yield f'/?tag={tag.slug}'
 
     # Specifies parent to BlogPage as being BlogIndexPages
