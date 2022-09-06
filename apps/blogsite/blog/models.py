@@ -121,6 +121,14 @@ class BlogPage(Page):
             tag.url = urllib.parse.urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
         return tags
 
+    def get_cached_paths(self):
+        # Yield the main URL
+        yield '/'
+
+        # make sure all pages are purged
+        for tag in self.tags.all().distinct():
+            yield f'/?tag={tag.slug}'
+
     # Specifies parent to BlogPage as being BlogIndexPages
     parent_page_types = ['BlogIndexPage']
 
