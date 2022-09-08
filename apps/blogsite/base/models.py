@@ -3,6 +3,7 @@ import logging
 from captcha.fields import ReCaptchaField
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -19,6 +20,7 @@ from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from .blocks import BaseStreamBlock, PersonBlock
+from .. import settings
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     first_name = models.CharField("First name", max_length=254)
     last_name = models.CharField("Last name", max_length=254)
     job_title = models.CharField("Job title", max_length=254)
+    slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -84,6 +87,14 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
                 child_object.locale = locale
 
         return translated
+
+    def full_clean(self, exclude=None, validate_unique=True):
+        if not self.slug:
+            # Try to auto-populate slug from title
+            allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
+            self.slug = slugify(f'{self.first_name}-{self.last_name}', allow_unicode=allow_unicode)
+
+        return super().full_clean(exclude, validate_unique)
 
 
 @register_snippet
