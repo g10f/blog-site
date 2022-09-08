@@ -13,7 +13,7 @@ from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
-from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route, path
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
 from wagtail.search import index
@@ -234,8 +234,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # related BlogPages for a given Tag or redirect back to the BlogIndexPage.
     # More information on RoutablePages is at
     # https://docs.wagtail.io/en/latest/reference/contrib/routablepage.html
-    @route(r'^tags/$', name='tag_archive')
-    @route(r'^tags/([\w-]+)/$', name='tag_archive')
+    @path('tags/', name='tag_archive')
+    @path('tags/<tag>/', name='tag_archive')
     def tag_archive(self, request, tag=None):
         try:
             tag = Tag.objects.get(slug=tag)
@@ -258,10 +258,6 @@ class BlogIndexPage(RoutablePageMixin, Page):
         # make sure all pages are purged
         for tag in Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct():
             yield f'/tags/{tag.slug}/'
-
-    def serve_preview(self, request, mode_name):
-        # Needed for previews to work
-        return self.serve(request)
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
