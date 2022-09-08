@@ -8,7 +8,7 @@
       </a>
       <nav class="d-inline-flex mt-2 mt-sm-0 ms-sm-auto">
         <form action="/search" method="get" role="search">
-          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search the site' %}" aria-label="{% translate 'Search the site' %}"
+          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
         </form>
       </nav>
@@ -32,7 +32,7 @@
           {% top_menu parent=site_root calling_page=self %}
         </ul>
         <form action="/search" method="get" class="search d-sm-none" role="search">
-          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search the site' %}" aria-label="{% translate 'Search the site' %}"
+          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
         </form>
         {% if page and page.get_translations.live %}

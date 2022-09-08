@@ -25,7 +25,7 @@
                 <h2 class="card-title">{{ blog.title }}</h2>
                 <p class="card-text">{{ blog.introduction|truncatewords:15 }}</p>
                 <p class="card-text">
-                  <small class="text-muted">{% if blog.date_published %}{{ blog.date_published }} by {% endif %}{{ blog.authors|join:", " }}</small>
+                  <small class="text-muted">{% if blog.date_published %}{{ blog.date_published }} {% translate 'by' %} {% endif %}{{ blog.authors|join:", " }}</small>
                 </p>
                 <a href="{% pageurl blog %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
               </div>

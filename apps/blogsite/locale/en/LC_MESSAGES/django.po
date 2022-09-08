@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-19 14:18+0000\n"
+"POT-Creation-Date: 2022-09-08 15:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,79 +18,130 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: blogsite/base/image_formats.py:10
 msgid "Full width"
 msgstr ""
 
+#: blogsite/base/image_formats.py:11
 msgid "Left-aligned"
 msgstr ""
 
+#: blogsite/base/image_formats.py:12
 msgid "Right-aligned"
 msgstr ""
 
+#: blogsite/base/models.py:282
+msgid "Captcha"
+msgstr ""
+
+#: blogsite/search/views.py:33 templates/search/search_results.html:8
 msgid "Search results"
 msgstr ""
 
-msgid "roles"
+#: oidc/models.py:13
+msgid "role"
 msgstr ""
 
+#: oidc/models.py:14
+msgid "staff status"
+msgstr ""
+
+#: oidc/models.py:14
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: oidc/models.py:15
+msgid "superuser status"
+msgstr ""
+
+#: oidc/models.py:16
+msgid ""
+"Designates that this user has all permissions without explicitly assigning "
+"them."
+msgstr ""
+
+#: oidc/models.py:29
 msgid "subject"
 msgstr ""
 
+#: templates/base/home_page.html:46 templates/blog/blog_index_page.html:10
 msgid "All"
 msgstr ""
 
+#: templates/blog/blog_index_page.html:28
+msgid "by"
+msgstr ""
+
+#: templates/blog/blog_index_page.html:30
 msgid "Read more"
 msgstr ""
 
+#: templates/blog/blog_index_page.html:37
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
+#: templates/blog/blog_page.html:54
 msgid "Previous articel"
 msgstr ""
 
+#: templates/blog/blog_page.html:57
 msgid "Next articel"
 msgstr ""
 
+#: templates/includes/footer.html:19
 msgid "Visit us on"
 msgstr ""
 
-msgid "Search the site"
+#: templates/includes/header.html:11 templates/includes/header.html:35
+msgid "Search"
 msgstr ""
 
+#: templates/includes/pagination.html:8
 msgid "Previous"
 msgstr ""
 
+#: templates/includes/pagination.html:21 templates/includes/pagination.html:25
 msgid "Next"
 msgstr ""
 
+#: templates/search/search_results.html:11
 msgid "You searched for"
 msgstr ""
 
+#: templates/search/search_results.html:16
 msgid "Blog post"
 msgstr ""
 
+#: templates/search/search_results.html:18
 msgid "Page"
 msgstr ""
 
+#: templates/search/search_results.html:26
 msgid "No results found"
 msgstr ""
 
+#: templates/search/search_results.html:28
 msgid "You didn’t search for anything!"
 msgstr ""
 
+#: templates/tags/top_menu.html:5
 msgid "Homepage"
 msgstr ""
 
+#: templates/wagtailadmin/login.html:16
 msgid "Sign in to Wagtail"
 msgstr ""
 
+#: templates/wagtailadmin/login.html:23
 msgid "Logging out…"
 msgstr ""
 
+#: templates/wagtailadmin/login.html:24
 #, python-format
 msgid "Log out from %(idp)s"
 msgstr ""
 
+#: templates/wagtailadmin/login.html:28
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr ""
