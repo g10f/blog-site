@@ -49,9 +49,15 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
-    panels = [FieldPanel('user'), FieldPanel('site'),
-              MultiFieldPanel([FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
-              FieldPanel('job_title'), FieldPanel('image')]
+    panels = [
+        FieldPanel('user'),
+        FieldPanel('site'),
+        MultiFieldPanel([
+            FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
+        FieldPanel('slug'),
+        FieldPanel('job_title'),
+        FieldPanel('image')
+    ]
 
     search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
 
