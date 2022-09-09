@@ -1,7 +1,9 @@
 import logging
 
 from captcha.fields import ReCaptchaField
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
@@ -20,7 +22,6 @@ from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from .blocks import BaseStreamBlock, PersonBlock
-from .. import settings
 
 logger = logging.getLogger(__name__)
 
@@ -321,3 +322,22 @@ class SocialMediaSettings(BaseSiteSetting):
             {'id': 'youtube', 'url': self.youtube},
             {'id': 'twitter', 'url': self.twitter},
         ]
+
+
+def get_cached_path(items, item_attribute, reverse_subpage, filter_method):
+    # yield cached paths from index page with page nums and subpages filtered by items
+    yield '/'
+
+    # make sure all pages are purged
+    for item in items:
+        subpage = reverse_subpage(args=(getattr(item, item_attribute),))
+        yield subpage
+        paginator = Paginator(filter_method(item), settings.BLOGSITE_PAGE_SIZE)
+        if paginator.num_pages > 1:
+            for page in paginator.page_range:
+                yield f'{subpage}?page={page}'
+
+    paginator = Paginator(filter_method(), 12)
+    if paginator.num_pages > 1:
+        for page in paginator.page_range:
+            yield f'/?page={page}'

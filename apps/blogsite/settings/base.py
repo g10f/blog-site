@@ -21,6 +21,8 @@ import dj_database_url
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
+BLOGSITE_PAGE_SIZE = int(os.getenv('BLOGSITE_PAGE_SIZE', '8'))
+
 try:
     RUNNING_DEVSERVER = (sys.argv[1] == 'runserver')
 except IndexError:

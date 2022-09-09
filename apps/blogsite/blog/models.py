@@ -1,6 +1,8 @@
 import logging
 import urllib.parse
+from functools import partial
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import models
@@ -20,7 +22,7 @@ from wagtail.search import index
 from wagtail.signals import page_published
 
 from ..base.blocks import BaseStreamBlock
-from ..base.models import HomePage
+from ..base.models import HomePage, get_cached_path
 
 logger = logging.getLogger(__name__)
 
@@ -213,7 +215,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # method on the model rather than within a view function
     def paginate(self, request, posts):
         page = request.GET.get('page')
-        paginator = Paginator(posts, 6)
+        paginator = Paginator(posts, settings.BLOGSITE_PAGE_SIZE)
         try:
             pages = paginator.page(page)
         except PageNotAnInteger:
@@ -252,12 +254,11 @@ class BlogIndexPage(RoutablePageMixin, Page):
         return render(request, 'blog/blog_index_page.html', context)
 
     def get_cached_paths(self):
-        # Yield the main URL
-        yield '/'
-
-        # make sure all pages are purged
-        for tag in Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct():
-            yield f'/tags/{tag.slug}/'
+        return get_cached_path(
+            items=Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct(),
+            item_attribute='slug',
+            reverse_subpage=partial(self.reverse_subpage, 'tag_archive'),
+            filter_method=self.get_posts)
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
