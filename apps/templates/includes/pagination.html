@@ -3,9 +3,9 @@
 <nav class="" aria-label="Pagination">
   <ul class="justify-content-center pagination">
     {% if subpages.has_previous %}
-      <li class="page-item"><a href="?page={{ subpages.previous_page_number }}" class="page-link">{% translate 'Previous' %}</a></li>
+      <li class="page-item"><a href="?page={{ subpages.previous_page_number }}" class="page-link">{% translate 'Back' %}</a></li>
     {% else %}
-      <li class="page-item disabled"><a class="page-link">{% translate 'Previous' %}</a></li>
+      <li class="page-item disabled"><a class="page-link">{% translate 'Back' %}</a></li>
     {% endif %}
 
     {% for i in subpages.paginator.page_range %}
@@ -18,11 +18,11 @@
 
     {% if subpages.has_next %}
       <li class="page-item">
-        <a href="?page={{ subpages.next_page_number }}" class="page-link">{% translate 'Next' %}</a>
+        <a href="?page={{ subpages.next_page_number }}" class="page-link">{% translate 'Forward' %}</a>
       </li>
     {% else %}
       <li class="page-item disabled">
-        <a class="page-link">{% translate 'Next' %}</a>
+        <a class="page-link">{% translate 'Forward' %}</a>
       </li>
     {% endif %}
   </ul>

@@ -10,12 +10,13 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
-from wagtail.contrib.routable_page.models import RoutablePageMixin, route, path
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
 from wagtail.search import index
@@ -144,7 +145,7 @@ class BlogPage(Page):
             try:
                 self.tag = Tag.objects.get(slug=request.GET.get('tag'))
             except Tag.DoesNotExist:
-                msg = f'There is no tag "{tag}"'
+                msg = _('There is no tag "%(tag)s".') % {'tag': tag}
                 messages.add_message(request, messages.INFO, msg)
                 logger.warning(f'tag {tag} does not exist')
 
@@ -243,7 +244,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
             tag = Tag.objects.get(slug=tag)
         except Tag.DoesNotExist:
             if tag:
-                msg = 'There are no blog posts tagged with "{}"'.format(tag)
+                msg = _('There is no tag "%(tag)s".') % {'tag': tag}
                 messages.add_message(request, messages.INFO, msg)
             return redirect(self.url)
 
