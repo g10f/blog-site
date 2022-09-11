@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-08 15:06+0000\n"
+"POT-Creation-Date: 2022-09-11 10:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,8 +30,13 @@ msgstr ""
 msgid "Right-aligned"
 msgstr ""
 
-#: blogsite/base/models.py:282
+#: blogsite/base/models.py:283
 msgid "Captcha"
+msgstr ""
+
+#: blogsite/blog/models.py:148 blogsite/blog/models.py:247
+#, python-format
+msgid "There is no tag \"%(tag)s\"."
 msgstr ""
 
 #: blogsite/search/views.py:33 templates/search/search_results.html:8
@@ -80,11 +85,11 @@ msgstr ""
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
-#: templates/blog/blog_page.html:54
+#: templates/blog/blog_page.html:48
 msgid "Previous articel"
 msgstr ""
 
-#: templates/blog/blog_page.html:57
+#: templates/blog/blog_page.html:48
 msgid "Next articel"
 msgstr ""
 
@@ -96,12 +101,12 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: templates/includes/pagination.html:8
-msgid "Previous"
+#: templates/includes/pagination.html:6 templates/includes/pagination.html:8
+msgid "Back"
 msgstr ""
 
 #: templates/includes/pagination.html:21 templates/includes/pagination.html:25
-msgid "Next"
+msgid "Forward"
 msgstr ""
 
 #: templates/search/search_results.html:11
