@@ -20,7 +20,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
 from wagtail.search import index
-from wagtail.signals import page_published
+from wagtail.signals import page_published, post_page_move
 
 from ..base.blocks import BaseStreamBlock
 from ..base.models import HomePage, get_cached_path
@@ -304,3 +304,8 @@ def blog_published_handler(instance, **kwargs):
 @receiver(pre_delete, sender=BlogPage)
 def blog_deleted_handler(instance, **kwargs):
     blog_page_changed(instance)
+
+
+@receiver(post_page_move, sender=BlogPage)
+def blog_post_page_move_handler(instance, **kwargs):
+    blog_page_changed(instance.specific)
