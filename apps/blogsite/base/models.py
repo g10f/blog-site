@@ -281,7 +281,7 @@ class CustomFormBuilder(FormBuilder):
     def formfields(self):
         # Add ReCaptcha to formfields property
         fields = super().formfields
-        fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(widget=ReCaptchaV3, label=_("Captcha"))
+        fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(label=_("Captcha"))
 
         return fields
 
