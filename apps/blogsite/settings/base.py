@@ -49,6 +49,7 @@ EMAIL_SUBJECT_PREFIX = '[BlogSite] '
 # Application definition
 
 INSTALLED_APPS = [
+    'blogsite',
     'blogsite.base',
     'blogsite.search',
     'blogsite.blog',
@@ -112,21 +113,23 @@ ROOT_URLCONF = 'blogsite.urls'
 if DEBUG:
     # don't use cached loader
     LOADERS = [
-        'django.template.loaders.app_directories.Loader',
         'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
     ]
 else:
     LOADERS = [
         ('django.template.loaders.cached.Loader', (
-            'django.template.loaders.app_directories.Loader',
             'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
         )),
     ]
+
+TEMPLATE_DIRS = os.getenv('TEMPLATE_DIRS', []) + [BASE_DIR / 'templates']
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': TEMPLATE_DIRS,
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
