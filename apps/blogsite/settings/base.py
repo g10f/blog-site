@@ -219,6 +219,8 @@ MEDIA_URL = '/media/'
 # WAGTAIL_I18N_ENABLED = True
 WAGTAIL_SITE_NAME = os.getenv('WAGTAIL_SITE_NAME', 'The Blog Site')
 
+WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # i.e. 20MB
+
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ('en', "English"),
     ('de', "German"),
