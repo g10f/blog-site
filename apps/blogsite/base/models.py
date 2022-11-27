@@ -297,9 +297,10 @@ class FormPage(AbstractEmailForm):
     body = StreamField(BaseStreamBlock(), use_json_field=True)
     thank_you_text = RichTextField(blank=True)
 
-    # def process_form_submission(self, form):
-    #     remove_captcha_field(form)
-    #     return super().process_form_submission(form)
+    def process_form_submission(self, form):
+        # remove the captcha field, because we don't need this in the email
+        remove_captcha_field(form)
+        return super().process_form_submission(form)
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
