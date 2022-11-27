@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
-import sys
 from pathlib import Path
 
 import dj_database_url
+import sys
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
@@ -113,23 +112,21 @@ ROOT_URLCONF = 'blogsite.urls'
 if DEBUG:
     # don't use cached loader
     LOADERS = [
-        'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
+        'django.template.loaders.filesystem.Loader',
     ]
 else:
     LOADERS = [
         ('django.template.loaders.cached.Loader', (
-            'django.template.loaders.filesystem.Loader',
             'django.template.loaders.app_directories.Loader',
+            'django.template.loaders.filesystem.Loader',
         )),
     ]
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',
-        ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
@@ -195,8 +192,8 @@ LOCALE_PATHS = [BASE_DIR / 'blogsite' / 'locale']
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 ]
 
 STATICFILES_DIRS = [

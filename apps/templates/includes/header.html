@@ -3,8 +3,10 @@
   <div class="container-lg py-4 d-none d-sm-block">
     <div class="d-flex flex-column flex-sm-row align-items-center ">
       <a href="{% url 'wagtail_serve' '' %}" class="d-flex align-items-center text-dark text-decoration-none">
-          <img src="{% static 'img/afd-im-regionalverband.webp' %}" width="350" height="110" class="me-3" alt="AfD-Fraktion im Regionalverband Braunschweig">
-        <!--<span class="fs-4">{{ wagtail_site_name }}</span>-->
+        <svg class="bi me-2" width="75" height="60" viewBox="0 0 118 94" role="img">
+          <use xlink:href="#journal-richtext"></use>
+        </svg>
+        <span>{{ wagtail_site_name }}</span>
       </a>
       <nav class="d-inline-flex mt-2 mt-sm-0 ms-sm-auto">
         <form action="/search" method="get" role="search">
@@ -17,8 +19,10 @@
   <nav class="navbar navbar-expand-sm bg-light navbar-light mb-2" aria-label="navbar">
     <div class="container-lg ps-sm-0">
       <a class="navbar-brand d-sm-none" href="{% url 'wagtail_serve' '' %}">
-         <img src="{% static 'img/afd-im-regionalverband.webp' %}" alt="afd-im-regionalverband" width="250" height="78" class="me-3">
-        <!--{{ wagtail_site_name }}-->
+        <svg class="bi me-2" width="60" height="48" viewBox="0 0 118 94" role="img">
+          <use xlink:href="#journal-richtext"></use>
+        </svg>
+        {{ wagtail_site_name }}
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"
               aria-label="Toggle navigation">
