@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class RoleGroup(models.Model):
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name='oidc_group')
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, null=True, blank=True, related_name='oidc_group')
     role = models.CharField(_("role"), max_length=512)
     is_staff = models.BooleanField(_("staff status"), default=False, help_text=_("Designates whether the user can log into this admin site."), )
     is_superuser = models.BooleanField(_("superuser status"), default=False,
