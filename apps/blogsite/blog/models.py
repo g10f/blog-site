@@ -14,11 +14,11 @@ from django.utils.translation import gettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page, Orderable
+from wagtail.fields import StreamField
+from wagtail.models import Page, Orderable
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 

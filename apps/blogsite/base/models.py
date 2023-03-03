@@ -10,14 +10,14 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, \
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, \
     InlinePanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.settings.models import BaseSetting, BaseSiteSetting
 from wagtail.contrib.settings.registry import register_setting
-from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Page, TranslatableMixin, _copy
+from wagtail.fields import RichTextField, StreamField
+from wagtail.models import Page, TranslatableMixin, _copy
 from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet

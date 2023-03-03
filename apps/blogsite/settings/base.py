@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
+    'wagtail',
     'wagtail.locales',
     # "wagtail.contrib.modeladmin",
     'wagtail.contrib.simple_translation',

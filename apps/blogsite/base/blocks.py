@@ -1,4 +1,4 @@
-from wagtail.core.blocks import (
+from wagtail.blocks import (
     CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
 )
 from wagtail.embeds.blocks import EmbedBlock
