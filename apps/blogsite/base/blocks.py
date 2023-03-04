@@ -3,6 +3,7 @@ from wagtail.blocks import (
 )
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.blocks.field_block import RawHTMLBlock
 
 
 class ImageBlock(StructBlock):
@@ -76,3 +77,6 @@ class BaseStreamBlock(StreamBlock):
         help_text='Insert an embed URL e.g https://www.youtube.com/embed/SGJFWirQ3ks',
         icon="media",
         template="blocks/embed_block.html")
+    RawHTMLBlock = RawHTMLBlock(
+        help_text='Insert raw HTML e.g. <iframe>..</iframe>',
+        )
