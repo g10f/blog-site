@@ -2,3 +2,9 @@
 <div class="ratio ratio-{{ self.ratio }}">
   <iframe src="https://www.youtube-nocookie.com/embed/{{ self.video_id }}" title="{% translate 'Youtube video' %}" allowfullscreen></iframe>
 </div>
+<div class="alert-warning alert ">
+  {% blocktranslate trimmed %}
+    Please note that by clicking and playing the video, YouTube/Google cookies are generated.
+    You consent to this if you play the video.
+  {% endblocktranslate %}
+</div>

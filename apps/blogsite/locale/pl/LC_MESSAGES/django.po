@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-24 22:52+0000\n"
+"POT-Creation-Date: 2023-03-05 16:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Right-aligned"
 msgstr ""
 
-#: blogsite/base/models.py:284
+#: blogsite/base/models.py:283
 msgid "Captcha"
 msgstr ""
 
@@ -48,6 +48,16 @@ msgstr ""
 #: blogsite/templates/base/home_page.html:46
 #: blogsite/templates/blog/blog_index_page.html:10
 msgid "All"
+msgstr ""
+
+#: blogsite/templates/blocks/video_block.html:3
+msgid "Youtube video"
+msgstr ""
+
+#: blogsite/templates/blocks/video_block.html:6
+msgid ""
+"Please note that by clicking and playing the video, YouTube/Google cookies "
+"are generated. You consent to this if you play the video."
 msgstr ""
 
 #: blogsite/templates/blog/blog_index_page.html:28
