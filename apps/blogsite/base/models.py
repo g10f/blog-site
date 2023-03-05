@@ -1,7 +1,6 @@
 import logging
 
 from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV3
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator

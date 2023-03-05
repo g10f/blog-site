@@ -1,0 +1,4 @@
+{% load i18n %}
+<div class="ratio ratio-{{ self.ratio }}">
+  <iframe src="https://www.youtube-nocookie.com/embed/{{ self.video_id }}" title="{% translate 'Youtube video' %}" allowfullscreen></iframe>
+</div>

@@ -6,6 +6,20 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.blocks.field_block import RawHTMLBlock
 
 
+class YouTubeVideoBlock(StructBlock):
+    video_id = CharBlock(required=True)
+    ratio = ChoiceBlock(choices=[
+        ('', 'Select a aspect ratio'),
+        ('1x1', '1x1'),
+        ('4x3', '4x3'),
+        ('16x9', '16x9'),
+        ('21x9', '21x9')
+    ], default='16x9', required=True)
+    class Meta:
+        icon = 'media'
+        template = "blocks/video_block.html"
+
+
 class ImageBlock(StructBlock):
     """
     Custom `StructBlock` for utilizing images with associated caption and
@@ -72,6 +86,7 @@ class BaseStreamBlock(StreamBlock):
         template="blocks/paragraph_block.html"
     )
     image_block = ImageBlock()
+    video_block = YouTubeVideoBlock()
     block_quote = BlockQuote()
     embed_block = EmbedBlock(
         help_text='Insert an embed URL e.g https://www.youtube.com/embed/SGJFWirQ3ks',
