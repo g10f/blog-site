@@ -256,7 +256,6 @@ CSRF_REQUIRED_PATHS = (
     "/admin",
     "/django-admin",
 )
-RECAPTCHA_REQUIRED_SCORE = float(os.getenv('RECAPTCHA_REQUIRED_SCORE', "0.85"))
 
 # mozilla-django-oidc settings
 LOGIN_REDIRECT_URL = "/admin"
