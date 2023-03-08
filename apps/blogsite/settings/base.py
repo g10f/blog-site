@@ -39,9 +39,10 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'webmaster@g10f.de'
-ADMINS = [('Gunnar Scherf', 'mail@g10f.de')]
-EMAIL_SUBJECT_PREFIX = '[BlogSite] '
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@g10f.de')
+# List seperated by ; with tuples seperated by , e.g 'Admin 1,admin1@example.com;Admin 2,admin2@example.com'
+ADMINS = [tuple(admin.split(',')) for admin in os.getenv('ADMINS', 'Gunnar Scherf,mail@g10f.de').split(';')]
+EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[BlogSite] ')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
