@@ -1,6 +1,7 @@
 import logging
 
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV3
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
@@ -280,7 +281,10 @@ class CustomFormBuilder(FormBuilder):
     def formfields(self):
         # Add ReCaptcha to formfields property
         fields = super().formfields
-        fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(label=_("Captcha"))
+        fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(
+            widget=ReCaptchaV3(),
+            label=_("Captcha")
+        )
 
         return fields
 
