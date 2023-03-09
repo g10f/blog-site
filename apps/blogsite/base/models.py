@@ -1,11 +1,11 @@
 import logging
 
 from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV3
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db import models
+from django.forms import CharField, TextInput
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
@@ -260,6 +260,7 @@ class FormField(AbstractFormField):
 
 class CustomFormBuilder(FormBuilder):
     CAPTCHA_FIELD_NAME = 'wagtailcaptcha'
+    HONEY_POT_FIELD_NAME = 'h_message'
 
     def get_create_field_function(self, type):
         """
@@ -282,6 +283,8 @@ class CustomFormBuilder(FormBuilder):
         # Add ReCaptcha to formfields property
         fields = super().formfields
         fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(label=_("Captcha"))
+        fields[self.HONEY_POT_FIELD_NAME] = CharField(required=False,
+                                                      label=_("Message"), widget=TextInput(attrs={"class": 'form-control'}))
 
         return fields
 
@@ -299,6 +302,10 @@ class FormPage(AbstractEmailForm):
 
     def process_form_submission(self, form):
         # remove the captcha field, because we don't need this in the email
+        if CustomFormBuilder.HONEY_POT_FIELD_NAME in form.cleaned_data and \
+            form.cleaned_data[CustomFormBuilder.HONEY_POT_FIELD_NAME] != '':
+            logger.warning(_("Spam detected"))
+            return
         remove_captcha_field(form)
         return super().process_form_submission(form)
 
