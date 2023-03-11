@@ -257,6 +257,9 @@ CSRF_REQUIRED_PATHS = (
     "/django-admin",
 )
 
+# https://django-taggit.readthedocs.io/en/latest/changelog.html#id2
+TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
+
 # mozilla-django-oidc settings
 LOGIN_REDIRECT_URL = "/admin"
 LOGOUT_REDIRECT_URL = "/admin"
