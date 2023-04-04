@@ -56,6 +56,7 @@ RUN set -ex \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USERNAME=worker
+ARG PROJ_NAME=blog-site
 ARG APP_NAME=blogsite
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -64,10 +65,10 @@ ARG USER_GID=$USER_UID
 RUN groupadd --gid $USER_GID $USERNAME && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
 
 # create media dir
-RUN mkdir -p /opt/g10f/$APP_NAME/htdocs/media
-RUN chown $USERNAME:$USERNAME /opt/g10f/$APP_NAME/htdocs/media
+RUN mkdir -p /opt/g10f/$PROJ_NAME/htdocs/media
+RUN chown $USERNAME:$USERNAME /opt/g10f/$PROJ_NAME/htdocs/media
 
-WORKDIR /opt/g10f/$APP_NAME/apps
+WORKDIR /opt/g10f/$PROJ_NAME/apps
 COPY apps .
 COPY Docker/gunicorn.conf.py ./gunicorn.conf.py
 
