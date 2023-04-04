@@ -1,5 +1,4 @@
 wagtail
-django
 dj-database-url
 psycopg2
 gunicorn
