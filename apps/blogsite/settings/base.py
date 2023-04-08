@@ -183,7 +183,7 @@ LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'de-de')
 
 TIME_ZONE = 'UTC'
 
-# USE_I18N = True
+USE_I18N = True
 
 USE_L10N = True
 
@@ -220,7 +220,7 @@ WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'root')
 
 # Wagtail settings
 
-WAGTAIL_I18N_ENABLED = False
+WAGTAIL_I18N_ENABLED = os.getenv('WAGTAIL_I18N_ENABLED', 'False').lower() in ('true', '1', 't')
 WAGTAIL_SITE_NAME = os.getenv('WAGTAIL_SITE_NAME', 'The Blog Site')
 
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # i.e. 20MB
