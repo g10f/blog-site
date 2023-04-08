@@ -14,7 +14,7 @@ def get_site_root(context):
     # This returns a core.Page. The main menu needs to have the site.root_page
     # defined else will return an object attribute error ('str' object has no
     # attribute 'get_children')
-    return Site.find_for_request(context['request']).root_page
+    return Site.find_for_request(context['request']).root_page.localized
 
 
 def has_menu_children(page):
@@ -45,7 +45,7 @@ def top_menu(context, parent, calling_page=None):
         # We don't directly check if calling_page is None since the template
         # engine can pass an empty string to calling_page
         # if the variable passed as calling_page does not exist.
-        menuitem.active = (calling_page.url_path.startswith(menuitem.url_path) if calling_page else False)
+        menuitem.active = is_active(menuitem, calling_page)
     return {
         'is_home': (calling_page.url_path == parent.url_path if calling_page else False),
         'calling_page': calling_page,

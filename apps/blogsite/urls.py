@@ -1,10 +1,11 @@
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
+from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
-from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from .search import views as search_views
@@ -27,12 +28,15 @@ if settings.DEBUG:
     urlpatterns += [path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'ico/favicon.ico'))]
 
 # Translatable URLs
-# These will be available under a language code prefix. For example /en/search/
-# urlpatterns += i18n_patterns(
-#     path('search/', search_views.search, name='search'),
-#     path("", include(wagtail_urls)),
-# )
-urlpatterns += [
-    path('search/', search_views.search, name='search'),
-    path('', include(wagtail_urls)),
-]
+if settings.WAGTAIL_I18N_ENABLED:
+    # These will be available under a language code prefix. For example /en/search/
+    urlpatterns += i18n_patterns(
+        path('search/', search_views.search, name='search'),
+        path("", include(wagtail_urls)),
+        prefix_default_language=False,
+    )
+else:
+    urlpatterns += [
+        path('search/', search_views.search, name='search'),
+        path('', include(wagtail_urls)),
+    ]

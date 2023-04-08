@@ -39,7 +39,7 @@
           <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
         </form>
-        {% if page and page.get_translations.live %}
+        {% if wagtail_i18n_enabled and page and page.get_translations.live %}
           <hr class="dropdown-divider">
           <ul class="navbar-nav">
             {% for translation in page.get_translations.live %}
