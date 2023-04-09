@@ -57,7 +57,7 @@ RUN set -ex \
 
 ARG USERNAME=worker
 ARG PROJ_NAME=blog-site
-ARG APP_NAME=blogsite
+#ARG APP_NAME=blogsite
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
@@ -79,10 +79,10 @@ USER $USERNAME
 ARG SECRET_KEY=dummy
 RUN ./manage.py collectstatic
 
-ENV DJANGO_SETTINGS_MODULE=${APP_NAME}.settings.production
+ENV DJANGO_SETTINGS_MODULE=blogsite.settings.production
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Start gunicorn
-CMD ["gunicorn", "$APP_NAME.wsgi:application", "--bind 0.0.0.0:8000", "-w", "2"]
+CMD ["gunicorn", "blogsite.wsgi:application", "--bind 0.0.0.0:8000", "-w", "2"]
 EXPOSE 8000
