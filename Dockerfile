@@ -79,7 +79,7 @@ USER $USERNAME
 ARG SECRET_KEY=dummy
 RUN ./manage.py collectstatic
 
-ENV DJANGO_SETTINGS_MODULE=$APP_NAME.settings.production
+ENV DJANGO_SETTINGS_MODULE=${APP_NAME}.settings.production
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
