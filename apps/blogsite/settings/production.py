@@ -26,6 +26,7 @@ OIDC_OP_NAME = os.getenv('OIDC_OP_NAME', '')
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
+
 try:
     from .local import *
 except ImportError:

@@ -16,7 +16,7 @@ if  [ "$DJANGO_CREATE_SUPERUSER" = "on" ] || [ "$DJANGO_LOAD_INITIAL_DATA" = "on
     fi
 
     if [ "$DJANGO_LOAD_INITIAL_DATA" = "on" ]; then
-      ./manage.py loaddata l10n_data app_roles roles browser_client_data
+      ./manage.py loaddata dummy-data
     fi
 
   fi

@@ -43,6 +43,8 @@ DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@g
 # List seperated by ; with tuples seperated by , e.g 'Admin 1,admin1@example.com;Admin 2,admin2@example.com'
 ADMINS = [tuple(admin.split(',')) for admin in os.getenv('ADMINS', 'Gunnar Scherf,mail@g10f.de').split(';')]
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[BlogSite] ')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '25'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
