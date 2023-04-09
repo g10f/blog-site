@@ -181,7 +181,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'de-de')
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'de')
 
 TIME_ZONE = 'UTC'
 
@@ -221,8 +221,7 @@ MEDIA_ROOT = os.getenv('MEDIA_ROOT', BASE_DIR.parent / 'htdocs/media')
 WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'root')
 
 # Wagtail settings
-
-WAGTAIL_I18N_ENABLED = os.getenv('WAGTAIL_I18N_ENABLED', 'False').lower() in ('true', '1', 't')
+WAGTAIL_I18N_ENABLED = os.getenv('WAGTAIL_I18N_ENABLED', 'True').lower() in ('true', '1', 't')
 WAGTAIL_SITE_NAME = os.getenv('WAGTAIL_SITE_NAME', 'The Blog Site')
 
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # i.e. 20MB

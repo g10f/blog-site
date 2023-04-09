@@ -6,3 +6,4 @@ tmp/
 demo-data
 data
 local.py
+/apps/blogsite/settings/binta.py
