@@ -246,6 +246,8 @@ WAGTAILFRONTENDCACHE = {
     },
 }
 
+WAGTAILFRONTENDCACHE_LANGUAGES = [l[0] for l in LANGUAGES]
+
 WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
