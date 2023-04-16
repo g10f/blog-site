@@ -5,19 +5,19 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db import models
-from django.forms import CharField, TextInput
+from django.forms import CharField, TextInput, forms
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, \
-    InlinePanel
+    InlinePanel, PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.settings.models import BaseSetting, BaseSiteSetting
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.fields import RichTextField, StreamField
-from wagtail.models import Page, TranslatableMixin, _copy
+from wagtail.models import Page, TranslatableMixin, _copy, DraftStateMixin, RevisionMixin, PreviewableMixin
 from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
@@ -106,24 +106,67 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
 
 @register_snippet
-class FooterText(TranslatableMixin, models.Model):
+class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
+    site = models.OneToOneField(Site, on_delete=models.CASCADE, blank=True, null=True)
+    image_header = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
+    image_footer = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
+
+    panels = [
+        FieldPanel('site'),
+        FieldPanel('image_header'),
+        FieldPanel('image_footer')
+    ]
+
+    def __str__(self):
+        if self.site:
+            return '{} - {}'.format(_("Site Logo"), self.site)
+        else:
+            return _("Site Logo")
+
+    def get_preview_template(self, request, mode_name):
+        return "base.html"
+
+    def get_preview_context(self, request, mode_name):
+        return {"site_logo": self}
+
+    class Meta:
+        verbose_name_plural = 'Site Logo'
+
+
+@register_snippet
+class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableMixin, models.Model):
+    # class FooterText(TranslatableMixin, models.Model):
     """
     This provides editable text for the site footer. Again it uses the decorator
     `register_snippet` to allow it to be accessible via the admin. It is made
     accessible on the template via a template tag defined in base/templatetags/
     navigation_tags.py
     """
-    body = models.TextField(blank=True)
-    # body = RichTextField()
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
+    body = models.TextField()
 
-    panels = [FieldPanel('body'), ]
+    panels = [FieldPanel('body'), FieldPanel('site'), PublishingPanel()]
 
     def __str__(self):
-        return "Footer text"
+        if self.site:
+            return '{} - {}'.format(_("Footer text"), self.site)
+        else:
+            return _("Footer text")
+
+    def get_preview_template(self, request, mode_name):
+        return "base.html"
+
+    def get_preview_context(self, request, mode_name):
+        return {"footer_text": self.body}
 
     class Meta:
         verbose_name_plural = 'Footer Text'
-        unique_together = [("translation_key", "locale")]
+        unique_together = [["translation_key", "locale"], ["site", "locale"]]
+
+    def clean(self):
+        if self.site and FooterText.objects.filter(site=self.site, locale=self.locale).exclude(pk=self.pk) or \
+            self.site is None and FooterText.objects.filter(site__isnull=True, locale=self.locale).exclude(pk=self.pk).exists():
+            raise forms.ValidationError(_('FooterText for the site already exists'))
 
 
 class StandardPage(Page):

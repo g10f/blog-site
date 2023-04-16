@@ -1,12 +1,18 @@
-{% load i18n navigation_tags wagtailcore_tags static %}
+{% load i18n navigation_tags wagtailcore_tags wagtailimages_tags static %}
+{% get_site_logo as site_logo %}
+{% image site_logo.image_header max-700x220 format-webp as site_logo_image %}
 <header>
   <div class="container-lg py-4 d-none d-sm-block">
     <div class="d-flex flex-column flex-sm-row align-items-center ">
       <a href="{% url 'wagtail_serve' '' %}" class="d-flex align-items-center text-dark text-decoration-none">
-        <svg class="bi me-2" width="75" height="60" viewBox="0 0 118 94" role="img">
-          <use xlink:href="#journal-richtext"></use>
-        </svg>
-        <span>{{ wagtail_site_name }}</span>
+        {% if site_logo_image %}
+          <img src="{{ site_logo_image.url }}" width="{% widthratio site_logo_image.width 2 1 %}" height="{% widthratio site_logo_image.height 2 1 %}" class="me-3" alt="{{ wagtail_site_name }}">
+        {% else %}
+          <svg class="bi me-2" width="75" height="60" viewBox="0 0 118 94" role="img">
+            <use xlink:href="#journal-richtext"></use>
+          </svg>
+          <span>{{ wagtail_site_name }}</span>
+        {% endif %}
       </a>
       <nav class="d-inline-flex mt-2 mt-sm-0 ms-sm-auto">
         <form action="/search" method="get" role="search">
@@ -19,10 +25,14 @@
   <nav class="navbar navbar-expand-sm bg-light navbar-light mb-2" aria-label="navbar">
     <div class="container-lg ps-sm-0">
       <a class="navbar-brand d-sm-none" href="{% url 'wagtail_serve' '' %}">
-        <svg class="bi me-2" width="60" height="48" viewBox="0 0 118 94" role="img">
-          <use xlink:href="#journal-richtext"></use>
-        </svg>
-        {{ wagtail_site_name }}
+        {% if site_logo_image %}
+          <img src="{{ site_logo_image.url }}" alt="{{ wagtail_site_name }}" width="{% widthratio site_logo_image.width 3 1 %}" height="{% widthratio site_logo_image.height 3 1 %}" class="me-3">
+        {% else %}
+          <svg class="bi me-2" width="60" height="48" viewBox="0 0 118 94" role="img">
+            <use xlink:href="#journal-richtext"></use>
+          </svg>
+          {{ wagtail_site_name }}
+        {% endif %}
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"
               aria-label="Toggle navigation">

@@ -1,7 +1,9 @@
 from django import template
+from django.db.models import Q
+from django.db.models import F
 from wagtail.models import Page, Site
 
-from ..models import FooterText
+from ..models import FooterText, SiteLogo
 
 register = template.Library()
 
@@ -91,12 +93,38 @@ def breadcrumbs(context):
     }
 
 
-@register.inclusion_tag('base/include/footer_text.html', takes_context=True)
+@register.inclusion_tag("base/include/footer_text.html", takes_context=True)
 def get_footer_text(context):
-    footer_text = ""
-    if FooterText.objects.first() is not None:
-        footer_text = FooterText.objects.first().localized.body
+    # Get the footer text from the context if exists,
+    # so that it's possible to pass a custom instance e.g. for previews
+    # or page types that need a custom footer
+    footer_text = context.get("footer_text", "")
+    site = context.get("site")
+
+    # If the context doesn't have footer_text defined, get one that's live
+    if not footer_text:
+        # use the site specific footer if available
+        q = (Q(site=site) | Q(site__isnull=True)) & Q(live=True)
+        instance = FooterText.objects.filter(q).order_by(F('site').asc(nulls_last=True)).first()
+        footer_text = instance.localized.body if instance else ""
 
     return {
-        'footer_text': footer_text,
+        "footer_text": footer_text,
     }
+
+@register.simple_tag(takes_context=True)
+def get_site_logo(context):
+    # Get the footer text from the context if exists,
+    # so that it's possible to pass a custom instance e.g. for previews
+    # or page types that need a custom footer
+    site_logo = context.get("site_logo", "")
+    site = context.get("site")
+
+    # If the context doesn't have site_logo defined, get one that's live
+    if not site_logo:
+        # use the site specific footer if available
+        q = (Q(site=site) | Q(site__isnull=True)) & Q(live=True)
+        instance = SiteLogo.objects.filter(q).order_by(F('site').asc(nulls_last=True)).first()
+        site_logo = instance if instance else None
+
+    return site_logo

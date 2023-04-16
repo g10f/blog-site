@@ -1,13 +1,19 @@
-{% load i18n navigation_tags wagtailsettings_tags static %}
+{% load i18n navigation_tags wagtailsettings_tags wagtailimages_tags static %}
 {% get_settings %}
+{% get_site_logo as site_logo %}
+{% image site_logo.image_footer max-90x90 format-webp as site_logo_image %}
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
   <div class="col-md-10 d-flex align-items-center">
     <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-      <svg class="bi" width="30" height="24">
-        <title>{{ wagtail_site_name }}</title>
-        <use xlink:href="#journal-richtext"></use>
-      </svg>
+      {% if site_logo_image %}
+          <img src="{{ site_logo_image.url }}" width="{% widthratio site_logo_image.width 2 1 %}" height="{% widthratio site_logo_image.height 2 1 %}" class="me-3" alt="{{ wagtail_site_name }}">
+      {% else %}
+        <svg class="bi" width="30" height="24">
+          <title>{{ wagtail_site_name }}</title>
+          <use xlink:href="#journal-richtext"></use>
+        </svg>
+      {% endif %}
     </a>
     <div class="text-muted">{% get_footer_text %}</div>
   </div>
