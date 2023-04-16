@@ -1,5 +1,8 @@
 <!doctype html>
-{% load navigation_tags static wagtailuserbar %}
+{% load navigation_tags static wagtailuserbar wagtailimages_tags %}
+{% get_site_logo as site_logo %}
+{% image site_logo.image_ico max-48x48 format-png as site_logo_ico %}
+
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   {% block head %}
@@ -13,8 +16,11 @@
     <meta name="description" content="{% if self.search_description %}{{ self.search_description }}{% endif %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="g10f">
-    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.ico' %}">
-    <link rel="alternate icon" href="{% static 'img/favicon.ico' %}">
+    {% if site_logo_ico %}
+      <link rel="shortcut icon" type="image/png" href="{{ site_logo_ico.url }}">
+    {% else %}
+      <link rel="shortcut icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
+    {% endif %}
     <link rel="stylesheet" href="{% if debug %}{% static 'css/main.css' %}{% else %}{% static 'css/main.min.css' %}{% endif %}">
     <link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet">
     {# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow"> #}

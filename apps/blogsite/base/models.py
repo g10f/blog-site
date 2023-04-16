@@ -110,11 +110,13 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
     site = models.OneToOneField(Site, on_delete=models.CASCADE, blank=True, null=True)
     image_header = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
     image_footer = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
+    image_ico = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.CASCADE, related_name='+', help_text='Favicon')
 
     panels = [
         FieldPanel('site'),
         FieldPanel('image_header'),
-        FieldPanel('image_footer')
+        FieldPanel('image_footer'),
+        FieldPanel('image_ico')
     ]
 
     def __str__(self):
