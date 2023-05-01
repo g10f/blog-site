@@ -4,13 +4,23 @@ from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from .models import UserProfile, RoleGroup, is_superuser, is_staff
 
 
+def get_roles(claims):
+    roles = claims.get('roles')
+    if isinstance(roles, str):
+        return roles.split()
+    elif isinstance(roles, (tuple, list)):
+        return roles
+
+    return []
+
+
 class AuthenticationBackend(OIDCAuthenticationBackend):
     def get_userinfo(self, access_token, id_token, payload):
         return payload
 
     def verify_claims(self, claims):
         # verify that the user has at least on Group
-        return RoleGroup.objects.filter(role__in=claims.get('roles', '').split()).exists()
+        return RoleGroup.objects.filter(role__in=get_roles(claims)).exists()
 
     def get_username(self, claims):
         return claims['name']
@@ -29,7 +39,7 @@ class AuthenticationBackend(OIDCAuthenticationBackend):
         first_name = claims.get('given_name', '')
         last_name = claims.get('family_name', '')
         username = self.get_username(claims)
-        roles = claims.get('roles', '').split()
+        roles = get_roles(claims)
 
         unusable_password = make_password(None)
         user = self.UserModel.objects.get_or_create(
@@ -53,7 +63,7 @@ class AuthenticationBackend(OIDCAuthenticationBackend):
             if getattr(user, '__changed', False):
                 user.save()
 
-        roles = claims.get('roles', '').split()
+        roles = get_roles(claims)
         user.oidc_userprofile.update_groups(roles)
 
         update_user('email', claims.get('email'))
