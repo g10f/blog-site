@@ -14,7 +14,7 @@ from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, 
     InlinePanel, PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
-from wagtail.contrib.settings.models import BaseSetting, BaseSiteSetting
+from wagtail.contrib.settings.models import BaseSiteSetting
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, TranslatableMixin, _copy, DraftStateMixin, RevisionMixin, PreviewableMixin
