@@ -1,7 +1,7 @@
 wagtail
-django<4.2
+django
 dj-database-url
-psycopg2
+psycopg[c]
 gunicorn
 mozilla-django-oidc
 django-recaptcha
