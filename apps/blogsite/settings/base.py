@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.routable_page",
     "wagtail.contrib.frontend_cache",
 
+
     'modelcluster',
     'taggit',
 
@@ -270,9 +271,10 @@ CSRF_REQUIRED_PATHS = (
 TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
 
 # mozilla-django-oidc settings
-LOGIN_REDIRECT_URL = "/admin"
-LOGOUT_REDIRECT_URL = "/admin"
+LOGIN_REDIRECT_URL = "/admin/"
+LOGOUT_REDIRECT_URL = "/admin/"
 OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_STORE_ID_TOKEN = True
 
 LOGGING = {
     'version': 1,

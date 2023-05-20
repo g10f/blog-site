@@ -1,8 +1,8 @@
-wagtail
 django
+django-recaptcha
 dj-database-url
-psycopg[c]
 gunicorn
 mozilla-django-oidc
-django-recaptcha
+psycopg[c]
+wagtail
 whitenoise
