@@ -14,16 +14,11 @@ class OIDCLoginView(account.LoginView):
     """
 
     def get(self, request, *args, **kwargs):
-        # If user is already logged in, redirect them to the dashboard
-        if self.request.user.is_authenticated and self.request.user.has_perm(
-            "wagtailadmin.access_admin"
-        ):
-            return redirect(self.get_success_url())
-
+        if not getattr(settings, 'OIDC_OP_AUTHORIZATION_ENDPOINT', None) \
+            or ("noredir" in request.GET and request.GET["noredir"] == "1") \
+            or (self.request.user.is_authenticated and self.request.user.has_perm("wagtailadmin.access_admin")):
+            return super().get(request, *args, **kwargs)
         else:
-            if "noredir" in request.GET and request.GET["noredir"] == "1":
-                return super().get(request, *args, **kwargs)
-
             return redirect('oidc_authentication_init')
 
 
@@ -32,8 +27,8 @@ class OIDCLogoutView(account.LogoutView):
         # if id_token is in session (OIDC_STORE_ID_TOKEN = True) and OIDC_OP_LOGOUT_URL_METHOD configured
         # we redirect to OIDC Provider
         id_token_hint = request.session.get("oidc_id_token")
-        logout_redirect_url = settings.OIDC_OP_LOGOUT_URL_METHOD
-        if id_token_hint is None or logout_redirect_url is None:
+        logout_redirect_url = getattr(settings, 'OIDC_OP_LOGOUT_URL_METHOD', None)
+        if not id_token_hint or not logout_redirect_url:
             return super().dispatch(request, *args, **kwargs)
         else:
             logout(request)
