@@ -45,6 +45,7 @@ ADMINS = [tuple(admin.split(',')) for admin in os.getenv('ADMINS', 'Gunnar Scher
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[BlogSite] ')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '25'))
+LOGO_SIZE = os.getenv('LOGO_SIZE', 'normal') # small, normal or big
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

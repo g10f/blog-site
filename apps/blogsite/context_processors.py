@@ -12,5 +12,6 @@ def settings(request):
     return {
         'site': site,
         'wagtail_site_name':  site.site_name if site and site.site_name else site_settings.WAGTAIL_SITE_NAME,
-        'wagtail_i18n_enabled': site_settings.WAGTAIL_I18N_ENABLED
+        'wagtail_i18n_enabled': site_settings.WAGTAIL_I18N_ENABLED,
+        'logo_size': site_settings.LOGO_SIZE
     }
