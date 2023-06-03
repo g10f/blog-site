@@ -93,16 +93,19 @@
         <h2>{{ page.featured_section_2_title }}</h2>
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
           {% for childpage in page.featured_section_2.specific.localized.children|slice:"6" %}
-            {% image childpage.image fill-800x800-c100 format-webp as child_image %}
+
+            {% image childpage.image fill-800x450-c100 format-webp as child_image %}
             <div class="col">
-              <div class="card text-white">
-                {% if image %}<img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img"/>{% endif %}
-                <div class="card-img-overlay">
-                  <h3 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{% pageurl childpage %}">{{ childpage.title }}</a></h3>
+              <div class="card h-100 mb-3 shadow">
+                <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img-top"/>
+                <div class="card-body">
+                  <h2 class="card-title">{{ childpage.title }}</h2>
                   <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
+                  <a href="{% pageurl childpage %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
                 </div>
               </div>
             </div>
+
           {% endfor %}
         </div>
       {% endif %}
