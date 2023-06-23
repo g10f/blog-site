@@ -8,7 +8,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt /
 COPY requirements requirements
 
-RUN \
+RUN set -ex \
     && python3 -m venv $VIRTUAL_ENV \
     && pip install -U pip wheel\
     && pip install --no-cache-dir -r /requirements.txt
