@@ -124,7 +124,7 @@ msgstr "Sie haben nichts gesucht!"
 
 #: blogsite/templates/tags/top_menu.html:5
 msgid "Homepage"
-msgstr ""
+msgstr "Startseite"
 
 #: blogsite/templates/wagtailadmin/login.html:14
 msgid "Logging out…"
