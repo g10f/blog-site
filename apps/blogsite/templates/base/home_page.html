@@ -5,20 +5,38 @@
   <div class="homepage">
     {# hero #}
     {% image page.image fill-1920x600 format-webp as image %}
-    <div class="px-4 py-5 text-center text-light"
-         style="background-image:url('{{ image.url }}');background-repeat: no-repeat;background-size: cover;background-position: center">
-      <h1 class="display-5 fw-bold">{{ page.title }}</h1>
-      <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">{{ page.hero_text }}</p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-          {% if page.hero_cta_link %}
-            <a href="{% pageurl page.hero_cta_link %}" class="btn btn-primary btn-lg px-4 gap-3">{{ page.hero_cta }}</a>
-          {% else %}
-            {{ page.hero_cta }}
+    <div class="container-fluid hero text-light">
+      <img alt="" class="hero-image" src="{{ image.url }}">
+      {% if hero_with_title %}
+        <div class="hero-gradient-mask "></div>
+      {% endif %}
+      <div class="container-lg pb-4">
+        <div class="row ms-lg-2 text-center " style="position: relative">
+          {% if hero_with_title %}
+            <h1 class="mt-2">{{ page.title }}</h1>
+            <p class="lead">{{ page.hero_text }}</p>
           {% endif %}
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center ">
+            {% if page.hero_cta_link %}
+              <a href="{% pageurl page.hero_cta_link %}" class="btn btn-brand btn-lg px-4 gap-3">{{ page.hero_cta }}</a>
+            {% else %}
+              {{ page.hero_cta }}
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
+
+    {% if not hero_with_title %}
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-12 ms-3">
+            <h1 class="mt-2">{{ page.title }}</h1>
+            <p class="mb-4">{{ page.hero_text }}</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
 
     {# featured section 1 #}
     {% if page.featured_section_1 %}
@@ -43,7 +61,8 @@
 
             {% if page.featured_section_1.localized.specific.get_child_tags %}
               <nav class="mb-2">
-                <a class="btn btn-sm btn-outline-primary" role="button" href="{% pageurl page.featured_section_1.localized.specific %}">{% translate 'All' %}</a>
+                <a class="btn btn-sm btn-outline-primary" role="button"
+                   href="{% pageurl page.featured_section_1.localized.specific %}">{% translate 'All' %}</a>
                 {% for child_tag in page.featured_section_1.localized.specific.get_child_tags %}
                   <a class="btn btn-sm btn-outline-secondary" role="button" href="{{ child_tag.url }}">{{ child_tag }}</a>
                 {% endfor %}
@@ -101,7 +120,8 @@
                 <div class="card-body">
                   <h2 class="card-title">{{ childpage.title }}</h2>
                   <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
-                  <a href="{% pageurl childpage %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
+                  <a href="{% pageurl childpage %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
+                     class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
                 </div>
               </div>
             </div>

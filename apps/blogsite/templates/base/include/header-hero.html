@@ -2,15 +2,37 @@
 
 {% image page.image fill-1920x600 format-webp as image %}
 {% if image %}
-  <div class="px-4 py-5 mb-2 text-center text-light"
-       style="min-height: 250px; background-image:url('{{ image.url }}');background-repeat: no-repeat;background-size: cover;background-position: center">
+  <div class="container-fluid hero text-light">
+    <img alt="" class="hero-image" src="{{ image.url }}">
+    {% if hero_with_title %}
+      <div class="hero-gradient-mask "></div>
+    {% endif %}
+    <div class="container-lg pb-4">
+      <div class="row ms-lg-2 text-center " style="position: relative">
+        {% if hero_with_title %}
+          <h1 class="mt-2">{{ page.title }}</h1>
+          {% if page.subtitle %}<p class="lead">{{ page.subtitle }}</p>{% endif %}
+        {% endif %}
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center ">
+          {% if page.hero_cta_link %}
+            <a href="{% pageurl page.hero_cta_link %}" class="btn btn-brand btn-lg px-4 gap-3">{{ page.hero_cta }}</a>
+          {% else %}
+            {{ page.hero_cta }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
   </div>
 {% endif %}
 <div class="container-lg">
   <div class="row">
     <div class="col-md-12">
-      <h1>{{ page.title }}</h1>
-      {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+      {% if not hero_with_title %}
+        <h1>{{ page.title }}</h1>
+        {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+      {% endif %}
+      {% if page.introduction %}<p>{{ page.introduction }}</p>{% endif %}
     </div>
   </div>
 </div>
