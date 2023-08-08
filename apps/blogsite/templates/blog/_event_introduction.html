@@ -7,5 +7,4 @@
   {% translate 'Date' %}: {{ obj.start_date | date:"l j. F Y" }}<br>
   {% translate 'Time' %}: {{ obj.start_date | date:"h:i" }} - {{ obj.end_date | date:"h:i" }}<br>
   {% translate 'Event location' %}: {{ obj.location }}
-  <a href="{% pageurl obj %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
 </p>

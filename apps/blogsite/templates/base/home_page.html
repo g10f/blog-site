@@ -79,8 +79,11 @@
                     {% endif %}
                     <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
                       <div class="card-body">
-                        <h3><a class="stretched-link text-reset text-decoration-none" href="{% pageurl childpage %}">{{ childpage.title }}</a></h3>
-                        <div class="card-text">{% include childpage.intro_template with obj=childpage %}</div>
+                        <h3>{{ childpage.title }}</h3>
+                        <div class="card-text">
+                          {% include childpage.intro_template with obj=childpage %}
+                          <a href="{% pageurl childpage %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
+                        </div>
                       </div>
                     </div>
                   </div>
