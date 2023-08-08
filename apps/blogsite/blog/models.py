@@ -1,15 +1,20 @@
 import logging
+import re
 import urllib.parse
+from datetime import timedelta
 from functools import partial
 
+import wagtail
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -27,19 +32,25 @@ from ..base.models import HomePage, get_cached_path
 
 logger = logging.getLogger(__name__)
 
+phone_re = re.compile(
+    r'^(\+\d{1,3})?' + r'((-?\d+)|(\s?\(\d+\)\s?)|\s?\d+){1,9}$'
+)
+validate_phone = RegexValidator(phone_re, _("Enter a valid phone number i.e. +49 (531) 123456"), 'invalid')
+
 
 class BlogPeopleRelationship(Orderable, models.Model):
-    """
-    This defines the relationship between the `People` within the `base`
-    app and the BlogPage below. This allows People to be added to a BlogPage.
-
-    We have created a two way relationship between BlogPage and People using
-    the ParentalKey and ForeignKey
-    """
     page = ParentalKey('BlogPage', related_name='blog_person_relationship', on_delete=models.CASCADE)
     people = models.ForeignKey('base.People', related_name='person_blog_relationship', on_delete=models.CASCADE)
     panels = [
         FieldPanel('people')
+    ]
+
+
+class EventSpeakerRelationship(Orderable, models.Model):
+    page = ParentalKey('EventPage', related_name='event_speaker_relationship', on_delete=models.CASCADE)
+    speaker = models.ForeignKey('base.Speaker', related_name='event_speaker_relationship', on_delete=models.CASCADE)
+    panels = [
+        FieldPanel('speaker')
     ]
 
 
@@ -65,6 +76,7 @@ class BlogPage(Page):
     ParentalKey's related_name in BlogPeopleRelationship. More docs:
     https://docs.wagtail.io/en/latest/topics/pages.html#inline-models
     """
+    intro_template = 'blog/_introduction.html'
     introduction = models.TextField(help_text='Text to describe the page', blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',
@@ -176,6 +188,79 @@ class BlogPage(Page):
         return self._first_filtered_by_tag(self.get_prev_siblings)
 
 
+class EventPage(BlogPage):
+    """
+    An Event Page
+
+    We access the Speaker object with an inline panel that references the
+    ParentalKey's related_name in EventSpeakerRelationship. More docs:
+    https://docs.wagtail.io/en/latest/topics/pages.html#inline-models
+    """
+    intro_template = 'blog/_event_introduction.html'
+    parent_page_types = ['EventIndexPage', 'BlogIndexPage']
+    start_date = models.DateTimeField(_('start date'), default=timezone.now)
+    end_date = models.DateTimeField(_('end date'), default=timezone.now() + timedelta(minutes=120))
+    location = models.TextField(_('location'), blank=True)
+    min_participants = models.IntegerField(_('minimum number of participants'), blank=True, null=True)
+    max_participants = models.IntegerField(_('maximum number of participants'), blank=True, null=True)
+    price = models.DecimalField(_('Price'), max_digits=6, decimal_places=2, blank=True, null=True)
+    price_reduced = models.DecimalField(_('reduced Price'), max_digits=6, decimal_places=2, blank=True, null=True)
+    is_registration_open = models.BooleanField(_('is registration open'), default=True)
+    registration_end_date = models.DateTimeField(_('end date for registration'), blank=True, null=True)
+    registration_email = models.EmailField(_("email address for registration"), blank=True)
+    registration_phone_number = models.CharField(_("phone number for registration"), blank=True, max_length=30, validators=[validate_phone])
+    is_booked_up = models.BooleanField(_('is booked up'), default=False)
+    additional_infos = wagtail.fields.RichTextField(blank=True, help_text="Write additional information's", null=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('subtitle'),
+        FieldPanel('introduction'),
+        FieldPanel('image'),
+        InlinePanel(
+            "event_speaker_relationship",
+            heading="Speaker(s)",
+            label="Speaker",
+            panels=None,
+            min_num=0,
+        ),
+        FieldPanel('start_date'),
+        FieldPanel('end_date'),
+        FieldPanel('location'),
+        FieldPanel('min_participants'),
+        FieldPanel('max_participants'),
+        FieldPanel('price'),
+        FieldPanel('price_reduced'),
+        FieldPanel('is_registration_open'),
+        FieldPanel('registration_end_date'),
+        FieldPanel('registration_email'),
+        FieldPanel('registration_phone_number'),
+        FieldPanel('is_booked_up'),
+        FieldPanel('additional_infos'),
+        FieldPanel('body'),
+        FieldPanel('date_published'),
+        AuthorPanel(
+            'blog_person_relationship', label="Author(s)",
+            panels=None, min_num=0),
+        FieldPanel('tags'),
+    ]
+
+    def speakers(self):
+        speakers = [
+            n.speaker for n in self.event_speaker_relationship.all()
+        ]
+
+        return speakers
+
+    # Overrides the context to list all child items, that are live, by the
+    # date that they were published
+    # https://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.registration_end_date:
+            context['registration_expired'] = self.registration_end_date < now()
+        return context
+
+
 class BlogIndexPage(RoutablePageMixin, Page):
     """
     Index page for blogs.
@@ -279,7 +364,28 @@ class BlogIndexPage(RoutablePageMixin, Page):
         return tags
 
 
-def blog_page_changed(blog_page):
+class EventIndexPage(BlogIndexPage):
+    subpage_types = ['EventPage']
+
+    # Returns the child BlogPage objects for this BlogPageIndex.
+    # If a tag is used then it will filter the posts by tag.
+    def get_posts(self, tag=None):
+        posts = EventPage.objects.live().descendant_of(self).order_by('-path')
+        if tag:
+            posts = posts.filter(tags=tag)
+        return posts
+
+
+def blog_page_changed(page):
+    # we have EventPage and BlogPage pages
+    # with blog index pages
+    if page.__class__ == EventPage:
+        blog_page = page.blogpage
+    elif page.__class__ == BlogPage:
+        blog_page = page
+    else:
+        return
+
     # Find all the live BlogIndexPages and HomePages that contain this blog_page
     batch = PurgeBatch()
 
@@ -296,16 +402,16 @@ def blog_page_changed(blog_page):
     batch.purge()
 
 
-@receiver(page_published, sender=BlogPage)
-def blog_published_handler(instance, **kwargs):
+@receiver(page_published)
+def page_published_handler(instance, **kwargs):
     blog_page_changed(instance)
 
 
-@receiver(pre_delete, sender=BlogPage)
-def blog_deleted_handler(instance, **kwargs):
+@receiver(pre_delete)
+def page_deleted_handler(instance, **kwargs):
     blog_page_changed(instance)
 
 
-@receiver(post_page_move, sender=BlogPage)
-def blog_post_page_move_handler(instance, **kwargs):
+@receiver(post_page_move)
+def page_post_page_move_handler(instance, **kwargs):
     blog_page_changed(instance.specific)

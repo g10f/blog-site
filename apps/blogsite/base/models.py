@@ -1,5 +1,6 @@
 import logging
 
+import wagtail
 from captcha.fields import ReCaptchaField
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -46,8 +47,11 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
     first_name = models.CharField("First name", max_length=254)
     last_name = models.CharField("Last name", max_length=254)
-    job_title = models.CharField("Job title", max_length=254)
+    job_title = models.CharField("Job title", blank=True, max_length=254)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
+    description = wagtail.fields.RichTextField(
+        "Description",
+        features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -79,6 +83,74 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
+        unique_together = [("translation_key", "locale")]
+
+    def copy_for_translation(self, locale):
+        """
+        exclude index_entries, because coping fails.
+        """
+        translated, child_object_map = _copy(self, exclude_fields='index_entries')
+        translated.locale = locale
+
+        # Update locale on any translatable child objects as well
+        # Note: If this is not a subclass of ClusterableModel, child_object_map will always be '{}'
+        for (child_relation, old_pk), child_object in child_object_map.items():
+            if isinstance(child_object, TranslatableMixin):
+                child_object.locale = locale
+
+        return translated
+
+    def full_clean(self, exclude=None, validate_unique=True):
+        if not self.slug:
+            # Try to auto-populate slug from title
+            allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
+            self.slug = slugify(f'{self.first_name}-{self.last_name}', allow_unicode=allow_unicode)
+
+        return super().full_clean(exclude, validate_unique)
+
+
+@register_snippet
+class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+
+    first_name = models.CharField("First name", max_length=254)
+    last_name = models.CharField("Last name", max_length=254)
+    job_title = models.CharField("Job title", blank=True, max_length=254)
+    slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
+    description = wagtail.fields.RichTextField(
+        "Description",
+        features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
+
+    image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+
+    panels = [
+        FieldPanel('site'),
+        MultiFieldPanel([
+            FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
+        FieldPanel('slug'),
+        FieldPanel('job_title'),
+        FieldPanel('image'),
+        FieldPanel('description'),
+    ]
+
+    search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
+
+    @property
+    def thumb_image(self):
+        # Returns an empty string if there is no profile pic or the rendition
+        # file can't be found.
+        try:
+            return self.image.get_rendition('fill-50x50').img_tag()
+        except Exception as e:  # noqa:B901,E722
+            logger.exception(e)
+            return ''
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.last_name)
+
+    class Meta:
+        verbose_name = 'Speaker'
+        verbose_name_plural = 'Speaker'
         unique_together = [("translation_key", "locale")]
 
     def copy_for_translation(self, locale):
@@ -223,8 +295,8 @@ class HomePage(Page):
 
     # Hero section of HomePage
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', help_text='Homepage image')
-    hero_text = models.CharField(max_length=255, help_text='Write an introduction for the site')
-    hero_cta = models.CharField(verbose_name='Hero CTA', max_length=255, help_text='Text to display on Call to Action')
+    hero_text = models.CharField(max_length=255, blank=True, help_text='Write an introduction for the site')
+    hero_cta = models.CharField(verbose_name='Hero CTA', max_length=255, blank=True, help_text='Text to display on Call to Action')
     hero_cta_link = models.ForeignKey('wagtailcore.Page', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', verbose_name='Hero CTA link',
                                       help_text='Choose a page to link to for the Call to Action')
 

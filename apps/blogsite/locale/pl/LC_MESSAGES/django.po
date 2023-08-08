@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-05 16:01+0000\n"
+"POT-Creation-Date: 2023-08-08 12:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,60 +32,208 @@ msgstr ""
 msgid "Right-aligned"
 msgstr ""
 
-#: blogsite/base/models.py:283
+#: blogsite/base/models.py:196 blogsite/base/models.py:198
+msgid "Site Logo"
+msgstr ""
+
+#: blogsite/base/models.py:226 blogsite/base/models.py:228
+msgid "Footer text"
+msgstr ""
+
+#: blogsite/base/models.py:243
+msgid "FooterText for the site already exists"
+msgstr ""
+
+#: blogsite/base/models.py:402
 msgid "Captcha"
 msgstr ""
 
-#: blogsite/blog/models.py:148 blogsite/blog/models.py:247
+#: blogsite/base/models.py:404
+msgid "Message"
+msgstr ""
+
+#: blogsite/base/models.py:424
+msgid "Spam detected"
+msgstr ""
+
+#: blogsite/blog/models.py:38
+msgid "Enter a valid phone number i.e. +49 (531) 123456"
+msgstr ""
+
+#: blogsite/blog/models.py:160 blogsite/blog/models.py:332
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr ""
 
-#: blogsite/search/views.py:33 blogsite/templates/search/search_results.html:8
+#: blogsite/blog/models.py:201
+msgid "start date"
+msgstr ""
+
+#: blogsite/blog/models.py:202
+msgid "end date"
+msgstr ""
+
+#: blogsite/blog/models.py:203
+msgid "location"
+msgstr ""
+
+#: blogsite/blog/models.py:204
+msgid "minimum number of participants"
+msgstr ""
+
+#: blogsite/blog/models.py:205
+msgid "maximum number of participants"
+msgstr ""
+
+#: blogsite/blog/models.py:206
+msgid "Price"
+msgstr ""
+
+#: blogsite/blog/models.py:207
+msgid "reduced Price"
+msgstr ""
+
+#: blogsite/blog/models.py:208
+msgid "is registration open"
+msgstr ""
+
+#: blogsite/blog/models.py:209
+msgid "end date for registration"
+msgstr ""
+
+#: blogsite/blog/models.py:210
+msgid "email address for registration"
+msgstr ""
+
+#: blogsite/blog/models.py:211
+msgid "phone number for registration"
+msgstr ""
+
+#: blogsite/blog/models.py:212
+msgid "is booked up"
+msgstr ""
+
+#: blogsite/search/views.py:35 blogsite/templates/search/search_results.html:8
 msgid "Search results"
 msgstr ""
 
-#: blogsite/templates/base/home_page.html:46
-#: blogsite/templates/blog/blog_index_page.html:10
+#: blogsite/templates/base/home_page.html:65
+#: blogsite/templates/blog/blog_index_page.html:11
 msgid "All"
+msgstr ""
+
+#: blogsite/templates/base/home_page.html:124
+#: blogsite/templates/blog/_event_introduction.html:10
+#: blogsite/templates/blog/blog_index_page.html:36
+msgid "Read more"
 msgstr ""
 
 #: blogsite/templates/blocks/video_block.html:3
 msgid "Youtube video"
 msgstr ""
 
-#: blogsite/templates/blocks/video_block.html:6
-msgid ""
-"Please note that by clicking and playing the video, YouTube/Google cookies "
-"are generated. You consent to this if you play the video."
+#: blogsite/templates/blog/_event_introduction.html:7
+msgid "Date"
 msgstr ""
 
-#: blogsite/templates/blog/blog_index_page.html:28
+#: blogsite/templates/blog/_event_introduction.html:8
+msgid "Time"
+msgstr ""
+
+#: blogsite/templates/blog/_event_introduction.html:9
+msgid "Event location"
+msgstr ""
+
+#: blogsite/templates/blog/blog_index_page.html:33
 msgid "by"
 msgstr ""
 
-#: blogsite/templates/blog/blog_index_page.html:30
-msgid "Read more"
-msgstr ""
-
-#: blogsite/templates/blog/blog_index_page.html:37
+#: blogsite/templates/blog/blog_index_page.html:44
+#: blogsite/templates/blog/event_index_page.html:30
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:48
+#: blogsite/templates/blog/event_page.html:98
 msgid "Previous articel"
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:48
+#: blogsite/templates/blog/event_page.html:98
 msgid "Next articel"
 msgstr ""
 
-#: blogsite/templates/includes/footer.html:22
+#: blogsite/templates/blog/event_page.html:13
+msgid "Status"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:41
+msgid "Conditions"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:45
+msgid "Minimum number of participants"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:46
+msgid "Maximum number of participants"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:48
+msgid "Cost/Registration"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:50
+msgid "Unfortunately, registration is no longer possible:"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:53
+msgid "The registration period has expired."
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:55
+msgid "The event is fully booked."
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:60
+msgid "Non-members"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:61
+msgid "Members"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:65
+#, python-format
+msgid "Registration until: %(end_date)s."
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:68
+#, python-format
+msgid ""
+"Contact us at the phone number <a href=\"tel:"
+"%(registration_phone_number)s\">%(registration_phone_number)s</a> or by "
+"email <a href=\"mailto:%(registration_email)s?subject=Anmeldung\" "
+"class=\"card-link\">%(registration_email)s</a>"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:73
+#, python-format
+msgid ""
+"Contact us by email <a href=\"mailto:%(registration_email)s?"
+"subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:79
+msgid "Event Venue/Other"
+msgstr ""
+
+#: blogsite/templates/includes/footer.html:28
 msgid "Visit us on"
 msgstr ""
 
-#: blogsite/templates/includes/header.html:13
-#: blogsite/templates/includes/header.html:39
+#: blogsite/templates/includes/header.html:25
+#: blogsite/templates/includes/header.html:55
 msgid "Search"
 msgstr ""
 

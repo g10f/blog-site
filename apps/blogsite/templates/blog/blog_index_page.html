@@ -2,43 +2,52 @@
 {% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
 
 {% block content %}
-  {% include "base/include/header-hero.html" %}
+  {% include "base/include/header-hero.html" with intro=True %}
 
   <div class="container-lg">
     {% if page.get_child_tags %}
       <nav class="mb-2">
-        <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button" href="{% pageurl page %}">{% translate 'All' %}</a>
+        <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button"
+           href="{% pageurl page %}">{% translate 'All' %}</a>
         {% for child_tag in page.get_child_tags %}
-          <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button" href="{{ child_tag.url }}">{{ child_tag }}</a>
+          <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button"
+             href="{{ child_tag.url }}">{{ child_tag }}</a>
         {% endfor %}
       </nav>
     {% endif %}
 
-    <div class="row">
-      {% if posts %}
-        {% for blog in posts %}
-          {% image blog.image fill-850x450-c50 format-webp as image %}
-          <div class="col-md-6">
-            <div class="card mb-3 shadow">
-              <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
-              <div class="card-body">
-                <h2 class="card-title">{{ blog.title }}</h2>
-                <p class="card-text">{{ blog.introduction|truncatewords:15 }}</p>
-                <p class="card-text">
-                  <small class="text-muted">{% if blog.date_published %}{{ blog.date_published }} {% translate 'by' %} {% endif %}{{ blog.authors|join:", " }}</small>
-                </p>
-                <a href="{% pageurl blog %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
+    {% block posts %}
+      <div class="row">
+        {% if posts %}
+          {% for post in posts %}
+            {% with blog=post.specific %}
+              {% image blog.image fill-850x450-c50 format-webp as image %}
+              <div class="col-md-6">
+                <div class="card mb-3 shadow">
+                  <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
+                  <div class="card-body">
+                    <h2 class="card-title">{{ blog.title }}</h2>
+                    <div class="card-text">{% include blog.intro_template with obj=blog %}</div>
+                    <p class="card-text">
+                      <small class="text-muted">
+                        {% if blog.date_published %}{{ blog.date_published }} {% translate 'by' %} {% endif %}{{ blog.authors|join:", " }}</small>
+                    </p>
+                    <a href="{% pageurl blog %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
+                       class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
+                  </div>
+                </div>
               </div>
-            </div>
+            {% endwith %}
+          {% endfor %}
+        {% else %}
+          <div class="col-12">
+            <p>{% translate 'Oh, snap. Looks like we were too busy to write any blog posts. Sorry.' %}</p>
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="col-12">
-          <p>{% translate 'Oh, snap. Looks like we were too busy to write any blog posts. Sorry.' %}</p>
-        </div>
-      {% endif %}
-    </div>
-  </div>
+        {% endif %}
+      </div>
+      </div>
+    {% endblock %}
+
   {% if posts.paginator.num_pages > 1 %}
     <div class="container-lg">
       <div class="row">

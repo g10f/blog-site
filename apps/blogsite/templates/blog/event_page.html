@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
+
+{% block content %}
+
+  {% include "base/include/header-hero.html" %}
+
+  <div class="container-lg">
+    <div class="row">
+      <div class="col-12">
+        <div class="mb-2">
+          {% if page.date_published %}
+            <div class="mb-1"><small class="text-muted">{% translate 'Status' %}: {{ page.date_published }}</small>
+            </div>
+          {% endif %}
+
+          {% if page.get_tags %}
+            <nav class="mb-2">
+              {% for tag in page.get_tags %}
+                <a class="btn btn-sm btn-outline-secondary" role="button" href="{{ tag.url }}">{{ tag }}</a>
+              {% endfor %}
+            </nav>
+          {% endif %}
+        </div>
+
+      </div>
+      <div class="col-md-5">
+        <div class="card {% if registration_expired or page.is_booked_up %}border-danger{% else %}border-primary{% endif %}">
+          {% for speaker in page.speakers %}
+            {% image speaker.image fill-1048x1048-c100 format-webp as speaker_img %}
+            {% if speaker_img %}
+              <img src="{{ speaker_img.url }}" class="card-img-top" alt="{{ speaker_img.alt }}">
+            {% endif %}
+            <div class="card-body">
+              <div class="h4 card-subtitle">{{ speaker }}</div>
+              {% if speaker.job_title %}<p class="card-text">{{ speaker.job_title }}</p>{% endif %}
+              {% if speaker.description %}<p class="card-text">{{ speaker.description | richtext }}</p>{% endif %}
+            </div>
+          {% endfor %}
+          <div class="card-body">
+            <div class="h4 card-title">{% translate 'Conditions' %}</div>
+            <p>
+              {{ page.start_date | date:"l j. F Y" }}<br>
+              {{ page.start_date | date:"h:i" }} - {{ page.end_date | date:"h:i" }}
+              {% if page.min_participants %}<br>{% translate 'Minimum number of participants' %}: {{ page.min_participants }}{% endif %}
+              {% if page.max_participants %}<br>{% translate 'Maximum number of participants' %}: {{ page.max_participants }}{% endif %}
+            </p>
+            <div class="h4 card-title">{% translate 'Cost/Registration' %}</div>
+            {% if registration_expired or page.is_booked_up %}
+              <div class="card-text text-danger">{% translate 'Unfortunately, registration is no longer possible:' %}
+                <ul>
+                  {% if registration_expired %}
+                    <li>{% translate 'The registration period has expired.' %}</li>{% endif %}
+                  {% if page.is_booked_up %}
+                    <li>{% translate 'The event is fully booked.' %}</li>{% endif %}
+                </ul>
+              </div>
+            {% endif %}
+            <p class="card-text">
+              {% if page.price %}{% translate 'Non-members' %}: {{ page.price }} €{% endif %}
+              {% if page.price_reduced %}<br>{% translate 'Members' %}: {{ page.price_reduced }} €{% endif %}
+            </p>
+            {% if page.is_registration_open %}
+              <p class="card-text">
+                {% if page.registration_end_date %}{% blocktranslate with end_date=page.registration_end_date %}Registration until: {{ end_date }}.{% endblocktranslate %}
+                  <br>{% endif %}
+                {% if page.registration_phone_number %}
+                  {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
+                    Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
+                    by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                  {% endblocktranslate %}
+                {% else %}
+                  {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
+                    Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                  {% endblocktranslate %}
+                {% endif %}
+              </p>
+            {% endif %}
+            <div class="h4 card-title">{% translate 'Event Venue/Other' %}</div>
+            <p class="card-text">
+              {% if page.additional_infos %}
+                {{ page.additional_infos | richtext }}
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-7">
+        {% if page.introduction %}
+          <p class="intro">{{ page.introduction }}</p>
+        {% endif %}
+        {% include 'includes/body.html' %}
+      </div>
+    </div>
+  </div>
+
+  {% include "includes/page_navigation.html" with slug=page.tag.slug slug_name='tag' previous=_("Previous articel") next=_("Next articel") %}
+
+{% endblock content %}

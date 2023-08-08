@@ -39,7 +39,8 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@g10f.de')
+EVENT_REGISTRATION_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@g10f.de')
+EVENT_REGISTRATION_PHONE_NUMBER = '+49-123-45678'
 # List seperated by ; with tuples seperated by , e.g 'Admin 1,admin1@example.com;Admin 2,admin2@example.com'
 ADMINS = [tuple(admin.split(',')) for admin in os.getenv('ADMINS', 'Gunnar Scherf,mail@g10f.de').split(';')]
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[BlogSite] ')

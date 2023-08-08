@@ -1,0 +1,35 @@
+{% extends "blog/blog_index_page.html" %}
+{% load i18n wagtailcore_tags  wagtailimages_tags %}
+
+{% block posts %}
+  <div class="row">
+    {% if posts %}
+      {% for post in posts %}
+        {% with event=post.specific %}
+          {% image event.image fill-800x600-c100 format-webp as image %}
+          <div class="col-12">
+            <div class="card mb-3 shadow">
+              <div class="row g-0">
+                {% if image %}
+                  <div class="col-md-5 col-lg-4"><img src="{{ image.url }}" alt="{{ image.alt }}" class="img-fluid rounded-start"/></div>
+                {% endif %}
+                <div class="{% if image %}col-md-7 col-lg-7{% else %} col-md-12{% endif %}">
+                  <div class="card-body">
+                    <div class="card-title h3">{{ event.title }}</div>
+                    <div class="card-subtitle h4">{{ event.subtitle }}</div>
+                    {% include event.intro_template with obj=event %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <p>{% translate 'Oh, snap. Looks like we were too busy to write any blog posts. Sorry.' %}</p>
+      </div>
+    {% endif %}
+  </div>
+  </div>
+{% endblock %}
