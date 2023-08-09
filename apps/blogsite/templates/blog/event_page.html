@@ -43,8 +43,8 @@
           <div class="card-body">
             <div class="h4 card-title">{% translate 'conditions'|title %}</div>
             <p>
-              {{ page.start_date | date:"l j. F Y" }}<br>
-              {{ page.start_date | date:"h:i" }} - {{ page.end_date | date:"h:i" }}
+              {% translate 'date'|capfirst %}: {{ page.start_date | date:"l j. F Y" }}<br>
+              {% translate 'time'|capfirst %}: {{ page.start_date | date:"G:i" }} - {{ page.end_date | date:"G:i" }}
               {% if page.min_participants %}<br>{% translate 'minimum number of participants'|capfirst %}: {{ page.min_participants }}{% endif %}
               {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}: {{ page.max_participants }}{% endif %}
             </p>
@@ -66,7 +66,7 @@
             </p>
             {% if page.is_registration_open %}
               <p class="card-text">
-                {% if page.registration_end_date %}{% blocktranslate with end_date=page.registration_end_date %}Registration until: {{ end_date }}.
+                {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}Registration until: {{ end_date }}.
                 {% endblocktranslate %}
                   <br>{% endif %}
                 {% if page.registration_phone_number %}

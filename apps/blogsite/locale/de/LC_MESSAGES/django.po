@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-09 10:43+0000\n"
+"POT-Creation-Date: 2023-08-09 12:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,11 +113,11 @@ msgstr "Enddatum"
 msgid "location"
 msgstr "Ort"
 
-#: blogsite/blog/models.py:204 blogsite/templates/blog/event_page.html:46
+#: blogsite/blog/models.py:204 blogsite/templates/blog/event_page.html:48
 msgid "minimum number of participants"
 msgstr "Mindestteilnehmerzahl"
 
-#: blogsite/blog/models.py:205 blogsite/templates/blog/event_page.html:47
+#: blogsite/blog/models.py:205 blogsite/templates/blog/event_page.html:49
 msgid "maximum number of participants"
 msgstr "Höchstteilnehmerzahl"
 
@@ -205,12 +205,12 @@ msgstr ""
 "Blogbeiträge zu schreiben. Verzeihung."
 
 #: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:99
+#: blogsite/templates/blog/event_page.html:103
 msgid "Previous articel"
 msgstr "Vorheriger Beitrag"
 
 #: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:99
+#: blogsite/templates/blog/event_page.html:103
 msgid "Next articel"
 msgstr "Nächster Beitrag"
 
@@ -218,40 +218,40 @@ msgstr "Nächster Beitrag"
 msgid "status"
 msgstr "Stand"
 
-#: blogsite/templates/blog/event_page.html:42
+#: blogsite/templates/blog/event_page.html:44
 msgid "conditions"
 msgstr "Konditionen"
 
-#: blogsite/templates/blog/event_page.html:49
+#: blogsite/templates/blog/event_page.html:51
 msgid "cost and registration"
 msgstr "Kosten/Anmeldung"
 
-#: blogsite/templates/blog/event_page.html:51
+#: blogsite/templates/blog/event_page.html:54
 msgid "Unfortunately, registration is no longer possible:"
 msgstr "Eine Anmeldung ist leider nicht mehr möglich:"
 
-#: blogsite/templates/blog/event_page.html:54
+#: blogsite/templates/blog/event_page.html:57
 msgid "The registration period has expired."
 msgstr "Die Anmeldefrist ist abgelaufen."
 
-#: blogsite/templates/blog/event_page.html:56
+#: blogsite/templates/blog/event_page.html:59
 msgid "The event is fully booked."
 msgstr "Die Veranstaltung ist ausgebucht."
 
-#: blogsite/templates/blog/event_page.html:61
+#: blogsite/templates/blog/event_page.html:64
 msgid "non-members"
 msgstr "Nichtmitglieder"
 
-#: blogsite/templates/blog/event_page.html:62
+#: blogsite/templates/blog/event_page.html:65
 msgid "members"
 msgstr "Mitglieder"
 
-#: blogsite/templates/blog/event_page.html:66
+#: blogsite/templates/blog/event_page.html:69
 #, python-format
 msgid "Registration until: %(end_date)s."
 msgstr "Anmeldung bis: %(end_date)s."
 
-#: blogsite/templates/blog/event_page.html:69
+#: blogsite/templates/blog/event_page.html:73
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -264,7 +264,7 @@ msgstr ""
 "Mail <a href=\"mailto:%(registration_email)s?subject=Anmeldung\" "
 "class=\"card-link\">%(registration_email)s</a>"
 
-#: blogsite/templates/blog/event_page.html:74
+#: blogsite/templates/blog/event_page.html:78
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
@@ -273,7 +273,7 @@ msgstr ""
 "Kontaktieren Sie uns per E-Mail <a href=\"mailto:%(registration_email)s?"
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 
-#: blogsite/templates/blog/event_page.html:80
+#: blogsite/templates/blog/event_page.html:84
 msgid "event venue/other"
 msgstr "Veranstaltungsort/Sonstiges"
 
