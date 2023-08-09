@@ -51,7 +51,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
     description = wagtail.fields.RichTextField(
         "description",
-        features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
+        features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -119,7 +119,7 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
     description = wagtail.fields.RichTextField(
         "description",
-        features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
+        features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
