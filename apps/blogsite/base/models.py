@@ -45,12 +45,12 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL)
 
-    first_name = models.CharField("First name", max_length=254)
-    last_name = models.CharField("Last name", max_length=254)
-    job_title = models.CharField("Job title", blank=True, max_length=254)
+    first_name = models.CharField("first name", max_length=254)
+    last_name = models.CharField("last name", max_length=254)
+    job_title = models.CharField("job title", blank=True, max_length=254)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
     description = wagtail.fields.RichTextField(
-        "Description",
+        "description",
         features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
@@ -81,8 +81,8 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
         return '{} {}'.format(self.first_name, self.last_name)
 
     class Meta:
-        verbose_name = 'Person'
-        verbose_name_plural = 'People'
+        verbose_name = _('person')
+        verbose_name_plural = _('people')
         unique_together = [("translation_key", "locale")]
 
     def copy_for_translation(self, locale):
@@ -113,12 +113,12 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
-    first_name = models.CharField("First name", max_length=254)
-    last_name = models.CharField("Last name", max_length=254)
-    job_title = models.CharField("Job title", blank=True, max_length=254)
+    first_name = models.CharField("first name", max_length=254)
+    last_name = models.CharField("last name", max_length=254)
+    job_title = models.CharField("job title", blank=True, max_length=254)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
     description = wagtail.fields.RichTextField(
-        "Description",
+        "description",
         features=['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
@@ -149,8 +149,8 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
         return '{} {}'.format(self.first_name, self.last_name)
 
     class Meta:
-        verbose_name = 'Speaker'
-        verbose_name_plural = 'Speaker'
+        verbose_name = _('speaker')
+        verbose_name_plural = _('speakers')
         unique_together = [("translation_key", "locale")]
 
     def copy_for_translation(self, locale):
@@ -223,9 +223,9 @@ class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableM
 
     def __str__(self):
         if self.site:
-            return '{} - {}'.format(_("Footer text"), self.site)
+            return '{} - {}'.format(_("footer text"), self.site)
         else:
-            return _("Footer text")
+            return _("footer text")
 
     def get_preview_template(self, request, mode_name):
         return "base.html"
@@ -234,7 +234,8 @@ class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableM
         return {"footer_text": self.body}
 
     class Meta:
-        verbose_name_plural = 'Footer Text'
+        verbose_name = _('footer text')
+        verbose_name_plural = _('footer texts')
         unique_together = [["translation_key", "locale"], ["site", "locale"]]
 
     def clean(self):

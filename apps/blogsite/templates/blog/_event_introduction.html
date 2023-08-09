@@ -4,7 +4,7 @@
   {{ obj.introduction|truncatewords:15 }}
 </p>
 <p>
-  {% translate 'Date' %}: {{ obj.start_date | date:"l j. F Y" }}<br>
-  {% translate 'Time' %}: {{ obj.start_date | date:"h:i" }} - {{ obj.end_date | date:"h:i" }}<br>
-  {% translate 'Event location' %}: {{ obj.location }}
+  {% translate 'date'|capfirst %}: {{ obj.start_date | date:"l j. F Y" }}<br>
+  {% translate 'time'|capfirst %}: {{ obj.start_date | date:"h:i" }} - {{ obj.end_date | date:"h:i" }}<br>
+  {% translate 'event location'|capfirst %}: {{ obj.location }}
 </p>

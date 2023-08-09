@@ -77,7 +77,7 @@ class BlogPage(Page):
     https://docs.wagtail.io/en/latest/topics/pages.html#inline-models
     """
     intro_template = 'blog/_introduction.html'
-    introduction = models.TextField(help_text='Text to describe the page', blank=True)
+    introduction = models.TextField(_('introduction'), help_text='Text to describe the page', blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -86,10 +86,10 @@ class BlogPage(Page):
         related_name='+',
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
     )
-    body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
-    subtitle = models.CharField(blank=True, max_length=255)
+    body = StreamField(BaseStreamBlock(), verbose_name=_("page body"), blank=True, use_json_field=True)
+    subtitle = models.CharField(_('subtitle'), blank=True, max_length=255)
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    date_published = models.DateField("Date article published", default=timezone.now)
+    date_published = models.DateField(_("date article published"), default=timezone.now)
 
     content_panels = Page.content_panels + [
         FieldPanel('subtitle'),
@@ -210,7 +210,7 @@ class EventPage(BlogPage):
     registration_email = models.EmailField(_("email address for registration"), blank=True)
     registration_phone_number = models.CharField(_("phone number for registration"), blank=True, max_length=30, validators=[validate_phone])
     is_booked_up = models.BooleanField(_('is booked up'), default=False)
-    additional_infos = wagtail.fields.RichTextField(blank=True, help_text="Write additional information's", null=True)
+    additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
 
     content_panels = Page.content_panels + [
         FieldPanel('subtitle'),
@@ -218,8 +218,8 @@ class EventPage(BlogPage):
         FieldPanel('image'),
         InlinePanel(
             "event_speaker_relationship",
-            heading="Speaker(s)",
-            label="Speaker",
+            heading=_("speakers"),
+            label=_("speaker"),
             panels=None,
             min_num=0,
         ),
@@ -239,7 +239,7 @@ class EventPage(BlogPage):
         FieldPanel('body'),
         FieldPanel('date_published'),
         AuthorPanel(
-            'blog_person_relationship', label="Author(s)",
+            'blog_person_relationship', label=_("authors"),
             panels=None, min_num=0),
         FieldPanel('tags'),
     ]
@@ -271,7 +271,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     defined above.
     """
     introduction = models.TextField(
-        help_text='Text to describe the page',
+        help_text=_('Text to describe the page'),
         blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',

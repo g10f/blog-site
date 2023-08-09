@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-08 12:58+0000\n"
+"POT-Creation-Date: 2023-08-09 10:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,32 +30,70 @@ msgstr ""
 msgid "Right-aligned"
 msgstr ""
 
+#: blogsite/base/models.py:84
+msgid "person"
+msgstr ""
+
+#: blogsite/base/models.py:85
+msgid "people"
+msgstr ""
+
+#: blogsite/base/models.py:152 blogsite/blog/models.py:222
+#: blogsite/templates/blog/event_page.html:35
+msgid "speaker"
+msgstr ""
+
+#: blogsite/base/models.py:153 blogsite/blog/models.py:221
+msgid "speakers"
+msgstr ""
+
 #: blogsite/base/models.py:196 blogsite/base/models.py:198
 msgid "Site Logo"
 msgstr ""
 
 #: blogsite/base/models.py:226 blogsite/base/models.py:228
-msgid "Footer text"
+#: blogsite/base/models.py:237
+msgid "footer text"
 msgstr ""
 
-#: blogsite/base/models.py:243
+#: blogsite/base/models.py:238
+msgid "footer texts"
+msgstr ""
+
+#: blogsite/base/models.py:244
 msgid "FooterText for the site already exists"
 msgstr ""
 
-#: blogsite/base/models.py:402
+#: blogsite/base/models.py:403
 msgid "Captcha"
 msgstr ""
 
-#: blogsite/base/models.py:404
+#: blogsite/base/models.py:405
 msgid "Message"
 msgstr ""
 
-#: blogsite/base/models.py:424
+#: blogsite/base/models.py:425
 msgid "Spam detected"
 msgstr ""
 
 #: blogsite/blog/models.py:38
 msgid "Enter a valid phone number i.e. +49 (531) 123456"
+msgstr ""
+
+#: blogsite/blog/models.py:80
+msgid "introduction"
+msgstr ""
+
+#: blogsite/blog/models.py:89
+msgid "page body"
+msgstr ""
+
+#: blogsite/blog/models.py:90
+msgid "subtitle"
+msgstr ""
+
+#: blogsite/blog/models.py:92
+msgid "date article published"
 msgstr ""
 
 #: blogsite/blog/models.py:160 blogsite/blog/models.py:332
@@ -75,11 +113,11 @@ msgstr ""
 msgid "location"
 msgstr ""
 
-#: blogsite/blog/models.py:204
+#: blogsite/blog/models.py:204 blogsite/templates/blog/event_page.html:46
 msgid "minimum number of participants"
 msgstr ""
 
-#: blogsite/blog/models.py:205
+#: blogsite/blog/models.py:205 blogsite/templates/blog/event_page.html:47
 msgid "maximum number of participants"
 msgstr ""
 
@@ -111,6 +149,18 @@ msgstr ""
 msgid "is booked up"
 msgstr ""
 
+#: blogsite/blog/models.py:213
+msgid "additional infos"
+msgstr ""
+
+#: blogsite/blog/models.py:242
+msgid "authors"
+msgstr ""
+
+#: blogsite/blog/models.py:274
+msgid "Text to describe the page"
+msgstr ""
+
 #: blogsite/search/views.py:35 blogsite/templates/search/search_results.html:8
 msgid "Search results"
 msgstr ""
@@ -120,9 +170,10 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: blogsite/templates/base/home_page.html:124
-#: blogsite/templates/blog/_event_introduction.html:10
+#: blogsite/templates/base/home_page.html:85
+#: blogsite/templates/base/home_page.html:127
 #: blogsite/templates/blog/blog_index_page.html:36
+#: blogsite/templates/blog/event_index_page.html:21
 msgid "Read more"
 msgstr ""
 
@@ -131,15 +182,15 @@ msgid "Youtube video"
 msgstr ""
 
 #: blogsite/templates/blog/_event_introduction.html:7
-msgid "Date"
+msgid "date"
 msgstr ""
 
 #: blogsite/templates/blog/_event_introduction.html:8
-msgid "Time"
+msgid "time"
 msgstr ""
 
 #: blogsite/templates/blog/_event_introduction.html:9
-msgid "Event location"
+msgid "event location"
 msgstr ""
 
 #: blogsite/templates/blog/blog_index_page.html:33
@@ -147,66 +198,58 @@ msgid "by"
 msgstr ""
 
 #: blogsite/templates/blog/blog_index_page.html:44
-#: blogsite/templates/blog/event_index_page.html:30
+#: blogsite/templates/blog/event_index_page.html:31
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:98
+#: blogsite/templates/blog/event_page.html:99
 msgid "Previous articel"
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:98
+#: blogsite/templates/blog/event_page.html:99
 msgid "Next articel"
 msgstr ""
 
 #: blogsite/templates/blog/event_page.html:13
-msgid "Status"
+msgid "status"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:41
-msgid "Conditions"
+#: blogsite/templates/blog/event_page.html:42
+msgid "conditions"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:45
-msgid "Minimum number of participants"
+#: blogsite/templates/blog/event_page.html:49
+msgid "cost and registration"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:46
-msgid "Maximum number of participants"
-msgstr ""
-
-#: blogsite/templates/blog/event_page.html:48
-msgid "Cost/Registration"
-msgstr ""
-
-#: blogsite/templates/blog/event_page.html:50
+#: blogsite/templates/blog/event_page.html:51
 msgid "Unfortunately, registration is no longer possible:"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:53
+#: blogsite/templates/blog/event_page.html:54
 msgid "The registration period has expired."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:55
+#: blogsite/templates/blog/event_page.html:56
 msgid "The event is fully booked."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:60
-msgid "Non-members"
-msgstr ""
-
 #: blogsite/templates/blog/event_page.html:61
-msgid "Members"
+msgid "non-members"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:65
+#: blogsite/templates/blog/event_page.html:62
+msgid "members"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:66
 #, python-format
 msgid "Registration until: %(end_date)s."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:68
+#: blogsite/templates/blog/event_page.html:69
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -215,15 +258,15 @@ msgid ""
 "class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:73
+#: blogsite/templates/blog/event_page.html:74
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:79
-msgid "Event Venue/Other"
+#: blogsite/templates/blog/event_page.html:80
+msgid "event venue/other"
 msgstr ""
 
 #: blogsite/templates/includes/footer.html:28

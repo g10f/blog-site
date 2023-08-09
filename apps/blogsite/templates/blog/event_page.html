@@ -10,7 +10,7 @@
       <div class="col-12">
         <div class="mb-2">
           {% if page.date_published %}
-            <div class="mb-1"><small class="text-muted">{% translate 'Status' %}: {{ page.date_published }}</small>
+            <div class="mb-1"><small class="text-muted">{% translate 'status'|capfirst %}: {{ page.date_published }}</small>
             </div>
           {% endif %}
 
@@ -32,20 +32,21 @@
               <img src="{{ speaker_img.url }}" class="card-img-top" alt="{{ speaker_img.alt }}">
             {% endif %}
             <div class="card-body">
-              <div class="h4 card-subtitle">{{ speaker }}</div>
+              <div class="h4 card-subtitle">{% translate 'speaker'|title %}</div>
+            {{ speaker }}<br>
               {% if speaker.job_title %}<p class="card-text">{{ speaker.job_title }}</p>{% endif %}
               {% if speaker.description %}<p class="card-text">{{ speaker.description | richtext }}</p>{% endif %}
             </div>
           {% endfor %}
           <div class="card-body">
-            <div class="h4 card-title">{% translate 'Conditions' %}</div>
+            <div class="h4 card-title">{% translate 'conditions'|title %}</div>
             <p>
               {{ page.start_date | date:"l j. F Y" }}<br>
               {{ page.start_date | date:"h:i" }} - {{ page.end_date | date:"h:i" }}
-              {% if page.min_participants %}<br>{% translate 'Minimum number of participants' %}: {{ page.min_participants }}{% endif %}
-              {% if page.max_participants %}<br>{% translate 'Maximum number of participants' %}: {{ page.max_participants }}{% endif %}
+              {% if page.min_participants %}<br>{% translate 'minimum number of participants'|capfirst %}: {{ page.min_participants }}{% endif %}
+              {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}: {{ page.max_participants }}{% endif %}
             </p>
-            <div class="h4 card-title">{% translate 'Cost/Registration' %}</div>
+            <div class="h4 card-title">{% translate 'cost and registration'|title %}</div>
             {% if registration_expired or page.is_booked_up %}
               <div class="card-text text-danger">{% translate 'Unfortunately, registration is no longer possible:' %}
                 <ul>
@@ -57,8 +58,8 @@
               </div>
             {% endif %}
             <p class="card-text">
-              {% if page.price %}{% translate 'Non-members' %}: {{ page.price }} €{% endif %}
-              {% if page.price_reduced %}<br>{% translate 'Members' %}: {{ page.price_reduced }} €{% endif %}
+              {% if page.price %}{% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
+              {% if page.price_reduced %}<br>{% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
             </p>
             {% if page.is_registration_open %}
               <p class="card-text">
@@ -76,7 +77,7 @@
                 {% endif %}
               </p>
             {% endif %}
-            <div class="h4 card-title">{% translate 'Event Venue/Other' %}</div>
+            <div class="h4 card-title">{% translate 'event venue/other'|title%}</div>
             <p class="card-text">
               {% if page.additional_infos %}
                 {{ page.additional_infos | richtext }}
