@@ -5,6 +5,6 @@
 </p>
 <p>
   {% translate 'date'|capfirst %}: {{ obj.start_date | date:"l j. F Y" }}<br>
-  {% translate 'time'|capfirst %}: {{ obj.start_date | date:"h:i" }} - {{ obj.end_date | date:"h:i" }}<br>
+  {% translate 'time'|capfirst %}: {{ obj.start_date | date:"G:i" }} - {{ obj.end_date | date:"G:i" }}<br>
   {% translate 'event location'|capfirst %}: {{ obj.location }}
 </p>
