@@ -41,22 +41,27 @@
     {# featured section 1 #}
     {% if page.featured_section_1 %}
       <div class="container-lg">
-        {# promo #}
         <div class="row">
-          <div class="col-md-5 promo">
-            {% if page.promo_image or page.promo_title or page.promo_text %}
+          {# promo #}
+          {% if page.promo_image or page.promo_title or page.promo_text %}
+            <div class="col-md-5 promo">
               {% image page.promo_image fill-800x800-c100 format-webp as promo_image %}
               <div class="card border-0 bg-light bg-gradient ">
-                <img src="{{ promo_image.url }}" alt="{{ promo_image.alt }}" class="card-img-top p-2 p-sm-3 p-md-4"/>
+                {% if page.promo_image %}
+                  <img src="{{ promo_image.url }}" alt="{{ promo_image.alt }}" class="card-img-top p-2 p-sm-3 p-md-4"/>
+                {% endif %}
                 <div class="card-body">
-                  <h2 class="card-title">{{ page.promo_title }}</h2>
+                  {% if page.promo_title %}
+                    <h2 class="card-title">{{ page.promo_title }}</h2>
+                  {% endif %}
                   {{ page.promo_text|richtext }}
                 </div>
               </div>
-            {% endif %}
-          </div>
+            </div>
+          {% endif %}
 
           <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">
+
             <h2>{{ page.featured_section_1_title }}</h2>
 
             {% if page.featured_section_1.localized.specific.get_child_tags %}
