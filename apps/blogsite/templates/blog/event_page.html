@@ -49,11 +49,11 @@
               {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}: {{ page.max_participants }}{% endif %}
             </p>
             <div class="h4 card-title">  {% translate 'cost and registration'|title %}</div>
-            {% if registration_expired or page.is_booked_up %}
+            {% if page.is_registration_expired or page.is_booked_up %}
               <div class="card-text  text-danger"><i class="bi bi-exclamation-triangle-fill"></i>
                 {% translate 'Unfortunately, registration is no longer possible:' %}
                 <ul>
-                  {% if registration_expired %}
+                  {% if page.is_registration_expired %}
                     <li>{% translate 'The registration period has expired.' %}</li>{% endif %}
                   {% if page.is_booked_up %}
                     <li>{% translate 'The event is fully booked.' %}</li>{% endif %}

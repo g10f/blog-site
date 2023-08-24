@@ -251,14 +251,11 @@ class EventPage(BlogPage):
 
         return speakers
 
-    # Overrides the context to list all child items, that are live, by the
-    # date that they were published
-    # https://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
+    @property
+    def is_registration_expired(self):
         if self.registration_end_date:
-            context['registration_expired'] = self.registration_end_date < now()
-        return context
+            return self.registration_end_date < now()
+        return False
 
 
 class BlogIndexPage(RoutablePageMixin, Page):
