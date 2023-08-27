@@ -2,20 +2,7 @@
 {% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
 
 {% block social_metadata %}
-  {% image page.image fill-800x450-c100 format-webp as image %}
-  <meta property="og:site_name" content="{{ wagtail_site_name }}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
-  <meta property="og:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.introduction %}{{ self.introduction | truncatechars:200 }}{% endif %}" />
-  <meta property="og:url" content="{{  self.full_url }}" />
-  {% if image %}<meta property="og:image" content="{{ image.full_url }}" />{% endif %}
-  {% if settings.base.SocialMediaSettings.twitter_site %}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@{{ settings.base.SocialMediaSettings.twitter_site }}" />
-    <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
-    <meta name="twitter:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.introduction %}{{ self.introduction | truncatechars:200 }}{% endif %}" />
-    {% if image %}<meta name="twitter:image" content="{{ image.full_url }}" />{% endif %}
-  {% endif %}
+  {% include 'blog/_social_metadata.html' %}
 {% endblock %}
 
 {% block content %}
