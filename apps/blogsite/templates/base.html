@@ -29,7 +29,7 @@
     </noscript>
   {% endblock head %}
   {% block social_metadata %}
-    {% image page.image fill-800x450-c100 format-webp as image %}
+    {% image page.image fill-800x400-c100 format-webp as image %}
     <meta property="og:site_name" content="{{ wagtail_site_name }}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}"/>
@@ -45,7 +45,7 @@
       <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}"/>
       <meta name="twitter:description" content="{{ self.search_description }}"/>
       {% if image %}
-        <meta name="twitter:image" content="{{ site.root_url }}{{ image.url }}"/>
+        <meta name="twitter:image:src" content="{{ site.root_url }}{{ image.url }}"/>
         <meta name="twitter:image:alt" content="{{ image.alt }}"/>
       {% endif %}
     {% endif %}
