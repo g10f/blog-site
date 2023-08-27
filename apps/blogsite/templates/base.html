@@ -3,13 +3,12 @@
 {% get_site_logo as site_logo %}
 {% image site_logo.image_ico max-48x48 format-png as site_logo_ico %}
 
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" prefix="og: https://ogp.me/ns#">
 <head>
   {% block head %}
     <meta charset="utf-8">
     <title>
       {% block title %}
-        {% block title_prefix %}{{ wagtail_site_name }}{% endblock %} -
         {% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}
       {% endblock %}
     </title>
@@ -23,10 +22,20 @@
     {% endif %}
     <link rel="stylesheet" href="{% if debug %}{% static 'css/main.css' %}{% else %}{% static 'css/main.min.css' %}{% endif %}">
     <link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet">
-    {# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow"> #}
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Barlow&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow"></noscript>
   {% endblock head %}
+  {% block social_metadata %}
+    <meta property="og:site_name" content="{{ wagtail_site_name }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
+    <meta property="og:description" content="{{ self.search_description }}" />
+    <meta property="og:url" content="{{  self.full_url }}" />
+    {% if self.image %}
+      {% image page.image fill-800x450-c100 format-webp as image %}
+     <meta property="og:image" content="{{ image.url }}" />
+    {% endif %}
+  {% endblock %}
 </head>
 
 <body class="{% block body_class %}template-{{ self.get_verbose_name|slugify }}{% endblock %}">
