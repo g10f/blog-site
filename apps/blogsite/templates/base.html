@@ -33,13 +33,13 @@
     <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
     <meta property="og:description" content="{{ self.search_description }}" />
     <meta property="og:url" content="{{  self.full_url }}" />
-    {% if image %}<meta property="og:image" content="{{ image.url }}" />{% endif %}
+    {% if image %}<meta property="og:image" content="{{ image.full_url }}" />{% endif %}
     {% if settings.base.SocialMediaSettings.twitter_site %}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@{{ settings.base.SocialMediaSettings.twitter_site }}" />
       <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
       <meta name="twitter:description" content="{{ self.search_description }}" />
-      {% if image %}<meta name="twitter:image" content="{{ image.url }}" />{% endif %}
+      {% if image %}<meta name="twitter:image" content="{{ image.full_url }}" />{% endif %}
     {% endif %}
   {% endblock %}
 </head>
