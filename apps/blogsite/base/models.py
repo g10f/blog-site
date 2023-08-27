@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlparse
 
 import wagtail
 from captcha.fields import ReCaptchaField
@@ -449,6 +450,12 @@ class SocialMediaSettings(BaseSiteSetting):
             {'id': 'youtube', 'url': self.youtube},
             {'id': 'twitter', 'url': self.twitter},
         ]
+
+    @property
+    def twitter_site(self):
+        if self.twitter:
+            return urlparse(self.twitter)[2][1:]
+        return None
 
 
 def get_cached_path(items, item_attribute, reverse_subpage, filter_method):
