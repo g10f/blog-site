@@ -28,7 +28,7 @@
       </nav>
     </div>
   </div>
-  <nav class="navbar navbar-expand-sm bg-light navbar-light mb-2" aria-label="navbar">
+  <nav class="navbar navbar-expand-md bg-body-tertiary mb-2" aria-label="navbar">
     <div class="container-lg ps-sm-0">
       <a class="navbar-brand d-sm-none" href="{% url 'wagtail_serve' '' %}">
         {% if site_logo_image %}
@@ -46,11 +46,14 @@
       </button>
 
       <div class="collapse navbar-collapse pt-2 pt-sm-0" id="navbar-main">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0" role="menubar">
+        <ul class="navbar-nav me-auto mb-sm-0" role="menubar">
           {# main_menu is defined in base/templatetags/navigation_tags.py #}
           {% get_site_root as site_root %}
           {% top_menu parent=site_root calling_page=self %}
         </ul>
+      <ul class="nav mb-2 mb-sm-0">
+        {% include 'includes/_color_mode_button.html' %}
+      </ul>
         <form action="/search" method="get" class="search d-sm-none" role="search">
           <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">

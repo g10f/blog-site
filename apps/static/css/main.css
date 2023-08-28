@@ -63,7 +63,7 @@
   --bs-warning-bg-subtle: #fff3cd;
   --bs-danger-bg-subtle: #f8d7da;
   --bs-light-bg-subtle: #fcfcfd;
-  --bs-dark-bg-subtle: #ced4da;
+  --bs-dark-bg-subtle: #f4f6f7;
   --bs-primary-border-subtle: #99adc2;
   --bs-secondary-border-subtle: #c4c8cb;
   --bs-success-border-subtle: #a3cfbb;
@@ -12868,7 +12868,7 @@ html {
 }
 
 .nav-link.active {
-  background-color: #e9ecef;
+  background-color: var(--bs-secondary-bg);
 }
 
 @media (max-width: 575.98px) {

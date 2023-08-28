@@ -34,7 +34,7 @@ html {
 }
 
 .nav-link.active {
-  background-color: $gray-200;
+  background-color: var(--bs-secondary-bg);
 }
 
 @include media-breakpoint-down(sm) {

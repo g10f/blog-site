@@ -51,3 +51,5 @@ $utilities-bg: map-merge(
 ) ;
 $utilities-bg-colors: map-loop($utilities-bg, rgba-css-var, "$key", "bg");
 // scss-docs-end utilities-bg-colors
+
+$dark-bg-subtle:          mix($gray-200, $white);
