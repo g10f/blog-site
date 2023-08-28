@@ -45,13 +45,13 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse pt-2 pt-sm-0" id="navbar-main">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0" role="menubar">
+      <div class="collapse navbar-collapse pt-2 pt-md-0" id="navbar-main">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" role="menubar">
           {# main_menu is defined in base/templatetags/navigation_tags.py #}
           {% get_site_root as site_root %}
           {% top_menu parent=site_root calling_page=self %}
         </ul>
-        <ul class="nav mb-2 mb-sm-0">
+        <ul class="nav mb-2 mb-md-0">
           {% include 'includes/_color_mode_button.html' %}
         </ul>
         <form action="/search" method="get" class="search d-sm-none" role="search">
