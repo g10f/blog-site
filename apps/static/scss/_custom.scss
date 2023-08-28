@@ -37,7 +37,7 @@ html {
   background-color: var(--bs-secondary-bg);
 }
 
-@include media-breakpoint-down(sm) {
+@include media-breakpoint-down(md) {
   // enable background for the full width
   .navbar-collapse {
     margin-right: var(- --bs-gutter-x, -0.75rem);
@@ -49,7 +49,7 @@ html {
   }
 }
 
-@include media-breakpoint-up(sm) {
+@include media-breakpoint-up(md) {
   .navbar {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
@@ -71,3 +71,20 @@ $utilities: map-merge(
     ),
   )
 );
+
+// color mode button
+.theme-toggle * {
+  display: none;
+}
+
+html[data-theme="auto"] .theme-icon-when-auto {
+  display: inline-block;
+}
+
+html[data-theme="dark"] .theme-icon-when-dark {
+  display: inline-block;
+}
+
+html[data-theme="light"] .theme-icon-when-light {
+  display: inline-block;
+}

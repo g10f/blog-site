@@ -12871,7 +12871,7 @@ html {
   background-color: var(--bs-secondary-bg);
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .navbar-collapse {
     margin-right: var(---bs-gutter-x, -0.75rem);
     margin-left: var(---bs-gutter-x, -0.75rem);
@@ -12882,7 +12882,7 @@ html {
     padding-left: var(--bs-gutter-x, 0.75rem) !important;
   }
 }
-@media (min-width: 576px) {
+@media (min-width: 768px) {
   .navbar {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
@@ -12896,5 +12896,20 @@ html {
   .nav-link.active {
     border-bottom: 0.25rem solid #003366;
   }
+}
+.theme-toggle * {
+  display: none;
+}
+
+html[data-theme=auto] .theme-icon-when-auto {
+  display: inline-block;
+}
+
+html[data-theme=dark] .theme-icon-when-dark {
+  display: inline-block;
+}
+
+html[data-theme=light] .theme-icon-when-light {
+  display: inline-block;
 }
 /*# sourceMappingURL=main.css.map */

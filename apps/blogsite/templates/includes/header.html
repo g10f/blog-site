@@ -40,20 +40,20 @@
           {{ wagtail_site_name }}
         {% endif %}
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"
+      <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"
               aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse pt-2 pt-sm-0" id="navbar-main">
-        <ul class="navbar-nav me-auto mb-sm-0" role="menubar">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0" role="menubar">
           {# main_menu is defined in base/templatetags/navigation_tags.py #}
           {% get_site_root as site_root %}
           {% top_menu parent=site_root calling_page=self %}
         </ul>
-      <ul class="nav mb-2 mb-sm-0">
-        {% include 'includes/_color_mode_button.html' %}
-      </ul>
+        <ul class="nav mb-2 mb-sm-0">
+          {% include 'includes/_color_mode_button.html' %}
+        </ul>
         <form action="/search" method="get" class="search d-sm-none" role="search">
           <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
