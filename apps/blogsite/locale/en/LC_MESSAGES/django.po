@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-09 12:45+0000\n"
+"POT-Creation-Date: 2023-08-30 15:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,49 +30,49 @@ msgstr ""
 msgid "Right-aligned"
 msgstr ""
 
-#: blogsite/base/models.py:84
+#: blogsite/base/models.py:85
 msgid "person"
 msgstr ""
 
-#: blogsite/base/models.py:85
+#: blogsite/base/models.py:86
 msgid "people"
 msgstr ""
 
-#: blogsite/base/models.py:152 blogsite/blog/models.py:222
-#: blogsite/templates/blog/event_page.html:35
+#: blogsite/base/models.py:153 blogsite/blog/models.py:222
+#: blogsite/templates/blog/event_page.html:39
 msgid "speaker"
 msgstr ""
 
-#: blogsite/base/models.py:153 blogsite/blog/models.py:221
+#: blogsite/base/models.py:154 blogsite/blog/models.py:221
 msgid "speakers"
 msgstr ""
 
-#: blogsite/base/models.py:196 blogsite/base/models.py:198
+#: blogsite/base/models.py:201 blogsite/base/models.py:203
 msgid "Site Logo"
 msgstr ""
 
-#: blogsite/base/models.py:226 blogsite/base/models.py:228
-#: blogsite/base/models.py:237
+#: blogsite/base/models.py:231 blogsite/base/models.py:233
+#: blogsite/base/models.py:242
 msgid "footer text"
 msgstr ""
 
-#: blogsite/base/models.py:238
+#: blogsite/base/models.py:243
 msgid "footer texts"
 msgstr ""
 
-#: blogsite/base/models.py:244
+#: blogsite/base/models.py:249
 msgid "FooterText for the site already exists"
 msgstr ""
 
-#: blogsite/base/models.py:403
+#: blogsite/base/models.py:408
 msgid "Captcha"
 msgstr ""
 
-#: blogsite/base/models.py:405
+#: blogsite/base/models.py:410
 msgid "Message"
 msgstr ""
 
-#: blogsite/base/models.py:425
+#: blogsite/base/models.py:430
 msgid "Spam detected"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "date article published"
 msgstr ""
 
-#: blogsite/blog/models.py:160 blogsite/blog/models.py:332
+#: blogsite/blog/models.py:160 blogsite/blog/models.py:329
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr ""
@@ -113,11 +113,11 @@ msgstr ""
 msgid "location"
 msgstr ""
 
-#: blogsite/blog/models.py:204 blogsite/templates/blog/event_page.html:48
+#: blogsite/blog/models.py:204 blogsite/templates/blog/event_page.html:52
 msgid "minimum number of participants"
 msgstr ""
 
-#: blogsite/blog/models.py:205 blogsite/templates/blog/event_page.html:49
+#: blogsite/blog/models.py:205 blogsite/templates/blog/event_page.html:53
 msgid "maximum number of participants"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "authors"
 msgstr ""
 
-#: blogsite/blog/models.py:274
+#: blogsite/blog/models.py:271
 msgid "Text to describe the page"
 msgstr ""
 
@@ -165,13 +165,13 @@ msgstr ""
 msgid "Search results"
 msgstr ""
 
-#: blogsite/templates/base/home_page.html:65
+#: blogsite/templates/base/home_page.html:70
 #: blogsite/templates/blog/blog_index_page.html:11
 msgid "All"
 msgstr ""
 
-#: blogsite/templates/base/home_page.html:85
-#: blogsite/templates/base/home_page.html:127
+#: blogsite/templates/base/home_page.html:90
+#: blogsite/templates/base/home_page.html:132
 #: blogsite/templates/blog/blog_index_page.html:36
 #: blogsite/templates/blog/event_index_page.html:21
 msgid "Read more"
@@ -181,15 +181,17 @@ msgstr ""
 msgid "Youtube video"
 msgstr ""
 
-#: blogsite/templates/blog/_event_introduction.html:7
+#: blogsite/templates/blog/_event_introduction.html:8
+#: blogsite/templates/blog/event_page.html:50
 msgid "date"
 msgstr ""
 
-#: blogsite/templates/blog/_event_introduction.html:8
+#: blogsite/templates/blog/_event_introduction.html:9
+#: blogsite/templates/blog/event_page.html:51
 msgid "time"
 msgstr ""
 
-#: blogsite/templates/blog/_event_introduction.html:9
+#: blogsite/templates/blog/_event_introduction.html:10
 msgid "event location"
 msgstr ""
 
@@ -202,54 +204,54 @@ msgstr ""
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
-#: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:103
+#: blogsite/templates/blog/blog_page.html:52
+#: blogsite/templates/blog/event_page.html:107
 msgid "Previous articel"
 msgstr ""
 
-#: blogsite/templates/blog/blog_page.html:48
-#: blogsite/templates/blog/event_page.html:103
+#: blogsite/templates/blog/blog_page.html:52
+#: blogsite/templates/blog/event_page.html:107
 msgid "Next articel"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:13
+#: blogsite/templates/blog/event_page.html:17
 msgid "status"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:44
+#: blogsite/templates/blog/event_page.html:48
 msgid "conditions"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:51
+#: blogsite/templates/blog/event_page.html:55
 msgid "cost and registration"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:54
+#: blogsite/templates/blog/event_page.html:58
 msgid "Unfortunately, registration is no longer possible:"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:57
+#: blogsite/templates/blog/event_page.html:61
 msgid "The registration period has expired."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:59
+#: blogsite/templates/blog/event_page.html:63
 msgid "The event is fully booked."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:64
+#: blogsite/templates/blog/event_page.html:68
 msgid "non-members"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:65
+#: blogsite/templates/blog/event_page.html:69
 msgid "members"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:69
+#: blogsite/templates/blog/event_page.html:73
 #, python-format
 msgid "Registration until: %(end_date)s."
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:73
+#: blogsite/templates/blog/event_page.html:77
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -258,15 +260,19 @@ msgid ""
 "class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:78
+#: blogsite/templates/blog/event_page.html:82
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:84
+#: blogsite/templates/blog/event_page.html:88
 msgid "event venue/other"
+msgstr ""
+
+#: blogsite/templates/includes/_color_mode_button.html:3
+msgid "Dark mode toggle"
 msgstr ""
 
 #: blogsite/templates/includes/footer.html:28
@@ -274,7 +280,7 @@ msgid "Visit us on"
 msgstr ""
 
 #: blogsite/templates/includes/header.html:25
-#: blogsite/templates/includes/header.html:55
+#: blogsite/templates/includes/header.html:58
 msgid "Search"
 msgstr ""
 
