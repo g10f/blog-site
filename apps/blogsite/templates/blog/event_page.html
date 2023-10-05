@@ -41,7 +41,8 @@
                 {{ speaker }}
                 {% if speaker.job_title %}<br>{{ speaker.job_title }}{% endif %}
               </p>
-              {% if speaker.description %}<div class="card-text">{{ speaker.description | richtext }}</div>{% endif %}
+              {% if speaker.description %}
+                <div class="card-text">{{ speaker.description | richtext }}</div>{% endif %}
             </div>
           {% endfor %}
           <div class="card-body">
@@ -86,11 +87,12 @@
               </p>
             {% endif %}
             <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
-            <p class="card-text">
+            <div class="card-text">
+              {% translate 'event location'|capfirst %}: {{ page.location }}
               {% if page.additional_infos %}
                 {{ page.additional_infos | richtext }}
               {% endif %}
-            </p>
+            </div>
           </div>
         </div>
 

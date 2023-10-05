@@ -253,8 +253,10 @@ class EventPage(BlogPage):
 
     @property
     def is_registration_expired(self):
-        if self.registration_end_date:
-            return self.registration_end_date < now()
+        if self.registration_end_date and now() > self.registration_end_date:
+            return True
+        if now() > self.start_date:
+            return True
         return False
 
 
