@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% load wagtailcore_tags navigation_tags wagtailimages_tags i18n %}
 
 {% block content %}
   {% include "base/include/header.html" %}
@@ -19,22 +19,30 @@
       <div class="col-12 form-page">
         <form action="{% pageurl page %}" method="POST" role="form">
           {#% csrf_token %#}
-          {% if form.subject.errors %}
-            <ol role="alertdialog">
-              {% for error in form.subject.errors %}
-                <li role="alert"><strong>{{ error|escape }}</strong></li>
-              {% endfor %}
-            </ol>
+
+          {% if form.errors and not form.non_field_errors %}
+            <div class="alert alert-danger">
+              {% blocktranslate count errors=form.errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+            </div>
+          {% endif %}
+
+          {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
           {% endif %}
 
           {% for field in form %}
-            <div class="mb-3 row{% if field.name == 'h_message' %} visually-hidden{% endif %}" aria-required="{% if field.field.required %}true{% else %}false{% endif %}">
+            <div class="mb-3 row{% if field.name == 'h_message' %} visually-hidden{% endif %}"
+                 aria-required="{% if field.field.required %}true{% else %}false{% endif %}">
               <label class="col-sm-3 col-md-2" for="{{ field.id_for_label }}">
                 {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
               </label>
-              <div class="col-sm-9 col-md-8 col-lg-7 col-xl-6 col-xxl-5">{{ field }}</div>
-              {#% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %#}
-              {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
+              <div class="{% if field.errors %}is-invalid {% endif %}col-sm-9 col-md-8 col-lg-7 col-xl-6 col-xxl-5">{{ field }}</div>
+              {% for error in field.errors %}
+                <div class="invalid-feedback">{{ error }}</div>{% endfor %}
+              {% if field.help_text %}
+                <div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
             </div>
           {% endfor %}
 
