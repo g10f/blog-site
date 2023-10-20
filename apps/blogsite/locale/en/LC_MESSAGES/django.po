@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-05 23:19+0200\n"
+"POT-Creation-Date: 2023-10-20 11:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,238 +18,259 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base/image_formats.py:10
+#: blogsite/base/image_formats.py:10
 msgid "Full width"
 msgstr ""
 
-#: base/image_formats.py:11
+#: blogsite/base/image_formats.py:11
 msgid "Left-aligned"
 msgstr ""
 
-#: base/image_formats.py:12
+#: blogsite/base/image_formats.py:12
 msgid "Right-aligned"
 msgstr ""
 
-#: base/models.py:85
+#: blogsite/base/models.py:85
 msgid "person"
 msgstr ""
 
-#: base/models.py:86
+#: blogsite/base/models.py:86
 msgid "people"
 msgstr ""
 
-#: base/models.py:153 blog/models.py:222 templates/blog/event_page.html:39
+#: blogsite/base/models.py:117
+msgid "Male"
+msgstr ""
+
+#: blogsite/base/models.py:118
+msgid "Female"
+msgstr ""
+
+#: blogsite/base/models.py:159 blogsite/blog/models.py:224
 msgid "speaker"
 msgstr ""
 
-#: base/models.py:154 blog/models.py:221
+#: blogsite/base/models.py:160 blogsite/blog/models.py:223
 msgid "speakers"
 msgstr ""
 
-#: base/models.py:197 base/models.py:199
+#: blogsite/base/models.py:203 blogsite/base/models.py:205
 msgid "Site Logo"
 msgstr ""
 
-#: base/models.py:227 base/models.py:229 base/models.py:238
+#: blogsite/base/models.py:233 blogsite/base/models.py:235
+#: blogsite/base/models.py:244
 msgid "footer text"
 msgstr ""
 
-#: base/models.py:239
+#: blogsite/base/models.py:245
 msgid "footer texts"
 msgstr ""
 
-#: base/models.py:245
+#: blogsite/base/models.py:251
 msgid "FooterText for the site already exists"
 msgstr ""
 
-#: base/models.py:404
+#: blogsite/base/models.py:410
 msgid "Captcha"
 msgstr ""
 
-#: base/models.py:406
+#: blogsite/base/models.py:412
 msgid "Message"
 msgstr ""
 
-#: base/models.py:426
+#: blogsite/base/models.py:432
 msgid "Spam detected"
 msgstr ""
 
-#: blog/models.py:38
+#: blogsite/blog/models.py:38
 msgid "Enter a valid phone number i.e. +49 (531) 123456"
 msgstr ""
 
-#: blog/models.py:80
+#: blogsite/blog/models.py:80
 msgid "introduction"
 msgstr ""
 
-#: blog/models.py:89
+#: blogsite/blog/models.py:89
 msgid "page body"
 msgstr ""
 
-#: blog/models.py:90
+#: blogsite/blog/models.py:90
 msgid "subtitle"
 msgstr ""
 
-#: blog/models.py:92
+#: blogsite/blog/models.py:92
 msgid "date article published"
 msgstr ""
 
-#: blog/models.py:160 blog/models.py:331
+#: blogsite/blog/models.py:160 blogsite/blog/models.py:333
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr ""
 
-#: blog/models.py:201
+#: blogsite/blog/models.py:203
 msgid "start date"
 msgstr ""
 
-#: blog/models.py:202
+#: blogsite/blog/models.py:204
 msgid "end date"
 msgstr ""
 
-#: blog/models.py:203
+#: blogsite/blog/models.py:205
 msgid "location"
 msgstr ""
 
-#: blog/models.py:204 templates/blog/event_page.html:53
+#: blogsite/blog/models.py:206 blogsite/templates/blog/event_page.html:56
 msgid "minimum number of participants"
 msgstr ""
 
-#: blog/models.py:205 templates/blog/event_page.html:54
+#: blogsite/blog/models.py:207 blogsite/templates/blog/event_page.html:57
 msgid "maximum number of participants"
 msgstr ""
 
-#: blog/models.py:206
+#: blogsite/blog/models.py:208
 msgid "Price"
 msgstr ""
 
-#: blog/models.py:207
+#: blogsite/blog/models.py:209
 msgid "reduced Price"
 msgstr ""
 
-#: blog/models.py:208
+#: blogsite/blog/models.py:210
 msgid "is registration open"
 msgstr ""
 
-#: blog/models.py:209
+#: blogsite/blog/models.py:211
 msgid "end date for registration"
 msgstr ""
 
-#: blog/models.py:210
+#: blogsite/blog/models.py:212
 msgid "email address for registration"
 msgstr ""
 
-#: blog/models.py:211
+#: blogsite/blog/models.py:213
 msgid "phone number for registration"
 msgstr ""
 
-#: blog/models.py:212
+#: blogsite/blog/models.py:214
 msgid "is booked up"
 msgstr ""
 
-#: blog/models.py:213
+#: blogsite/blog/models.py:215
 msgid "additional infos"
 msgstr ""
 
-#: blog/models.py:242
+#: blogsite/blog/models.py:244
 msgid "authors"
 msgstr ""
 
-#: blog/models.py:273
+#: blogsite/blog/models.py:275
 msgid "Text to describe the page"
 msgstr ""
 
-#: search/views.py:35 templates/search/search_results.html:8
+#: blogsite/search/views.py:35 blogsite/templates/search/search_results.html:8
 msgid "Search results"
 msgstr ""
 
-#: templates/base/form_page.html:25
+#: blogsite/templates/base/form_page.html:25
 msgid "Please correct the error below."
 msgid_plural "Please correct the errors below."
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/base/home_page.html:70 templates/blog/blog_index_page.html:11
+#: blogsite/templates/base/home_page.html:70
+#: blogsite/templates/blog/blog_index_page.html:11
 msgid "All"
 msgstr ""
 
-#: templates/base/home_page.html:90 templates/base/home_page.html:132
-#: templates/blog/blog_index_page.html:36
-#: templates/blog/event_index_page.html:21
+#: blogsite/templates/base/home_page.html:90
+#: blogsite/templates/base/home_page.html:132
+#: blogsite/templates/blog/blog_index_page.html:36
+#: blogsite/templates/blog/event_index_page.html:21
 msgid "Read more"
 msgstr ""
 
-#: templates/blocks/video_block.html:3
+#: blogsite/templates/blocks/video_block.html:3
 msgid "Youtube video"
 msgstr ""
 
-#: templates/blog/_event_introduction.html:8 templates/blog/event_page.html:51
+#: blogsite/templates/blog/_event_introduction.html:8
+#: blogsite/templates/blog/event_page.html:54
 msgid "date"
 msgstr ""
 
-#: templates/blog/_event_introduction.html:9 templates/blog/event_page.html:52
+#: blogsite/templates/blog/_event_introduction.html:9
+#: blogsite/templates/blog/event_page.html:55
 msgid "time"
 msgstr ""
 
-#: templates/blog/_event_introduction.html:10 templates/blog/event_page.html:91
+#: blogsite/templates/blog/_event_introduction.html:10
+#: blogsite/templates/blog/event_page.html:94
 msgid "event location"
 msgstr ""
 
-#: templates/blog/blog_index_page.html:33
+#: blogsite/templates/blog/blog_index_page.html:33
 msgid "by"
 msgstr ""
 
-#: templates/blog/blog_index_page.html:44
-#: templates/blog/event_index_page.html:31
+#: blogsite/templates/blog/blog_index_page.html:44
+#: blogsite/templates/blog/event_index_page.html:31
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
-#: templates/blog/blog_page.html:52 templates/blog/event_page.html:109
+#: blogsite/templates/blog/blog_page.html:52
+#: blogsite/templates/blog/event_page.html:112
 msgid "Previous articel"
 msgstr ""
 
-#: templates/blog/blog_page.html:52 templates/blog/event_page.html:109
+#: blogsite/templates/blog/blog_page.html:52
+#: blogsite/templates/blog/event_page.html:112
 msgid "Next articel"
 msgstr ""
 
-#: templates/blog/event_page.html:17
+#: blogsite/templates/blog/event_page.html:17
 msgid "status"
 msgstr ""
 
-#: templates/blog/event_page.html:49
+#: blogsite/templates/blog/event_page.html:40
+msgctxt "Female"
+msgid "speaker"
+msgstr ""
+
+#: blogsite/templates/blog/event_page.html:52
 msgid "conditions"
 msgstr ""
 
-#: templates/blog/event_page.html:56
+#: blogsite/templates/blog/event_page.html:59
 msgid "cost and registration"
 msgstr ""
 
-#: templates/blog/event_page.html:59
+#: blogsite/templates/blog/event_page.html:62
 msgid "Unfortunately, registration is no longer possible:"
 msgstr ""
 
-#: templates/blog/event_page.html:62
+#: blogsite/templates/blog/event_page.html:65
 msgid "The registration period has expired."
 msgstr ""
 
-#: templates/blog/event_page.html:64
+#: blogsite/templates/blog/event_page.html:67
 msgid "The event is fully booked."
 msgstr ""
 
-#: templates/blog/event_page.html:69
+#: blogsite/templates/blog/event_page.html:72
 msgid "non-members"
 msgstr ""
 
-#: templates/blog/event_page.html:70
+#: blogsite/templates/blog/event_page.html:73
 msgid "members"
 msgstr ""
 
-#: templates/blog/event_page.html:74
+#: blogsite/templates/blog/event_page.html:77
 #, python-format
 msgid "Registration until: %(end_date)s."
 msgstr ""
 
-#: templates/blog/event_page.html:78
+#: blogsite/templates/blog/event_page.html:81
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -258,71 +279,100 @@ msgid ""
 "class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: templates/blog/event_page.html:83
+#: blogsite/templates/blog/event_page.html:86
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-#: templates/blog/event_page.html:89
+#: blogsite/templates/blog/event_page.html:92
 msgid "event venue/other"
 msgstr ""
 
-#: templates/includes/_color_mode_button.html:3
+#: blogsite/templates/includes/_color_mode_button.html:3
 msgid "Dark mode toggle"
 msgstr ""
 
-#: templates/includes/footer.html:28
+#: blogsite/templates/includes/footer.html:28
 msgid "Visit us on"
 msgstr ""
 
-#: templates/includes/header.html:25 templates/includes/header.html:58
+#: blogsite/templates/includes/header.html:25
+#: blogsite/templates/includes/header.html:58
 msgid "Search"
 msgstr ""
 
-#: templates/includes/pagination.html:6 templates/includes/pagination.html:8
+#: blogsite/templates/includes/pagination.html:6
+#: blogsite/templates/includes/pagination.html:8
 msgid "Back"
 msgstr ""
 
-#: templates/includes/pagination.html:21 templates/includes/pagination.html:25
+#: blogsite/templates/includes/pagination.html:21
+#: blogsite/templates/includes/pagination.html:25
 msgid "Forward"
 msgstr ""
 
-#: templates/search/search_results.html:11
+#: blogsite/templates/search/search_results.html:11
 msgid "You searched for"
 msgstr ""
 
-#: templates/search/search_results.html:16
+#: blogsite/templates/search/search_results.html:16
 msgid "Blog post"
 msgstr ""
 
-#: templates/search/search_results.html:18
+#: blogsite/templates/search/search_results.html:18
 msgid "Page"
 msgstr ""
 
-#: templates/search/search_results.html:26
+#: blogsite/templates/search/search_results.html:26
 msgid "No results found"
 msgstr ""
 
-#: templates/search/search_results.html:28
+#: blogsite/templates/search/search_results.html:28
 msgid "You didn’t search for anything!"
 msgstr ""
 
-#: templates/tags/top_menu.html:5
+#: blogsite/templates/tags/top_menu.html:5
 msgid "Homepage"
 msgstr ""
 
-#: templates/wagtailadmin/login.html:14
+#: blogsite/templates/wagtailadmin/login.html:14
 msgid "Logging out…"
 msgstr ""
 
-#: templates/wagtailadmin/login.html:15
+#: blogsite/templates/wagtailadmin/login.html:15
 #, python-format
 msgid "Log out from %(idp)s"
 msgstr ""
 
-#: templates/wagtailadmin/login.html:19
+#: blogsite/templates/wagtailadmin/login.html:19
 #, python-format
 msgid "Sign in with %(idp)s"
+msgstr ""
+
+#: oidc/models.py:13
+msgid "role"
+msgstr ""
+
+#: oidc/models.py:14
+msgid "staff status"
+msgstr ""
+
+#: oidc/models.py:14
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: oidc/models.py:15
+msgid "superuser status"
+msgstr ""
+
+#: oidc/models.py:16
+msgid ""
+"Designates that this user has all permissions without explicitly assigning "
+"them."
+msgstr ""
+
+#: oidc/models.py:29
+msgid "subject"
 msgstr ""

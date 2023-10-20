@@ -112,8 +112,13 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
 @register_snippet
 class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
+    GENDER_CHOICES = (
+        ("", "---------"),
+        ("m", _("Male")),
+        ("f", _("Female")),
+    )
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
-
+    gender = models.CharField(choices=GENDER_CHOICES, blank=True)
     first_name = models.CharField("first name", max_length=254)
     last_name = models.CharField("last name", max_length=254)
     job_title = models.CharField("job title", blank=True, max_length=254)
@@ -128,6 +133,7 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
         FieldPanel('site'),
         MultiFieldPanel([
             FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
+        FieldPanel('gender'),
         FieldPanel('slug'),
         FieldPanel('job_title'),
         FieldPanel('image'),

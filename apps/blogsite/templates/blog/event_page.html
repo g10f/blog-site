@@ -36,7 +36,10 @@
               <img src="{{ speaker_img.url }}" class="card-img-top" alt="{{ speaker_img.alt }}">
             {% endif %}
             <div class="card-body">
-              <div class="h4 card-subtitle">{% translate 'speaker'|title %}</div>
+              <div class="h4 card-subtitle">
+                {% if speaker.gender == "f" %}{% translate 'speaker'|title context "Female" %}
+                {% else %}{% translate 'speaker'|title %}{% endif %}
+              </div>
               <p class="card-text">
                 {{ speaker }}
                 {% if speaker.job_title %}<br>{{ speaker.job_title }}{% endif %}

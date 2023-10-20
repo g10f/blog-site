@@ -187,6 +187,8 @@ class BlogPage(Page):
     def previous(self):
         return self._first_filtered_by_tag(self.get_prev_siblings)
 
+def _now_plus_120_minutes():
+    return timezone.now() + timedelta(minutes=120)
 
 class EventPage(BlogPage):
     """
@@ -199,7 +201,7 @@ class EventPage(BlogPage):
     intro_template = 'blog/_event_introduction.html'
     parent_page_types = ['EventIndexPage', 'BlogIndexPage']
     start_date = models.DateTimeField(_('start date'), default=timezone.now)
-    end_date = models.DateTimeField(_('end date'), default=timezone.now() + timedelta(minutes=120))
+    end_date = models.DateTimeField(_('end date'), default=_now_plus_120_minutes)
     location = models.TextField(_('location'), blank=True)
     min_participants = models.IntegerField(_('minimum number of participants'), blank=True, null=True)
     max_participants = models.IntegerField(_('maximum number of participants'), blank=True, null=True)
