@@ -16,6 +16,7 @@ from pathlib import Path
 
 import dj_database_url
 import sys
+import django
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
@@ -47,7 +48,7 @@ ADMINS = [tuple(admin.split(',')) for admin in os.getenv('ADMINS', 'Gunnar Scher
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[BlogSite] ')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '25'))
-LOGO_SIZE = os.getenv('LOGO_SIZE', 'normal') # small, normal or big
+LOGO_SIZE = os.getenv('LOGO_SIZE', 'normal')  # small, normal or big
 HERO_WITH_TITLE = os.getenv('HERO_WITH_TITLE', 'True').lower() in ('true', '1', 't')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -80,7 +81,6 @@ INSTALLED_APPS = [
     "wagtail.contrib.routable_page",
     "wagtail.contrib.frontend_cache",
 
-
     'modelcluster',
     'taggit',
 
@@ -94,7 +94,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
 
     'mozilla_django_oidc',
-    'captcha'
+    'captcha',
 ]
 
 # Add 'mozilla_django_oidc' authentication backend
@@ -133,7 +133,10 @@ else:
         )),
     ]
 
-TEMPLATE_DIRS = os.getenv('TEMPLATE_DIRS', []) + [BASE_DIR / 'templates']
+TEMPLATE_DIRS = (os.getenv('TEMPLATE_DIRS', []) + [
+    BASE_DIR / 'templates',
+    django.__path__[0] + "/forms/templates"  # for adding bootstrap class form-control
+])
 
 TEMPLATES = [
     {
@@ -155,6 +158,10 @@ TEMPLATES = [
         },
     },
 ]
+
+# for adding bootstrap class form-control
+# https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-FORM_RENDERER
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 WSGI_APPLICATION = 'blogsite.wsgi.application'
 

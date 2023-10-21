@@ -387,29 +387,12 @@ class CustomFormBuilder(FormBuilder):
     CAPTCHA_FIELD_NAME = 'wagtailcaptcha'
     HONEY_POT_FIELD_NAME = 'h_message'
 
-    def get_create_field_function(self, type):
-        """
-        Override the method to prepare a wrapped function that will call the original
-        function (which returns a field) and update the widget's attrs with a custom
-        value that can be used within the template when rendering each field.
-        """
-
-        create_field_function = super().get_create_field_function(type)
-
-        def wrapped_create_field_function(field, options):
-            created_field = create_field_function(field, options)
-            created_field.widget.attrs.update({"class": 'form-control'})
-            return created_field
-
-        return wrapped_create_field_function
-
     @property
     def formfields(self):
         # Add ReCaptcha to formfields property
         fields = super().formfields
         fields[self.CAPTCHA_FIELD_NAME] = ReCaptchaField(label=_("Captcha"))
-        fields[self.HONEY_POT_FIELD_NAME] = CharField(required=False,
-                                                      label=_("Message"), widget=TextInput(attrs={"class": 'form-control'}))
+        fields[self.HONEY_POT_FIELD_NAME] = CharField(required=False, label=_("Message"))
 
         return fields
 
