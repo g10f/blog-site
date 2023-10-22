@@ -16,7 +16,6 @@ from pathlib import Path
 
 import dj_database_url
 import sys
-import django
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
@@ -92,6 +91,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     "django.contrib.sitemaps",
+    "django.forms",  # for overwriting attr.html
 
     'mozilla_django_oidc',
     'captcha',
@@ -133,10 +133,7 @@ else:
         )),
     ]
 
-TEMPLATE_DIRS = (os.getenv('TEMPLATE_DIRS', []) + [
-    BASE_DIR / 'templates',
-    django.__path__[0] + "/forms/templates"  # for adding bootstrap class form-control
-])
+TEMPLATE_DIRS = (os.getenv('TEMPLATE_DIRS', []) + [BASE_DIR / 'templates'])
 
 TEMPLATES = [
     {
