@@ -2,7 +2,7 @@ import logging
 from urllib.parse import urlparse
 
 import wagtail
-from captcha.fields import ReCaptchaField
+from django_recaptcha.fields import ReCaptchaField
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator

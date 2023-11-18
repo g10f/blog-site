@@ -94,7 +94,7 @@ INSTALLED_APPS = [
     "django.forms",  # for overwriting attr.html
 
     'mozilla_django_oidc',
-    'captcha',
+    'django_recaptcha',
 ]
 
 # Add 'mozilla_django_oidc' authentication backend
