@@ -396,6 +396,24 @@ class CustomFormBuilder(FormBuilder):
 
         return fields
 
+    def get_create_field_function(self, type):
+        """
+        Override the method to prepare a wrapped function that will call the original
+        function (which returns a field) and update the widget's attrs with a
+        css class form-control for using bootstrap css
+        """
+
+        create_field_function = super().get_create_field_function(type)
+
+        def wrapped_create_field_function(field, options):
+            created_field = create_field_function(field, options)
+            css_classes = set(created_field.widget.attrs.get('class', '').split())
+            css_classes.add('form-control')
+            css_classes = " ".join(css_classes)
+            created_field.widget.attrs.update({"class": css_classes})
+            return created_field
+
+        return wrapped_create_field_function
 
 def remove_captcha_field(form):
     form.fields.pop(CustomFormBuilder.CAPTCHA_FIELD_NAME, None)
