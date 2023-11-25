@@ -11,6 +11,11 @@ register = template.Library()
 # https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/
 
 
+@register.simple_tag
+def children(index_page, num_pages):
+    return index_page.children(num_pages)
+
+
 @register.simple_tag(takes_context=True)
 def get_site_root(context):
     # This returns a core.Page. The main menu needs to have the site.root_page

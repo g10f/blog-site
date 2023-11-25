@@ -187,8 +187,10 @@ class BlogPage(Page):
     def previous(self):
         return self._first_filtered_by_tag(self.get_prev_siblings)
 
+
 def _now_plus_120_minutes():
     return timezone.now() + timedelta(minutes=120)
+
 
 class EventPage(BlogPage):
     """
@@ -293,8 +295,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
 
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
-    def children(self):
-        return self.get_children().specific().live().order_by('-path')
+    def children(self, num_pages=3):
+        return self.get_children().specific().live().order_by('-path')[:num_pages]
         # return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
 
     # Pagination for the index page. We use the `django.core.paginator` as any
@@ -371,10 +373,21 @@ class EventIndexPage(BlogIndexPage):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None):
-        posts = EventPage.objects.live().descendant_of(self).order_by('-path')
+        posts = EventPage.objects.live().descendant_of(self).order_by('-start_date')
         if tag:
             posts = posts.filter(tags=tag)
         return posts
+
+    # Defines a method to access the children of the page (e.g. BlogPage
+    # objects). On the demo site we use this on the HomePage
+    def children(self, num_pages=3):
+        count = EventPage.objects.live().descendant_of(self).filter(start_date__gt=now()).count()
+        if count >= num_pages:
+            return reversed(EventPage.objects.live().descendant_of(self).filter(start_date__gt=now()).order_by('start_date')[:num_pages])
+        else:
+            return EventPage.objects.live().descendant_of(self).order_by('-start_date')[:num_pages]
+
+        # return self.get_children().specific().live().order_by('-path')
 
 
 def blog_page_changed(page):

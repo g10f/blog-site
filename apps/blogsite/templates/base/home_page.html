@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n wagtailimages_tags wagtailcore_tags %}
+{% load i18n wagtailimages_tags wagtailcore_tags navigation_tags%}
 
 {% block content %}
   <div class="homepage">
@@ -75,7 +75,8 @@
             {% endif %}
 
             <div class="featured-children">
-              {% for childpage in page.featured_section_1.localized.specific.children|slice:"3" %}
+              {% children page.featured_section_1.localized.specific 3 as featured_section_1_childpages %}
+              {% for childpage in featured_section_1_childpages %}
                 {% image childpage.image fill-800x800-c100 format-webp as child_image %}
                 <div class="card mb-3 shadow">
                   <div class="row g-0">
@@ -119,8 +120,8 @@
       {% if page.featured_section_2 %}
         <h2>{{ page.featured_section_2_title }}</h2>
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-          {% for childpage in page.featured_section_2.specific.localized.children|slice:"6" %}
-
+          {% children page.featured_section_2.localized.specific 6 as featured_section_2_childpages %}
+          {% for childpage in featured_section_2_childpages %}
             {% image childpage.image fill-800x450-c100 format-webp as child_image %}
             <div class="col">
               <div class="card h-100 mb-3 shadow">
