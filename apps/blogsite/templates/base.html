@@ -28,7 +28,11 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow">
     </noscript>
     <script src="{% static 'js/theme.js' %}"></script>
-    {% block extra_head %}{% endblock %}
+    {% block extra_head %}
+      {% if enable_plausible %}
+      <script defer data-domain="{{ site.hostname }}" src="{{ plausible_url }}/js/script.js"></script>
+      {% endif %}
+    {% endblock %}
   {% endblock head %}
   {% block social_metadata %}
     {% image page.image fill-800x400-c100 format-webp as image %}

@@ -49,6 +49,8 @@ EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '25'))
 LOGO_SIZE = os.getenv('LOGO_SIZE', 'normal')  # small, normal or big
 HERO_WITH_TITLE = os.getenv('HERO_WITH_TITLE', 'True').lower() in ('true', '1', 't')
+PLAUSIBLE_URL = os.getenv('PLAUSIBLE_URL', '')
+ENABLE_PLAUSIBLE = os.getenv('ENABLE_PLAUSIBLE', 'False').lower() in ('true', '1', 't')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
