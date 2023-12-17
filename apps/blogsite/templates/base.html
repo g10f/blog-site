@@ -28,6 +28,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow">
     </noscript>
     <script src="{% static 'js/theme.js' %}"></script>
+    {% block extra_head %}{% endblock %}
   {% endblock head %}
   {% block social_metadata %}
     {% image page.image fill-800x400-c100 format-webp as image %}
