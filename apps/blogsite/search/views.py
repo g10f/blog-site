@@ -1,10 +1,9 @@
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
+from wagtail.contrib.search_promotions.models import Query
 
 from wagtail.models import Page, Site
-from wagtail.search.models import Query
 
 
 def search(request):
