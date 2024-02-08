@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'wagtail',
     'wagtail.locales',
-    # "wagtail.contrib.modeladmin",
     'wagtail.contrib.simple_translation',
     "wagtail.contrib.routable_page",
     "wagtail.contrib.frontend_cache",

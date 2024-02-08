@@ -69,8 +69,8 @@
               </div>
             {% endif %}
             <p class="card-text">
-              {% if page.price %}{% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
-              {% if page.price_reduced %}<br>{% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
+              {% if page.price %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
+              {% if page.price_reduced %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
             </p>
             {% if page.is_registration_open %}
               <p class="card-text">
