@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.simple_translation',
     "wagtail.contrib.routable_page",
     "wagtail.contrib.frontend_cache",
+    "wagtail.contrib.search_promotions",
 
     'modelcluster',
     'taggit',
