@@ -5,17 +5,6 @@ from datetime import timedelta
 from functools import partial
 
 import wagtail
-from django.conf import settings
-from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.validators import RegexValidator
-from django.db import models
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
-from django.shortcuts import redirect, render
-from django.utils import timezone
-from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
@@ -27,6 +16,17 @@ from wagtail.models import Page, Orderable
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 
+from django.conf import settings
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import RegexValidator
+from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from django.shortcuts import redirect, render
+from django.utils import timezone
+from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from ..base.blocks import BaseStreamBlock
 from ..base.models import HomePage, get_cached_path
 
@@ -262,6 +262,20 @@ class EventPage(BlogPage):
         if now() > self.start_date:
             return True
         return False
+
+    def get_siblings(self, inclusive=True):
+        # Overwrite BlogPage.get_siblings that we can order by start_date.
+        return EventPage.objects.sibling_of(self, inclusive)
+
+    def get_next_siblings(self, inclusive=False):
+        # Order by start_date
+        return self.get_siblings(inclusive).filter(path__gte=self.path).order_by("start_date")
+
+    def get_prev_siblings(self, inclusive=False):
+        # Order by -start_date
+        return (
+            self.get_siblings(inclusive).filter(path__lte=self.path).order_by("-start_date")
+        )
 
 
 class BlogIndexPage(RoutablePageMixin, Page):

@@ -6,8 +6,6 @@ ENV VIRTUAL_ENV=/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install packages needed to run your application (not build deps):
-# We need to recreate the /usr/share/man/man{1..8} directories first because
-# they were clobbered by a parent image.
 ENV RUN_DEPS="libexpat1 libjpeg62-turbo libpcre3 libpq5 mime-support postgresql-client procps zlib1g"
 ENV BUILD_DEPS="build-essential curl git libexpat1-dev libjpeg62-turbo-dev libpcre3-dev libpq-dev zlib1g-dev"
 RUN set -ex \
@@ -27,7 +25,6 @@ RUN set -ex \
 
 ARG USERNAME=worker
 ARG PROJ_NAME=blog-site
-#ARG APP_NAME=blogsite
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
