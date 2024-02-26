@@ -269,12 +269,12 @@ class EventPage(BlogPage):
 
     def get_next_siblings(self, inclusive=False):
         # Order by start_date
-        return self.get_siblings(inclusive).filter(path__gte=self.path).order_by("start_date")
+        return self.get_siblings(inclusive).filter(start_date__gte=self.start_date).order_by("start_date")
 
     def get_prev_siblings(self, inclusive=False):
         # Order by -start_date
         return (
-            self.get_siblings(inclusive).filter(path__lte=self.path).order_by("-start_date")
+            self.get_siblings(inclusive).filter(start_date__lte=self.start_date).order_by("-start_date")
         )
 
 
