@@ -17,6 +17,5 @@ def settings(request):
         'hero_with_title': site_settings.HERO_WITH_TITLE,
         'event_registration_email': site_settings.EVENT_REGISTRATION_EMAIL,
         'event_registration_phone_number': site_settings.EVENT_REGISTRATION_PHONE_NUMBER,
-        'plausible_url': site_settings.PLAUSIBLE_URL,
         'enable_plausible': site_settings.ENABLE_PLAUSIBLE
     }

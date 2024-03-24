@@ -30,7 +30,7 @@
     <script src="{% static 'js/theme.js' %}"></script>
     {% block extra_head %}
       {% if enable_plausible %}
-      <script defer data-domain="{{ site.hostname }}" src="{{ plausible_url }}/js/script.js"></script>
+      <script defer data-domain="{{ site.hostname }}" src="/js/plausible-script.js"></script>
       {% endif %}
     {% endblock %}
   {% endblock head %}
