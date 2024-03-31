@@ -77,15 +77,17 @@
                 {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}Registration until: {{ end_date }}.
                 {% endblocktranslate %}
                   <br>{% endif %}
-                {% if page.registration_phone_number %}
-                  {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
-                    Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
-                    by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                  {% endblocktranslate %}
-                {% else %}
-                  {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
-                    Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                  {% endblocktranslate %}
+                {% if not page.with_registration_form %}
+                  {% if page.registration_phone_number %}
+                    {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
+                      Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
+                      by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                    {% endblocktranslate %}
+                  {% else %}
+                    {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
+                      Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                    {% endblocktranslate %}
+                  {% endif %}
                 {% endif %}
               </p>
             {% endif %}
@@ -105,7 +107,33 @@
           <p class="intro">{{ page.introduction }}</p>
         {% endif %}
         {% include 'includes/body.html' %}
+
+        {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h2>{% translate 'Interested?' %}</h2>
+              <p>
+                {% with artist=page.artists.0 %}
+                  {% if page.registration_phone_number %}
+                    {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
+                      Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
+                      by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                    {% endblocktranslate %}
+                  {% else %}
+                    {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
+                      Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                    {% endblocktranslate %}
+                  {% endif %}
+                  {% translate 'or use the following form:' %}
+                {% endwith %}
+              </p>
+              {% include 'base/customer_request.html' with form=form message=message %}
+            </div>
+          </div>
+        {% endif %}
+
       </div>
+
     </div>
   </div>
 

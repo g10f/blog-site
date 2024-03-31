@@ -1,21 +1,14 @@
 import logging
 import re
-import urllib.parse
 from datetime import timedelta
 from functools import partial
+from urllib.parse import urlencode, urljoin
 
-import wagtail
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
-from wagtail.admin.panels import FieldPanel, InlinePanel
-from wagtail.contrib.frontend_cache.utils import PurgeBatch
-from wagtail.contrib.routable_page.models import RoutablePageMixin, path
-from wagtail.fields import StreamField
-from wagtail.models import Page, Orderable
-from wagtail.search import index
-from wagtail.signals import page_published, post_page_move
 
+import wagtail
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -24,9 +17,17 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.contrib.frontend_cache.utils import PurgeBatch
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path
+from wagtail.fields import StreamField
+from wagtail.models import Page, Orderable
+from wagtail.search import index
+from wagtail.signals import page_published, post_page_move
 from ..base.blocks import BaseStreamBlock
 from ..base.models import HomePage, get_cached_path
 
@@ -133,7 +134,7 @@ class BlogPage(Page):
         """
         tags = self.tags.all()
         for tag in tags:
-            tag.url = urllib.parse.urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
+            tag.url = urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
         return tags
 
     def get_cached_paths(self):
@@ -215,6 +216,7 @@ class EventPage(BlogPage):
     registration_phone_number = models.CharField(_("phone number for registration"), blank=True, max_length=30, validators=[validate_phone])
     is_booked_up = models.BooleanField(_('is booked up'), default=False)
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
+    with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
 
     content_panels = Page.content_panels + [
         FieldPanel('subtitle'),
@@ -235,6 +237,7 @@ class EventPage(BlogPage):
         FieldPanel('price'),
         FieldPanel('price_reduced'),
         FieldPanel('is_registration_open'),
+        FieldPanel('with_registration_form'),
         FieldPanel('registration_end_date'),
         FieldPanel('registration_email'),
         FieldPanel('registration_phone_number'),
@@ -277,6 +280,34 @@ class EventPage(BlogPage):
             self.get_siblings(inclusive).filter(start_date__lte=self.start_date).order_by("-start_date")
         )
 
+    def serve(self, request, view=None, args=None, kwargs=None):
+        from .forms import EventRegistrationForm
+
+        landing = request.GET.get('landing', "0")
+        if request.method == 'POST':
+            to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
+            subject = _('Registration for "%(event)s"') % {"event": self}
+            customer_request = EventRegistration(event=self, subject=subject, to_email=to_email)
+            form = EventRegistrationForm(request.POST, instance=customer_request)
+            if form.is_valid():
+                form.save()
+                # store info that the user filled the form
+                params = {'landing': "1"}
+                redirect_url = f"{self.url}?{urlencode(params)}"
+                return redirect(redirect_url)
+            landing = "0"
+        else:
+            message = _('I would like to register for "%(title)s" at %(data)s.') % {"title": self.title, 'data': self.start_date.date()}
+            form = EventRegistrationForm(initial={'message': message})
+
+        context = self.get_context(request)
+        context["form"] = form
+        if landing == "1":
+            context["message"] = _("Thank you for your message, we will contact you as soon as possible.")
+        return TemplateResponse(request, self.get_template(request), context)
+
+    def __str__(self):
+        return f"{self.start_date.date()} - {self.title}"
 
 class BlogIndexPage(RoutablePageMixin, Page):
     """
@@ -402,6 +433,18 @@ class EventIndexPage(BlogIndexPage):
             return EventPage.objects.live().descendant_of(self).order_by('-start_date')[:num_pages]
 
         # return self.get_children().specific().live().order_by('-path')
+
+
+class EventRegistration(models.Model):
+    event = models.ForeignKey(EventPage, related_name='event', blank=True, null=True,
+                             on_delete=models.SET_NULL)
+    submit_time = models.DateTimeField(auto_now=True, verbose_name='submit_time')
+    subject = models.CharField(_('subject'), max_length=255)
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    telephone = models.CharField(_('telephone'), max_length=20, blank=True)
+    message = models.TextField(_("message"))
+    to_email = models.EmailField()
 
 
 def blog_page_changed(page):
