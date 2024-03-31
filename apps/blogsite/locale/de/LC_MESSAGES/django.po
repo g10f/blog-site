@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-31 12:07+0000\n"
+"POT-Creation-Date: 2024-03-31 12:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,6 +83,36 @@ msgstr "Nachricht"
 #: blogsite/base/models.py:433
 msgid "Spam detected"
 msgstr "Spam entdeckt"
+
+#: blogsite/blog/forms.py:22
+#, python-format
+msgid "Title: %(title)s"
+msgstr "Titel: %(title)s"
+
+#: blogsite/blog/forms.py:23
+#, python-format
+msgid "Date: %(date)s"
+msgstr "Datum: %(date)s"
+
+#: blogsite/blog/forms.py:24
+#, python-format
+msgid "Name: %(name)s"
+msgstr ""
+
+#: blogsite/blog/forms.py:25
+#, python-format
+msgid "Telephone: %(telephone)s"
+msgstr "Telefone: %(telephone)s"
+
+#: blogsite/blog/forms.py:26
+#, python-format
+msgid "Email: %(email)s"
+msgstr ""
+
+#: blogsite/blog/forms.py:27
+#, python-format
+msgid "Message: %(message)s"
+msgstr "Nachricht: %(message)s"
 
 #: blogsite/blog/models.py:39
 msgid "Enter a valid phone number i.e. +49 (531) 123456"

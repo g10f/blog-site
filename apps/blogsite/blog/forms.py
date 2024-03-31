@@ -2,6 +2,7 @@ from django import forms
 from wagtail.admin.mail import send_mail
 
 from .models import EventRegistration
+from django.utils.translation import gettext_lazy as _
 
 
 class EventRegistrationForm(forms.ModelForm):
@@ -18,12 +19,12 @@ class EventRegistrationForm(forms.ModelForm):
 
     def render_email(self, instance):
         content = []
-        content.append("{}: {}".format('title', instance.event.title))
-        content.append("{}: {}".format('date', instance.event.start_date.date()))
-        content.append("{}: {}".format('name', instance.name))
-        content.append("{}: {}".format('telephone', instance.telephone))
-        content.append("{}: {}".format('email', instance.email))
-        content.append("{}: {}".format('message', instance.message))
+        content.append(_("Title: %(title)s") % {'title':  instance.event.title})
+        content.append(_("Date: %(date)s") % {'date':  instance.event.start_date.date()})
+        content.append(_("Name: %(name)s") % {'name':  instance.name})
+        content.append(_("Telephone: %(telephone)s") % {'telephone':  instance.telephone})
+        content.append(_("Email: %(email)s") % {'email':  instance.email})
+        content.append(_("Message: %(message)s") % {'message':  instance.message})
         return "\n".join(content)
 
     def send_mail(self, instance):
