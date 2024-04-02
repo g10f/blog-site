@@ -25,7 +25,7 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
-from wagtail.models import Page, Orderable
+from wagtail.models import Page, Orderable, Site
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 from ..base.blocks import BaseStreamBlock
@@ -218,6 +218,9 @@ class EventPage(BlogPage):
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
 
+    class Meta:
+        verbose_name = _('Event')
+
     content_panels = Page.content_panels + [
         FieldPanel('subtitle'),
         FieldPanel('introduction'),
@@ -288,7 +291,7 @@ class EventPage(BlogPage):
             to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
             subject = _('Registration for "%(event)s"') % {"event": self}
             customer_request = EventRegistration(event=self, subject=subject, to_email=to_email)
-            form = EventRegistrationForm(request.POST, instance=customer_request)
+            form = EventRegistrationForm(request.POST, instance=customer_request, request=request)
             if form.is_valid():
                 form.save()
                 # store info that the user filled the form
@@ -298,7 +301,7 @@ class EventPage(BlogPage):
             landing = "0"
         else:
             message = _('I would like to register for "%(title)s" at %(data)s.') % {"title": self.title, 'data': self.start_date.date()}
-            form = EventRegistrationForm(initial={'message': message})
+            form = EventRegistrationForm(initial={'message': message}, request=request)
 
         context = self.get_context(request)
         context["form"] = form
@@ -440,12 +443,17 @@ class EventRegistration(models.Model):
                              on_delete=models.SET_NULL)
     submit_time = models.DateTimeField(auto_now=True, verbose_name='submit_time')
     subject = models.CharField(_('subject'), max_length=255)
-    name = models.CharField(max_length=255)
+    name = models.CharField(verbose_name=_("first name and last name"), max_length=255)
     email = models.EmailField()
     telephone = models.CharField(_('telephone'), max_length=20, blank=True)
     message = models.TextField(_("message"))
     to_email = models.EmailField()
+    is_member = models.BooleanField(_("member"), default=False)
+    send_email_copy_to_myself = models.BooleanField(_("send a copy of the registration to myself"), default=False)
 
+    class Meta:
+        verbose_name = _('Registration')
+        verbose_name_plural = _('Registrations')
 
 def blog_page_changed(page):
     # we have EventPage and BlogPage pages

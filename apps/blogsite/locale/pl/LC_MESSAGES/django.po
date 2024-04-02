@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-31 12:58+0000\n"
+"POT-Creation-Date: 2024-04-02 17:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,12 +48,12 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
-#: blogsite/base/models.py:159 blogsite/blog/models.py:228
+#: blogsite/base/models.py:159 blogsite/blog/models.py:231
 #: blogsite/templates/blog/event_page.html:41
 msgid "speaker"
 msgstr ""
 
-#: blogsite/base/models.py:160 blogsite/blog/models.py:227
+#: blogsite/base/models.py:160 blogsite/blog/models.py:230
 msgid "speakers"
 msgstr ""
 
@@ -86,34 +86,47 @@ msgstr ""
 msgid "Spam detected"
 msgstr ""
 
-#: blogsite/blog/forms.py:22
-#, python-format
-msgid "Title: %(title)s"
+#: blogsite/blog/forms.py:29
+#, python-brace-format
+msgid "Member of {site_name}"
 msgstr ""
 
-#: blogsite/blog/forms.py:23
-#, python-format
-msgid "Date: %(date)s"
+#: blogsite/blog/forms.py:33
+#, python-brace-format
+msgid "Title: {title}"
 msgstr ""
 
-#: blogsite/blog/forms.py:24
-#, python-format
-msgid "Name: %(name)s"
+#: blogsite/blog/forms.py:34
+#, python-brace-format
+msgid "Date: {date}"
 msgstr ""
 
-#: blogsite/blog/forms.py:25
-#, python-format
-msgid "Telephone: %(telephone)s"
+#: blogsite/blog/forms.py:35
+#, python-brace-format
+msgid "Name: {name}"
 msgstr ""
 
-#: blogsite/blog/forms.py:26
-#, python-format
-msgid "Email: %(email)s"
+#: blogsite/blog/forms.py:36
+#, python-brace-format
+msgid "Telephone: {telephone}"
 msgstr ""
 
-#: blogsite/blog/forms.py:27
-#, python-format
-msgid "Message: %(message)s"
+#: blogsite/blog/forms.py:37
+#, python-brace-format
+msgid "Email: {email}"
+msgstr ""
+
+#: blogsite/blog/forms.py:39
+msgid "Is member: True"
+msgstr ""
+
+#: blogsite/blog/forms.py:41
+msgid "Is member: False"
+msgstr ""
+
+#: blogsite/blog/forms.py:42
+#, python-brace-format
+msgid "Message: {message}"
 msgstr ""
 
 #: blogsite/blog/models.py:39
@@ -136,7 +149,7 @@ msgstr ""
 msgid "date article published"
 msgstr ""
 
-#: blogsite/blog/models.py:161 blogsite/blog/models.py:380
+#: blogsite/blog/models.py:161 blogsite/blog/models.py:383
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr ""
@@ -197,38 +210,62 @@ msgstr ""
 msgid "Displays a registration form."
 msgstr ""
 
-#: blogsite/blog/models.py:249
+#: blogsite/blog/models.py:222
+msgid "Event"
+msgstr ""
+
+#: blogsite/blog/models.py:252
 msgid "authors"
 msgstr ""
 
-#: blogsite/blog/models.py:289
+#: blogsite/blog/models.py:292
 #, python-format
 msgid "Registration for \"%(event)s\""
 msgstr ""
 
-#: blogsite/blog/models.py:300
+#: blogsite/blog/models.py:303
 #, python-format
 msgid "I would like to register for \"%(title)s\" at %(data)s."
 msgstr ""
 
-#: blogsite/blog/models.py:306
+#: blogsite/blog/models.py:309
 msgid "Thank you for your message, we will contact you as soon as possible."
 msgstr ""
 
-#: blogsite/blog/models.py:322
+#: blogsite/blog/models.py:325
 msgid "Text to describe the page"
 msgstr ""
 
-#: blogsite/blog/models.py:442 oidc/models.py:29
+#: blogsite/blog/models.py:445 oidc/models.py:29
 msgid "subject"
 msgstr ""
 
-#: blogsite/blog/models.py:445
+#: blogsite/blog/models.py:446
+msgid "first name and last name"
+msgstr ""
+
+#: blogsite/blog/models.py:448
 msgid "telephone"
 msgstr ""
 
-#: blogsite/blog/models.py:446
+#: blogsite/blog/models.py:449
 msgid "message"
+msgstr ""
+
+#: blogsite/blog/models.py:451
+msgid "member"
+msgstr ""
+
+#: blogsite/blog/models.py:452
+msgid "send a copy of the registration to myself"
+msgstr ""
+
+#: blogsite/blog/models.py:455
+msgid "Registration"
+msgstr ""
+
+#: blogsite/blog/models.py:456
+msgid "Registrations"
 msgstr ""
 
 #: blogsite/search/views.py:34 blogsite/templates/search/search_results.html:8
@@ -286,12 +323,12 @@ msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:52
-#: blogsite/templates/blog/event_page.html:140
+#: blogsite/templates/blog/event_page.html:142
 msgid "Previous articel"
 msgstr ""
 
 #: blogsite/templates/blog/blog_page.html:52
-#: blogsite/templates/blog/event_page.html:140
+#: blogsite/templates/blog/event_page.html:142
 msgid "Next articel"
 msgstr ""
 
@@ -338,7 +375,6 @@ msgid "Registration until: %(end_date)s."
 msgstr ""
 
 #: blogsite/templates/blog/event_page.html:82
-#: blogsite/templates/blog/event_page.html:118
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -348,7 +384,6 @@ msgid ""
 msgstr ""
 
 #: blogsite/templates/blog/event_page.html:87
-#: blogsite/templates/blog/event_page.html:123
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
@@ -363,8 +398,8 @@ msgstr ""
 msgid "Interested?"
 msgstr ""
 
-#: blogsite/templates/blog/event_page.html:127
-msgid "or use the following form:"
+#: blogsite/templates/blog/event_page.html:130
+msgid "Register for the event:"
 msgstr ""
 
 #: blogsite/templates/includes/_color_mode_button.html:3

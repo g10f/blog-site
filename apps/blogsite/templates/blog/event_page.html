@@ -113,19 +113,20 @@
             <div class="card-body">
               <h2>{% translate 'Interested?' %}</h2>
               <p>
-                {% with artist=page.artists.0 %}
-                  {% if page.registration_phone_number %}
-                    {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
-                      Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
-                      by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                    {% endblocktranslate %}
-                  {% else %}
-                    {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
-                      Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                    {% endblocktranslate %}
-                  {% endif %}
-                  {% translate 'or use the following form:' %}
-                {% endwith %}
+              {% comment %}
+                {% if page.registration_phone_number %}
+                  {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
+                    Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
+                    by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                  {% endblocktranslate %}
+                {% else %}
+                  {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
+                    Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                  {% endblocktranslate %}
+                {% endif %}
+                {% translate 'or use the following form:' %}
+              {% endcomment %}
+                {% translate 'Register for the event:' %}
               </p>
               {% include 'base/customer_request.html' with form=form message=message %}
             </div>

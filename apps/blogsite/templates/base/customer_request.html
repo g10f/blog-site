@@ -18,9 +18,7 @@
   {% endif %}
 
   {% for field in form %}
-    {% if field.help_text %}
-      <div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
-    <div class="form-floating mb-3{% if field.errors %} has-error{% endif %}" aria-required="{% if field.field.required %}true{% else %}false{% endif %}">
+    <div class="form-{% if field.widget_type == 'checkbox' %}check{% else %}floating{% endif %} mb-3{% if field.errors %} has-error{% endif %}" aria-required="{% if field.field.required %}true{% else %}false{% endif %}">
       {{ field }}
       <label for="{{ field.id_for_label }}">
         {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>

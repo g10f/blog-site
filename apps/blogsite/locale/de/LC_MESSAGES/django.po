@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-31 12:58+0000\n"
+"POT-Creation-Date: 2024-04-02 17:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,12 +46,12 @@ msgstr "Männlich"
 msgid "Female"
 msgstr "Weiblich"
 
-#: blogsite/base/models.py:159 blogsite/blog/models.py:228
+#: blogsite/base/models.py:159 blogsite/blog/models.py:231
 #: blogsite/templates/blog/event_page.html:41
 msgid "speaker"
 msgstr "Referent"
 
-#: blogsite/base/models.py:160 blogsite/blog/models.py:227
+#: blogsite/base/models.py:160 blogsite/blog/models.py:230
 msgid "speakers"
 msgstr "Referenten"
 
@@ -84,35 +84,48 @@ msgstr "Nachricht"
 msgid "Spam detected"
 msgstr "Spam entdeckt"
 
-#: blogsite/blog/forms.py:22
-#, python-format
-msgid "Title: %(title)s"
-msgstr "Titel: %(title)s"
+#: blogsite/blog/forms.py:29
+#, python-brace-format
+msgid "Member of {site_name}"
+msgstr "{site_name} Mitglied"
 
-#: blogsite/blog/forms.py:23
-#, python-format
-msgid "Date: %(date)s"
-msgstr "Datum: %(date)s"
+#: blogsite/blog/forms.py:33
+#, python-brace-format
+msgid "Title: {title}"
+msgstr "Titel: {title}"
 
-#: blogsite/blog/forms.py:24
-#, python-format
-msgid "Name: %(name)s"
+#: blogsite/blog/forms.py:34
+#, python-brace-format
+msgid "Date: {date}"
+msgstr "Datum: {date}"
+
+#: blogsite/blog/forms.py:35
+#, python-brace-format
+msgid "Name: {name}"
 msgstr ""
 
-#: blogsite/blog/forms.py:25
-#, python-format
-msgid "Telephone: %(telephone)s"
-msgstr "Telefone: %(telephone)s"
+#: blogsite/blog/forms.py:36
+#, python-brace-format
+msgid "Telephone: {telephone}"
+msgstr "Telefone: {telephone}"
 
-#: blogsite/blog/forms.py:26
-#, python-format
-msgid "Email: %(email)s"
+#: blogsite/blog/forms.py:37
+#, python-brace-format
+msgid "Email: {email}"
 msgstr ""
 
-#: blogsite/blog/forms.py:27
-#, python-format
-msgid "Message: %(message)s"
-msgstr "Nachricht: %(message)s"
+#: blogsite/blog/forms.py:39
+msgid "Is member: True"
+msgstr "Ist Mitglied: Ja"
+
+#: blogsite/blog/forms.py:41
+msgid "Is member: False"
+msgstr "Ist Mitglied: Nein"
+
+#: blogsite/blog/forms.py:42
+#, python-brace-format
+msgid "Message: {message}"
+msgstr "Nachricht: {message}"
 
 #: blogsite/blog/models.py:39
 msgid "Enter a valid phone number i.e. +49 (531) 123456"
@@ -134,7 +147,7 @@ msgstr "Untertitel"
 msgid "date article published"
 msgstr "Datum der Veröffentlichung"
 
-#: blogsite/blog/models.py:161 blogsite/blog/models.py:380
+#: blogsite/blog/models.py:161 blogsite/blog/models.py:383
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr "Es gibt kein Tag \"%(tag)s\"."
@@ -195,41 +208,65 @@ msgstr "Zusatzinfos"
 msgid "Displays a registration form."
 msgstr "Anmeldeformular anzeigen"
 
-#: blogsite/blog/models.py:249
+#: blogsite/blog/models.py:222
+msgid "Event"
+msgstr "Veranstaltung"
+
+#: blogsite/blog/models.py:252
 msgid "authors"
 msgstr "Autoren"
 
-#: blogsite/blog/models.py:289
+#: blogsite/blog/models.py:292
 #, python-format
 msgid "Registration for \"%(event)s\""
 msgstr "Anmeldung für %(event)s."
 
-#: blogsite/blog/models.py:300
+#: blogsite/blog/models.py:303
 #, python-format
 msgid "I would like to register for \"%(title)s\" at %(data)s."
 msgstr "Ich möchte mich für das Seminar \"%(title)s\" am %(data)s anmelden."
 
-#: blogsite/blog/models.py:306
+#: blogsite/blog/models.py:309
 msgid "Thank you for your message, we will contact you as soon as possible."
 msgstr ""
 "Vielen Dank für Ihre Nachricht, wir melden uns bei Ihnen so schnell wie "
 "möglich."
 
-#: blogsite/blog/models.py:322
+#: blogsite/blog/models.py:325
 msgid "Text to describe the page"
 msgstr ""
 
-#: blogsite/blog/models.py:442 oidc/models.py:29
+#: blogsite/blog/models.py:445 oidc/models.py:29
 msgid "subject"
 msgstr ""
 
-#: blogsite/blog/models.py:445
+#: blogsite/blog/models.py:446
+msgid "first name and last name"
+msgstr "Vor- und Nachname"
+
+#: blogsite/blog/models.py:448
 msgid "telephone"
 msgstr "Telefon"
 
-#: blogsite/blog/models.py:446
+#: blogsite/blog/models.py:449
 msgid "message"
 msgstr "Nachricht"
+
+#: blogsite/blog/models.py:451
+msgid "member"
+msgstr "Mitglied"
+
+#: blogsite/blog/models.py:452
+msgid "send a copy of the registration to myself"
+msgstr "Kopie der Anmeldung an mich selbst senden"
+
+#: blogsite/blog/models.py:455
+msgid "Registration"
+msgstr "Anmeldung"
+
+#: blogsite/blog/models.py:456
+msgid "Registrations"
+msgstr "Anmeldungen"
 
 #: blogsite/search/views.py:34 blogsite/templates/search/search_results.html:8
 msgid "Search results"
@@ -286,12 +323,12 @@ msgstr ""
 "Blogbeiträge zu schreiben. Verzeihung."
 
 #: blogsite/templates/blog/blog_page.html:52
-#: blogsite/templates/blog/event_page.html:140
+#: blogsite/templates/blog/event_page.html:142
 msgid "Previous articel"
 msgstr "Vorheriger Beitrag"
 
 #: blogsite/templates/blog/blog_page.html:52
-#: blogsite/templates/blog/event_page.html:140
+#: blogsite/templates/blog/event_page.html:142
 msgid "Next articel"
 msgstr "Nächster Beitrag"
 
@@ -338,7 +375,6 @@ msgid "Registration until: %(end_date)s."
 msgstr "Anmeldung bis: %(end_date)s."
 
 #: blogsite/templates/blog/event_page.html:82
-#: blogsite/templates/blog/event_page.html:118
 #, python-format
 msgid ""
 "Contact us at the phone number <a href=\"tel:"
@@ -352,7 +388,6 @@ msgstr ""
 "class=\"card-link\">%(registration_email)s</a>"
 
 #: blogsite/templates/blog/event_page.html:87
-#: blogsite/templates/blog/event_page.html:123
 #, python-format
 msgid ""
 "Contact us by email <a href=\"mailto:%(registration_email)s?"
@@ -369,9 +404,9 @@ msgstr "Veranstaltungsort/Sonstiges"
 msgid "Interested?"
 msgstr "Interessiert?"
 
-#: blogsite/templates/blog/event_page.html:127
-msgid "or use the following form:"
-msgstr "oder benutzen Sie das Formular:"
+#: blogsite/templates/blog/event_page.html:130
+msgid "Register for the event:"
+msgstr "Melden Sie sich für die Veranstaltung an:"
 
 #: blogsite/templates/includes/_color_mode_button.html:3
 msgid "Dark mode toggle"
@@ -468,3 +503,6 @@ msgstr "Abmelden von %(idp)s"
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr "Anmelden mit %(idp)s"
+
+#~ msgid "or use the following form:"
+#~ msgstr "oder benutzen Sie das Formular:"
