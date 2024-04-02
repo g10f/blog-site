@@ -107,7 +107,7 @@ msgstr ""
 #: blogsite/blog/forms.py:36
 #, python-brace-format
 msgid "Telephone: {telephone}"
-msgstr "Telefone: {telephone}"
+msgstr "Telefon: {telephone}"
 
 #: blogsite/blog/forms.py:37
 #, python-brace-format
