@@ -3,17 +3,9 @@ from urllib.parse import urlparse
 
 import wagtail
 from django_recaptcha.fields import ReCaptchaField
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator
-from django.db import models
-from django.forms import CharField, TextInput, forms
-from django.utils.text import slugify
-from django.utils.translation import gettext as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, \
-    InlinePanel, PublishingPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, InlinePanel, PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.settings.models import BaseSiteSetting
@@ -24,6 +16,13 @@ from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+from django.db import models
+from django.forms import CharField, forms
+from django.utils.text import slugify
+from django.utils.translation import gettext as _
 from .blocks import BaseStreamBlock, PersonBlock
 
 logger = logging.getLogger(__name__)
@@ -50,9 +49,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     last_name = models.CharField("last name", max_length=254)
     job_title = models.CharField("job title", blank=True, max_length=254)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
-    description = wagtail.fields.RichTextField(
-        "description",
-        features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
+    description = wagtail.fields.RichTextField("description", features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -112,20 +109,14 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
 @register_snippet
 class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
-    GENDER_CHOICES = (
-        ("", "---------"),
-        ("m", _("Male")),
-        ("f", _("Female")),
-    )
+    GENDER_CHOICES = (("", "---------"), ("m", _("Male")), ("f", _("Female")),)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     gender = models.CharField(choices=GENDER_CHOICES, blank=True)
     first_name = models.CharField("first name", max_length=254)
     last_name = models.CharField("last name", max_length=254)
     job_title = models.CharField("job title", blank=True, max_length=254)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True)
-    description = wagtail.fields.RichTextField(
-        "description",
-        features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
+    description = wagtail.fields.RichTextField("description", features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -191,12 +182,7 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
     image_footer = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
     image_ico = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.CASCADE, related_name='+', help_text='Favicon')
 
-    panels = [
-        FieldPanel('site'),
-        FieldPanel('image_header'),
-        FieldPanel('image_footer'),
-        FieldPanel('image_ico')
-    ]
+    panels = [FieldPanel('site'), FieldPanel('image_header'), FieldPanel('image_footer'), FieldPanel('image_ico')]
 
     def __str__(self):
         if self.site:
@@ -261,15 +247,9 @@ class StandardPage(Page):
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [
-        FieldPanel('introduction'),
-        FieldPanel('body'),
-        FieldPanel('image'), ]
+    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('body'), FieldPanel('image'), ]
 
-    search_fields = Page.search_fields + [
-        index.SearchField('introduction'),
-        index.SearchField('body'),
-    ]
+    search_fields = Page.search_fields + [index.SearchField('introduction'), index.SearchField('body'), ]
 
 
 class PersonsPage(Page):
@@ -284,10 +264,7 @@ class PersonsPage(Page):
     body = StreamField([('person', PersonBlock())], verbose_name="Page body", blank=True, use_json_field=True)
     content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('image'), FieldPanel('body'), ]
 
-    search_fields = Page.search_fields + [
-        index.SearchField('introduction'),
-        index.SearchField('body'),
-    ]
+    search_fields = Page.search_fields + [index.SearchField('introduction'), index.SearchField('body'), ]
 
 
 class HomePage(Page):
@@ -323,13 +300,11 @@ class HomePage(Page):
     # that we define on the individual Page models e.g. BlogIndexPage
     featured_section_1_title = models.CharField(null=True, blank=True, max_length=255, help_text='Title to display above the promo copy')
     featured_section_1 = models.ForeignKey('wagtailcore.Page', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
-                                           help_text='First featured section for the homepage. Will display up to three child items.',
-                                           verbose_name='Featured section 1')
+                                           help_text='First featured section for the homepage. Will display up to three child items.', verbose_name='Featured section 1')
 
     featured_section_2_title = models.CharField(null=True, blank=True, max_length=255, help_text='Title to display above the promo copy')
     featured_section_2 = models.ForeignKey('wagtailcore.Page', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
-                                           help_text='Second featured section for the homepage. Will display up to three child items.',
-                                           verbose_name='Featured section 2')
+                                           help_text='Second featured section for the homepage. Will display up to three child items.', verbose_name='Featured section 2')
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
@@ -363,9 +338,7 @@ class HomePage(Page):
                     ]),
             ], heading="Featured homepage sections", classname="collapsible")]
 
-    search_fields = Page.search_fields + [
-        index.SearchField('body'),
-    ]
+    search_fields = Page.search_fields + [index.SearchField('body'), ]
 
     def __str__(self):
         return self.title
@@ -415,6 +388,7 @@ class CustomFormBuilder(FormBuilder):
 
         return wrapped_create_field_function
 
+
 def remove_captcha_field(form):
     form.fields.pop(CustomFormBuilder.CAPTCHA_FIELD_NAME, None)
     form.cleaned_data.pop(CustomFormBuilder.CAPTCHA_FIELD_NAME, None)
@@ -428,10 +402,13 @@ class FormPage(AbstractEmailForm):
 
     def process_form_submission(self, form):
         # remove the captcha field, because we don't need this in the email
-        if CustomFormBuilder.HONEY_POT_FIELD_NAME in form.cleaned_data and \
-            form.cleaned_data[CustomFormBuilder.HONEY_POT_FIELD_NAME] != '':
-            logger.warning(_("Spam detected"))
-            return
+        if CustomFormBuilder.HONEY_POT_FIELD_NAME in form.cleaned_data:
+            if form.cleaned_data[CustomFormBuilder.HONEY_POT_FIELD_NAME] != '':
+                logger.warning(_("Spam detected"))
+                return
+            else:
+                form.fields.pop(CustomFormBuilder.HONEY_POT_FIELD_NAME, None)
+                form.cleaned_data.pop(CustomFormBuilder.HONEY_POT_FIELD_NAME, None)
         remove_captcha_field(form)
         return super().process_form_submission(form)
 
@@ -451,12 +428,8 @@ class SocialMediaSettings(BaseSiteSetting):
 
     @property
     def social_media(self):
-        return [
-            {'id': 'facebook', 'url': self.facebook},
-            {'id': 'instagram', 'url': self.instagram},
-            {'id': 'youtube', 'url': self.youtube},
-            {'id': 'twitter', 'url': self.twitter},
-        ]
+        return [{'id': 'facebook', 'url': self.facebook}, {'id': 'instagram', 'url': self.instagram}, {'id': 'youtube', 'url': self.youtube},
+            {'id': 'twitter', 'url': self.twitter}, ]
 
     @property
     def twitter_site(self):
