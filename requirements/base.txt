@@ -4,6 +4,6 @@ dj-database-url
 gunicorn
 mozilla-django-oidc
 psycopg[c]
-wagtail==6.0.1
+wagtail==6.0.2
 wagtail-modeladmin
 whitenoise
