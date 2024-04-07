@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=1.6.4
+VERSION=1.6.5
 
 sed -i "s/__version__ =.*/__version__ = '${VERSION}'/" apps/blogsite/__init__.py
 
