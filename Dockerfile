@@ -51,5 +51,5 @@ ENV DJANGO_SETTINGS_MODULE=blogsite.settings.production
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Start gunicorn
-CMD ["gunicorn", "blogsite.wsgi:application", "--bind 0.0.0.0:8000", "-w", "2"]
+CMD ["gunicorn", "blogsite.wsgi:application", "-b", "0.0.0.0:8000", "--forwarded-allow-ips", "*"]
 EXPOSE 8000
