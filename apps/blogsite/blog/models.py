@@ -30,6 +30,7 @@ from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 from ..base.blocks import BaseStreamBlock
 from ..base.models import HomePage, get_cached_path
+from ..base.views import SiteFieldChooserViewSet
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +101,9 @@ class BlogPage(Page):
         FieldPanel('date_published'),
         AuthorPanel(
             'blog_person_relationship', label="Author(s)",
-            panels=None, min_num=1),
+            # see https://docs.wagtail.org/en/stable/extending/generic_views.html#limiting-choices-via-linked-fields
+            panels=[FieldPanel('people', widget=SiteFieldChooserViewSet(name="people_chooser", model="base.People").widget_class(linked_fields={'site': '#id_site', }))],
+            min_num=1),
         FieldPanel('tags'),
     ]
 
@@ -226,12 +229,10 @@ class EventPage(BlogPage):
         FieldPanel('introduction'),
         FieldPanel('image'),
         InlinePanel(
-            "event_speaker_relationship",
-            heading=_("speakers"),
-            label=_("speaker"),
-            panels=None,
-            min_num=0,
-        ),
+            'event_speaker_relationship', label=_("speakers"),
+            # see https://docs.wagtail.org/en/stable/extending/generic_views.html#limiting-choices-via-linked-fields
+            panels=[FieldPanel('speaker', widget=SiteFieldChooserViewSet(name="speaker_chooser", model="base.Speaker").widget_class(linked_fields={'site': '#id_site', }))],
+            min_num=0),
         FieldPanel('start_date'),
         FieldPanel('end_date'),
         FieldPanel('location'),
@@ -248,9 +249,11 @@ class EventPage(BlogPage):
         FieldPanel('additional_infos'),
         FieldPanel('body'),
         FieldPanel('date_published'),
-        AuthorPanel(
+        InlinePanel(
             'blog_person_relationship', label=_("authors"),
-            panels=None, min_num=0),
+            # see https://docs.wagtail.org/en/stable/extending/generic_views.html#limiting-choices-via-linked-fields
+            panels=[FieldPanel('people', widget=SiteFieldChooserViewSet(name="people_chooser", model="base.People").widget_class(linked_fields={'site': '#id_site', }))],
+            min_num=0),
         FieldPanel('tags'),
     ]
 
@@ -311,6 +314,7 @@ class EventPage(BlogPage):
 
     def __str__(self):
         return f"{self.start_date.date()} - {self.title}"
+
 
 class BlogIndexPage(RoutablePageMixin, Page):
     """
@@ -440,7 +444,7 @@ class EventIndexPage(BlogIndexPage):
 
 class EventRegistration(models.Model):
     event = models.ForeignKey(EventPage, related_name='event', blank=True, null=True,
-                             on_delete=models.SET_NULL)
+                              on_delete=models.SET_NULL)
     submit_time = models.DateTimeField(auto_now=True, verbose_name='submit_time')
     subject = models.CharField(_('subject'), max_length=255)
     name = models.CharField(verbose_name=_("first name and last name"), max_length=255)
@@ -454,6 +458,7 @@ class EventRegistration(models.Model):
     class Meta:
         verbose_name = _('Registration')
         verbose_name_plural = _('Registrations')
+
 
 def blog_page_changed(page):
     # we have EventPage and BlogPage pages

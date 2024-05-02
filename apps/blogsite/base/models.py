@@ -1,10 +1,18 @@
 import logging
 from urllib.parse import urlparse
 
-import wagtail
 from django_recaptcha.fields import ReCaptchaField
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+
+import wagtail
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+from django.db import models
+from django.forms import CharField, forms
+from django.utils.text import slugify
+from django.utils.translation import gettext as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, InlinePanel, PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
@@ -15,20 +23,12 @@ from wagtail.models import Page, TranslatableMixin, _copy, DraftStateMixin, Revi
 from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
-
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator
-from django.db import models
-from django.forms import CharField, forms
-from django.utils.text import slugify
-from django.utils.translation import gettext as _
 from .blocks import BaseStreamBlock, PersonBlock
+
 
 logger = logging.getLogger(__name__)
 
 
-@register_snippet
 class People(TranslatableMixin, index.Indexed, ClusterableModel):
     """
     A Django model to store People objects.
@@ -60,7 +60,8 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
             FieldRowPanel([FieldPanel('first_name', classname="col6"), FieldPanel('last_name', classname="col6"), ])], "Name"),
         FieldPanel('slug'),
         FieldPanel('job_title'),
-        FieldPanel('image')
+        FieldPanel('image'),
+        FieldPanel('description')
     ]
 
     search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
@@ -107,7 +108,6 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
         return super().full_clean(exclude, validate_unique)
 
 
-@register_snippet
 class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
     GENDER_CHOICES = (("", "---------"), ("m", _("Male")), ("f", _("Female")),)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
@@ -175,7 +175,6 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
         return super().full_clean(exclude, validate_unique)
 
 
-@register_snippet
 class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
     site = models.OneToOneField(Site, on_delete=models.CASCADE, blank=True, null=True)
     image_header = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
@@ -200,9 +199,7 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
         verbose_name_plural = 'Site Logo'
 
 
-@register_snippet
 class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableMixin, models.Model):
-    # class FooterText(TranslatableMixin, models.Model):
     """
     This provides editable text for the site footer. Again it uses the decorator
     `register_snippet` to allow it to be accessible via the admin. It is made
@@ -414,9 +411,20 @@ class FormPage(AbstractEmailForm):
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
-    content_panels = AbstractEmailForm.content_panels + [FieldPanel('image'), FieldPanel('body'), InlinePanel('form_fields', label="Form fields"),
-                                                         FieldPanel('thank_you_text'), MultiFieldPanel(
-            [FieldRowPanel([FieldPanel('from_address', classname="col6"), FieldPanel('to_address', classname="col6"), ]), FieldPanel('subject'), ], "Email"), ]
+    content_panels = (
+        AbstractEmailForm.content_panels + [
+        FieldPanel('image'),
+        FieldPanel('body'),
+        InlinePanel('form_fields', label="Form fields"),
+        FieldPanel('thank_you_text'),
+        MultiFieldPanel([
+            FieldRowPanel([
+                FieldPanel('from_address', classname="col6"),
+                FieldPanel('to_address', classname="col6")
+            ]),
+            FieldPanel('subject')
+        ], "Email")
+    ])
 
 
 @register_setting
@@ -429,7 +437,7 @@ class SocialMediaSettings(BaseSiteSetting):
     @property
     def social_media(self):
         return [{'id': 'facebook', 'url': self.facebook}, {'id': 'instagram', 'url': self.instagram}, {'id': 'youtube', 'url': self.youtube},
-            {'id': 'twitter', 'url': self.twitter}, ]
+                {'id': 'twitter', 'url': self.twitter}, ]
 
     @property
     def twitter_site(self):
