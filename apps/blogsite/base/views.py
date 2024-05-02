@@ -17,9 +17,6 @@ class SiteFieldSnippetViewSet(SnippetViewSet):
         else:
             return queryset.filter(site__in=sites)
 
-    def get_form_class(self, for_update=False):
-        return get_form_for_model(self.model, form_class=SiteFieldForm, exclude=())
-
 
 class SiteFieldChooserViewSet(ChooserViewSet):
     # The model can be specified as either the model class or an "app_label.model_name" string;

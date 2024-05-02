@@ -18,7 +18,3 @@ class SiteFieldForm(WagtailAdminModelForm):
                 logger.warning('No site field in form selected')
             if 'for_user' not in kwargs:
                 logger.warning('No for_user kwargs')
-
-    class Meta:
-        # TODO: use fields defined in panel
-        exclude = ()

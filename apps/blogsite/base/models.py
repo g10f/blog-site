@@ -24,7 +24,7 @@ from wagtail.models import Site
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 from .blocks import BaseStreamBlock, PersonBlock
-
+from .forms import SiteFieldForm
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
     description = wagtail.fields.RichTextField("description", features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    base_form_class = SiteFieldForm
 
     panels = [
         FieldPanel('user'),
@@ -61,7 +62,7 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
         FieldPanel('slug'),
         FieldPanel('job_title'),
         FieldPanel('image'),
-        FieldPanel('description')
+        # FieldPanel('description')
     ]
 
     search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
@@ -119,6 +120,7 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
     description = wagtail.fields.RichTextField("description", features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link'], blank=True)
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    base_form_class = SiteFieldForm
 
     panels = [
         FieldPanel('site'),
@@ -181,7 +183,13 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
     image_footer = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
     image_ico = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.CASCADE, related_name='+', help_text='Favicon')
 
-    panels = [FieldPanel('site'), FieldPanel('image_header'), FieldPanel('image_footer'), FieldPanel('image_ico')]
+    base_form_class = SiteFieldForm
+    panels = [
+        FieldPanel('site'),
+        FieldPanel('image_header'),
+        FieldPanel('image_footer'),
+        FieldPanel('image_ico')
+    ]
 
     def __str__(self):
         if self.site:
@@ -208,6 +216,7 @@ class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableM
     """
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     body = models.TextField()
+    base_form_class = SiteFieldForm
 
     panels = [FieldPanel('body'), FieldPanel('site'), PublishingPanel()]
 
