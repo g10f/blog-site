@@ -7,8 +7,6 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 
 
 class SiteFieldSnippetViewSet(SnippetViewSet):
-    icon = "user"
-
     def get_queryset(self, request):
         sites = get_sites(request.user)
         queryset = self.model._default_manager.all()

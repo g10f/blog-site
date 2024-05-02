@@ -3,18 +3,22 @@ from wagtail.snippets.models import register_snippet
 
 
 class SpeakerViewSet(SiteFieldSnippetViewSet):
+    icon = "user"
     name = "speaker-view-set"
 
 
 class PeopleViewSet(SiteFieldSnippetViewSet):
+    icon = "user"
     name = "people-view-set"
 
 
 class LogoViewSet(SiteFieldSnippetViewSet):
+    icon = "image"
     name = "logo-view-set"
 
 
 class FooterViewSet(SiteFieldSnippetViewSet):
+    icon = "code"
     name = "footer-view-set"
 
 
