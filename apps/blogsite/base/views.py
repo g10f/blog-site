@@ -1,12 +1,30 @@
-from blogsite.base.forms import SiteFieldForm
 from blogsite.base.site import get_sites
 from wagtail import hooks
-from wagtail.admin.panels import get_form_for_model
+from wagtail.admin.filters import WagtailFilterSet
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 
+def get_site_filter_class(the_model):
+    """
+    Create site filter class for model
+    :param the_model:
+    :return:
+    """
+    class SiteFilterSet(WagtailFilterSet):
+        class Meta:
+            fields = ["site"]
+            model = the_model
+
+        def filter_queryset(self, queryset):
+            return super().filter_queryset(queryset)
+
+    return SiteFilterSet
+
+
 class SiteFieldSnippetViewSet(SnippetViewSet):
+    filterset_class = None
+
     def get_queryset(self, request):
         sites = get_sites(request.user)
         queryset = self.model._default_manager.all()
@@ -14,6 +32,10 @@ class SiteFieldSnippetViewSet(SnippetViewSet):
             return queryset
         else:
             return queryset.filter(site__in=sites)
+
+    def __init__(self, **kwargs):
+        self.filterset_class = get_site_filter_class(kwargs['model'])
+        super().__init__(**kwargs)
 
 
 class SiteFieldChooserViewSet(ChooserViewSet):

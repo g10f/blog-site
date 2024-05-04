@@ -459,6 +459,19 @@ class EventRegistration(models.Model):
         verbose_name = _('Registration')
         verbose_name_plural = _('Registrations')
 
+    panels = [
+        FieldPanel('event'),
+        FieldPanel('submit_time', read_only=True),
+        FieldPanel('subject'),
+        FieldPanel('name'),
+        FieldPanel('email'),
+        FieldPanel('telephone'),
+        FieldPanel('message'),
+        FieldPanel('is_member'),
+    ]
+    def __str__(self):
+        return f"{self.event} {self.name}"
+
 
 def blog_page_changed(page):
     # we have EventPage and BlogPage pages

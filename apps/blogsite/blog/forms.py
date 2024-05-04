@@ -1,11 +1,8 @@
-from wagtail.models.sites import Site
-
 from django import forms
-from wagtail.admin.mail import send_mail
-
-from django.contrib.sites.shortcuts import get_current_site
-from .models import EventRegistration
 from django.utils.translation import gettext as _
+from wagtail.admin.mail import send_mail
+from wagtail.models.sites import Site
+from .models import EventRegistration
 
 
 class EventRegistrationForm(forms.ModelForm):
