@@ -3,7 +3,9 @@
 
 {% block content %}
   {% include "base/include/header-hero.html" with intro=True %}
-
+  <div class="container-lg">
+    {% include 'includes/body.html' %}
+  </div>
   <div class="container-lg">
     {% if page.get_child_tags %}
       <nav class="mb-2">

@@ -336,10 +336,12 @@ class BlogIndexPage(RoutablePageMixin, Page):
         related_name='+',
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
     )
+    body = StreamField(BaseStreamBlock(), verbose_name=_("page body"), blank=True, use_json_field=True)
 
     content_panels = Page.content_panels + [
         FieldPanel('introduction'),
         FieldPanel('image'),
+        FieldPanel('body'),
     ]
 
     # Specifies that only BlogPage objects can live under this index page
