@@ -27,5 +27,6 @@
       {% endif %}
     </div>
   {% endfor %}
-  <input class="btn btn-primary" type="submit">
+  {% translate "Submit" as default_submit_button_text %}
+  <input class="btn btn-primary" type="submit" value="{{ submit_button_text|default:default_submit_button_text }}">
 </form>

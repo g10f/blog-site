@@ -128,7 +128,8 @@
               {% endcomment %}
                 {% translate 'Register for the event:' %}
               </p>
-              {% include 'base/customer_request.html' with form=form message=message %}
+              {% translate "Register" as submit_button_text %}
+              {% include 'base/customer_request.html' with form=form message=message submit_button_text=submit_button_text %}
             </div>
           </div>
         {% endif %}
