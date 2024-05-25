@@ -18,7 +18,8 @@
                     <div class="card-title h3">{{ event.title }}</div>
                     <div class="card-subtitle h4">{{ event.subtitle }}</div>
                     {% include event.intro_template with obj=event %}
-                    <a href="{% pageurl event %}{% if tag %}?tag={{ tag.slug }}{% endif %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
+                    <a href="{% pageurl event %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
+                       class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
                   </div>
                 </div>
               </div>
@@ -31,6 +32,5 @@
         <p>{% translate 'Oh, snap. Looks like we were too busy to write any blog posts. Sorry.' %}</p>
       </div>
     {% endif %}
-  </div>
   </div>
 {% endblock %}

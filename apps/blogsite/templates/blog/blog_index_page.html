@@ -7,16 +7,21 @@
     {% include 'includes/body.html' %}
   </div>
   <div class="container-lg">
-    {% if page.get_child_tags %}
+    {% if page.get_child_tags or page.get_years %}
       <nav class="mb-2">
         <a class="btn btn-sm btn-outline-{% if not tag %}primary{% else %}secondary{% endif %}" role="button"
            href="{% pageurl page %}">{% translate 'All' %}</a>
         {% for child_tag in page.get_child_tags %}
           <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button"
              href="{{ child_tag.url }}">{{ child_tag }}</a>
+        {% endfor %}    
+        {% for year in page.get_years %}
+          <a class="btn btn-sm btn-outline-{% if tag == year %}primary{% else %}secondary{% endif %}" role="button"
+             href="?year={{ year }}">{{ year }}</a>
         {% endfor %}
       </nav>
     {% endif %}
+  
 
     {% block posts %}
       <div class="row">
@@ -47,17 +52,17 @@
           </div>
         {% endif %}
       </div>
-      </div>
     {% endblock %}
 
-  {% if posts.paginator.num_pages > 1 %}
-    <div class="container-lg">
-      <div class="row">
-        <div class="col-md-12">
-          {% include "includes/pagination.html" with subpages=posts %}
+    {% if posts.paginator.num_pages > 1 %}
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-md-12">
+            {% include "includes/pagination.html" with subpages=posts %}
+          </div>
         </div>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 
 {% endblock content %}

@@ -426,11 +426,19 @@ class EventIndexPage(BlogIndexPage):
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
-    def get_posts(self, tag=None):
+    def get_posts(self, tag=None, year=None):
         posts = EventPage.objects.live().descendant_of(self).order_by('-start_date')
         if tag:
             posts = posts.filter(tags=tag)
+        if year:
+            posts = posts.filter(start_date__year=year)
         return posts
+
+    def get_years(self):
+        years = []
+        for post in EventPage.objects.live().descendant_of(self).order_by('-start_date').dates('start_date', 'year'):
+            years.append(post.year)
+        return years
 
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
@@ -440,8 +448,6 @@ class EventIndexPage(BlogIndexPage):
             return reversed(EventPage.objects.live().descendant_of(self).filter(start_date__gt=now()).order_by('start_date')[:num_pages])
         else:
             return EventPage.objects.live().descendant_of(self).order_by('-start_date')[:num_pages]
-
-        # return self.get_children().specific().live().order_by('-path')
 
 
 class EventRegistration(models.Model):
@@ -471,6 +477,7 @@ class EventRegistration(models.Model):
         FieldPanel('message'),
         FieldPanel('is_member'),
     ]
+
     def __str__(self):
         return f"{self.event} {self.name}"
 
