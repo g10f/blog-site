@@ -372,7 +372,9 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # https://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context['posts'] = self.paginate(request, self.get_posts())
+        year = request.GET.get('year')
+        context['year'] = year
+        context['posts'] = self.paginate(request, self.get_posts(year=year))
         return context
 
     # This defines a Custom view that utilizes Tags. This view will return all
@@ -382,6 +384,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     @path('tags/', name='tag_archive')
     @path('tags/<tag>/', name='tag_archive')
     def tag_archive(self, request, tag=None):
+        year = request.GET.get('year')
         try:
             tag = Tag.objects.get(slug=tag)
         except Tag.DoesNotExist:
@@ -390,8 +393,9 @@ class BlogIndexPage(RoutablePageMixin, Page):
                 messages.add_message(request, messages.INFO, msg)
             return redirect(self.url)
 
-        posts = self.paginate(request, self.get_posts(tag=tag))
+        posts = self.paginate(request, self.get_posts(tag=tag, year=year))
         context = super(BlogIndexPage, self).get_context(request)
+        context['year'] = year
         context['tag'] = tag
         context['posts'] = posts
         return render(request, 'blog/blog_index_page.html', context)
@@ -405,10 +409,12 @@ class BlogIndexPage(RoutablePageMixin, Page):
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
-    def get_posts(self, tag=None):
+    def get_posts(self, tag=None, year=None):
         posts = BlogPage.objects.live().descendant_of(self).order_by('-path')
         if tag:
             posts = posts.filter(tags=tag)
+        if year:
+            posts = posts.filter(date_published__year=year)
         return posts
 
     # Returns the list of Tags for all child posts of this BlogPage.
@@ -419,6 +425,12 @@ class BlogIndexPage(RoutablePageMixin, Page):
             tags += post.get_tags
         tags = sorted(set(tags))
         return tags
+
+    def get_years(self):
+        years = []
+        for post in BlogPage.objects.live().descendant_of(self).order_by('-date_published').dates('date_published', 'year'):
+            years.append(post.year)
+        return years
 
 
 class EventIndexPage(BlogIndexPage):
