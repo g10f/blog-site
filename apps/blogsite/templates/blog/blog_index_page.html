@@ -7,7 +7,8 @@
     {% include 'includes/body.html' %}
   </div>
   <div class="container-lg">
-    {% if page.get_child_tags or page.get_years %}
+{#    {% if page.get_child_tags or page.get_years %}#}
+      {% if page.get_child_tags %}
       <nav class="mb-2">
         <a class="btn btn-sm btn-outline-{% if not tag and not year %}primary{% else %}secondary{% endif %}" role="button"
            href="{% pageurl page %}">{% translate 'All' %}</a>
@@ -15,10 +16,10 @@
           <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button"
              href="{{ child_tag.url }}">{{ child_tag }}</a>
         {% endfor %}    
-        {% for child_year in page.get_years %}
-          <a class="btn btn-sm btn-outline-{% if year == child_year|stringformat:"i" %}primary{% else %}secondary{% endif %}" role="button"
-             href="{% pageurl page %}?year={{ child_year }}">{{ child_year }}</a>
-        {% endfor %}
+{#        {% for child_year in page.get_years %}#}
+{#          <a class="btn btn-sm btn-outline-{% if year == child_year|stringformat:"i" %}primary{% else %}secondary{% endif %}" role="button"#}
+{#             href="{% pageurl page %}?year={{ child_year }}">{{ child_year }}</a>#}
+{#        {% endfor %}#}
       </nav>
     {% endif %}
   

@@ -398,7 +398,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context['year'] = year
         context['tag'] = tag
         context['posts'] = posts
-        return render(request, 'blog/blog_index_page.html', context)
+        return render(request, self.template, context)
 
     def get_cached_paths(self):
         return get_cached_path(
