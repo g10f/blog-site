@@ -75,7 +75,7 @@
             {% endif %}
 
             <div class="featured-children">
-              {% children page.featured_section_1.localized.specific 3 as featured_section_1_childpages %}
+              {% children page.featured_section_1.localized.specific page.featured_section_1_number|default:3 as featured_section_1_childpages %}
               {% for childpage in featured_section_1_childpages %}
                 {% image childpage.image fill-800x800-c100 format-webp as child_image %}
                 <div class="card mb-3 shadow">
