@@ -29,6 +29,7 @@ class EventRegistrationForm(forms.ModelForm):
         content = []
         content.append(_("Title: {title}").format(title=instance.event.title))
         content.append(_("Date: {date}").format(date=instance.event.start_date.date()))
+        content.append(_("Location: {location}").format(location=instance.event.location))
         content.append(_("Name: {name}").format(name=instance.name))
         content.append(_("Telephone: {telephone}").format(telephone=instance.telephone))
         content.append(_("Email: {email}").format(email=instance.email))
