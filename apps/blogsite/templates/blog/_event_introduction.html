@@ -1,11 +1,11 @@
 {% load i18n wagtailcore_tags  wagtailimages_tags %}
 {% if obj.introduction %}
-<p>
+<p class="{% if obj.highlight_introduction %} text-danger{% endif %}">
   {{ obj.introduction|truncatewords:15 }}
 </p>
 {% endif %}
 <p>
   {% translate 'date'|capfirst %}: {{ obj.start_date | date:"l j. F Y" }}<br>
   {% translate 'time'|capfirst %}: {{ obj.start_date | date:"G:i" }} - {{ obj.end_date | date:"G:i" }}<br>
-  {% translate 'event location'|capfirst %}: {{ obj.location }}
+  {% if obj.location %}{% translate 'event location'|capfirst %}: {{ obj.location }}{% endif %}
 </p>

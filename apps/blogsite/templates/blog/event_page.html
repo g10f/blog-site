@@ -104,7 +104,7 @@
       </div>
       <div class="col-md-7">
         {% if page.introduction %}
-          <p class="intro">{{ page.introduction }}</p>
+          <p class="intro{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
         {% endif %}
         {% include 'includes/body.html' %}
 

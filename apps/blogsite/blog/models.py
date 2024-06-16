@@ -220,6 +220,7 @@ class EventPage(BlogPage):
     is_booked_up = models.BooleanField(_('is booked up'), default=False)
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
+    highlight_introduction = models.BooleanField(_('highlight introduction'), default=False)
 
     class Meta:
         verbose_name = _('Event')
@@ -227,6 +228,7 @@ class EventPage(BlogPage):
     content_panels = Page.content_panels + [
         FieldPanel('subtitle'),
         FieldPanel('introduction'),
+        FieldPanel('highlight_introduction'),
         FieldPanel('image'),
         InlinePanel(
             'event_speaker_relationship', label=_("speakers"),
