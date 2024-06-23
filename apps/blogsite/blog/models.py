@@ -457,11 +457,11 @@ class EventIndexPage(BlogIndexPage):
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
     def children(self, num_pages=3):
-        count = EventPage.objects.live().descendant_of(self).filter(start_date__gt=now()).count()
+        count = EventPage.objects.live().descendant_of(self).filter(end_date__gt=now()).count()
         if count >= num_pages:
-            return reversed(EventPage.objects.live().descendant_of(self).filter(start_date__gt=now()).order_by('start_date')[:num_pages])
+            return reversed(EventPage.objects.live().descendant_of(self).filter(end_date__gt=now()).order_by('end_date')[:num_pages])
         else:
-            return EventPage.objects.live().descendant_of(self).order_by('-start_date')[:num_pages]
+            return EventPage.objects.live().descendant_of(self).order_by('-end_date')[:num_pages]
 
 
 class EventRegistration(models.Model):
