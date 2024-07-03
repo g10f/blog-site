@@ -226,6 +226,7 @@ class EventPage(BlogPage):
     search_fields = BlogPage.search_fields + [
         index.SearchField('location'),
         index.SearchField('additional_infos'),
+        index.SearchField('speakers'),
     ]
 
     class Meta:
