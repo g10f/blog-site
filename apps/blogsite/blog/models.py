@@ -111,6 +111,7 @@ class BlogPage(Page):
         index.SearchField('subtitle'),
         index.SearchField('introduction'),
         index.SearchField('body'),
+        index.SearchField('authors'),
     ]
     tag = None
 
@@ -221,6 +222,11 @@ class EventPage(BlogPage):
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
     highlight_introduction = models.BooleanField(_('highlight introduction'), default=False)
+
+    search_fields = BlogPage.search_fields + [
+        index.SearchField('location'),
+        index.SearchField('additional_infos'),
+    ]
 
     class Meta:
         verbose_name = _('Event')
