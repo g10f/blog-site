@@ -69,8 +69,10 @@
               </div>
             {% endif %}
             <p class="card-text">
-              {% if page.price %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
-              {% if page.price_reduced %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
+              {% if not page.price and not page.price_reduced %}{% translate 'The event is free of charge' %}{% else %}
+                {% if page.price is not None %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
+                {% if page.price_reduced is not None %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
+              {% endif %}
             </p>
             {% if page.is_registration_open %}
               <p class="card-text">
@@ -91,20 +93,23 @@
                 {% endif %}
               </p>
             {% endif %}
+          {% if  page.additional_infos %}
             <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
             <div class="card-text">
               {% translate 'event location'|capfirst %}: {{ page.location }}
-              {% if page.additional_infos %}
-                {{ page.additional_infos | richtext }}
-              {% endif %}
+              {{ page.additional_infos | richtext }}
             </div>
+          {% else %}
+            <div class="h4 card-title">{% translate 'event location'|title %}</div>
+            <div class="card-text">{{ page.location }}</div>
+          {% endif %}
           </div>
         </div>
 
       </div>
       <div class="col-md-7">
         {% if page.introduction %}
-          <p class="intro{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
+          <p class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
         {% endif %}
         {% include 'includes/body.html' %}
 
@@ -113,19 +118,6 @@
             <div class="card-body">
               <h2>{% translate 'Interested?' %}</h2>
               <p>
-              {% comment %}
-                {% if page.registration_phone_number %}
-                  {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
-                    Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
-                    by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                  {% endblocktranslate %}
-                {% else %}
-                  {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
-                    Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
-                  {% endblocktranslate %}
-                {% endif %}
-                {% translate 'or use the following form:' %}
-              {% endcomment %}
                 {% translate 'Register for the event:' %}
               </p>
               {% translate "Register" as submit_button_text %}
