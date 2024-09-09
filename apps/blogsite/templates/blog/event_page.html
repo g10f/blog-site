@@ -70,8 +70,8 @@
             {% endif %}
             <p class="card-text">
               {% if not page.price and not page.price_reduced %}{% translate 'The event is free of charge' %}{% else %}
-                {% if page.price is not None %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }} €{% endif %}
-                {% if page.price_reduced is not None %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }} €{% endif %}
+                {% if page.price is not None %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }}&nbsp;€{% endif %}
+                {% if page.price_reduced is not None %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }}&nbsp;€{% endif %}
               {% endif %}
             </p>
             {% if page.is_registration_open %}
