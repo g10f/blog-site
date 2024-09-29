@@ -487,6 +487,7 @@ class EventRegistration(models.Model):
     class Meta:
         verbose_name = _('Registration')
         verbose_name_plural = _('Registrations')
+        ordering = ['-submit_time']
 
     panels = [
         FieldPanel('event'),

@@ -5,5 +5,4 @@ gunicorn
 mozilla-django-oidc
 psycopg[c]
 wagtail==6.2.2
-wagtail-modeladmin
 whitenoise
