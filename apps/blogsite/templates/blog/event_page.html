@@ -93,16 +93,16 @@
                 {% endif %}
               </p>
             {% endif %}
-          {% if  page.additional_infos %}
-            <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
-            <div class="card-text">
-              {% translate 'event location'|capfirst %}: {{ page.location }}
-              {{ page.additional_infos | richtext }}
-            </div>
-          {% else %}
-            <div class="h4 card-title">{% translate 'event location'|title %}</div>
-            <div class="card-text">{{ page.location }}</div>
-          {% endif %}
+            {% if  page.additional_infos %}
+              <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
+              <div class="card-text">
+                {% translate 'event location'|capfirst %}: {{ page.location }}
+                {{ page.additional_infos | richtext }}
+              </div>
+            {% else %}
+              <div class="h4 card-title">{% translate 'event location'|title %}</div>
+              <div class="card-text">{{ page.location }}</div>
+            {% endif %}
           </div>
         </div>
 
@@ -111,10 +111,13 @@
         {% if page.introduction %}
           <p class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
         {% endif %}
+        {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
+          <p><a class="link-primary fs-5" href="#registration-form">{% translate 'Go to registration' %}</a></p>
+        {% endif %}
         {% include 'includes/body.html' %}
 
         {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
-          <div class="card mb-3">
+          <div class="card mb-3" id="registration-form">
             <div class="card-body">
               <h2>{% translate 'Interested?' %}</h2>
               <p>

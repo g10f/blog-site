@@ -466,7 +466,7 @@ class EventIndexPage(BlogIndexPage):
     def children(self, num_pages=3):
         count = EventPage.objects.live().descendant_of(self).filter(end_date__gt=now()).count()
         if count >= num_pages:
-            return reversed(EventPage.objects.live().descendant_of(self).filter(end_date__gt=now()).order_by('end_date')[:num_pages])
+            return EventPage.objects.live().descendant_of(self).filter(end_date__gt=now()).order_by('end_date')[:num_pages]
         else:
             return EventPage.objects.live().descendant_of(self).order_by('-end_date')[:num_pages]
 

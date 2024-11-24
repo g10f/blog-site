@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-26 18:50+0000\n"
+"POT-Creation-Date: 2024-11-24 19:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -309,6 +309,9 @@ msgstr ""
 msgid "event venue/other"
 msgstr ""
 
+msgid "Go to registration"
+msgstr ""
+
 msgid "Interested?"
 msgstr ""
 
@@ -349,12 +352,6 @@ msgid "You didn’t search for anything!"
 msgstr ""
 
 msgid "Homepage"
-msgstr ""
-
-msgid "This page has unsaved changes."
-msgstr ""
-
-msgid "Actions"
 msgstr ""
 
 msgid "Password required"
