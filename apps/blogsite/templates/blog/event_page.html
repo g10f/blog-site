@@ -78,8 +78,9 @@
               <p class="card-text">
                 {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}Registration until: {{ end_date }}.
                 {% endblocktranslate %}
-                  <br>{% endif %}
+                {% endif %}
                 {% if not page.with_registration_form %}
+                  <br>
                   {% if page.registration_phone_number %}
                     {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
                       Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
@@ -89,6 +90,11 @@
                     {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
                       Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
                     {% endblocktranslate %}
+                  {% endif %}
+                {% else %}
+                  <br>
+                  {% if not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
+                    <a class="d-md-none link-primary" href="#registration-form">{% translate 'Go to registration' %}</a>
                   {% endif %}
                 {% endif %}
               </p>
@@ -110,9 +116,6 @@
       <div class="col-md-7">
         {% if page.introduction %}
           <p class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
-        {% endif %}
-        {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
-          <p><a class="link-primary fs-5" href="#registration-form">{% translate 'Go to registration' %}</a></p>
         {% endif %}
         {% include 'includes/body.html' %}
 
