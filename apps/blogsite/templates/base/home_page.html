@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n wagtailimages_tags wagtailcore_tags navigation_tags%}
+{% load i18n wagtailimages_tags wagtailcore_tags navigation_tags %}
 
 {% block content %}
   <div class="homepage">
@@ -60,10 +60,9 @@
             </div>
           {% endif %}
 
-          <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">
-
+          {#  featured section 1 #}
+          <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">            
             <h2>{{ page.featured_section_1_title }}</h2>
-
             {% if page.featured_section_1.localized.specific.get_child_tags %}
               <nav class="mb-2">
                 <a class="btn btn-sm btn-outline-primary" role="button"
@@ -77,23 +76,7 @@
             <div class="featured-children">
               {% children page.featured_section_1.localized.specific page.featured_section_1_number|default:3 as featured_section_1_childpages %}
               {% for childpage in featured_section_1_childpages %}
-                {% image childpage.image fill-800x800-c100 format-webp as child_image %}
-                <div class="card mb-3 shadow">
-                  <div class="row g-0">
-                    {% if child_image %}
-                      <div class="col-sm-4"><img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/></div>
-                    {% endif %}
-                    <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
-                      <div class="card-body">
-                        <h3>{{ childpage.title }}</h3>
-                        <div class="card-text">
-                          {% include childpage.intro_template with obj=childpage %}
-                          <a href="{% pageurl childpage %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                {% include "base/include/_featured_section_1_child.html" %}
               {% endfor %}
             </div>
           </div>
@@ -122,19 +105,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
           {% children page.featured_section_2.localized.specific page.featured_section_2_number|default:6 as featured_section_2_childpages %}
           {% for childpage in featured_section_2_childpages %}
-            {% image childpage.image fill-800x450-c100 format-webp as child_image %}
-            <div class="col">
-              <div class="card h-100 mb-3 shadow">
-                <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img-top"/>
-                <div class="card-body">
-                  <h2 class="card-title">{{ childpage.title }}</h2>
-                  <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
-                  <a href="{% pageurl childpage %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
-                     class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
-                </div>
-              </div>
-            </div>
-
+            {% include "base/include/_featured_section_2_child.html" %}
           {% endfor %}
         </div>
       {% endif %}

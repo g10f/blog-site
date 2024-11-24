@@ -1,0 +1,13 @@
+{% load i18n wagtailimages_tags wagtailcore_tags %}
+{% image childpage.image fill-800x450-c100 format-webp as child_image %}
+<div class="col">
+  <div class="card h-100 mb-3 shadow">
+    <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img-top"/>
+    <div class="card-body">
+      <h2 class="card-title">{{ childpage.title }}</h2>
+      <p class="card-text">{{ childpage.introduction|truncatewords:15 }}</p>
+      <a href="{% pageurl childpage %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
+         class="btn btn-primary stretched-link">{% translate 'Read more' %}</a>
+    </div>
+  </div>
+</div>
