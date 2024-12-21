@@ -1,18 +1,15 @@
 import logging
 from urllib.parse import urlparse
 
-from django_recaptcha.fields import ReCaptchaField
-from modelcluster.fields import ParentalKey
-from modelcluster.models import ClusterableModel
-
 import wagtail
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator
 from django.db import models
 from django.forms import CharField, forms
-from django.utils.text import slugify
 from django.utils.translation import gettext as _
+from django_recaptcha.fields import ReCaptchaField
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, InlinePanel, PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
@@ -22,7 +19,9 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page, TranslatableMixin, _copy, DraftStateMixin, RevisionMixin, PreviewableMixin
 from wagtail.models import Site
 from wagtail.search import index
-from wagtail.snippets.models import register_snippet
+
+from django.core.paginator import Paginator
+from django.utils.text import slugify
 from .blocks import BaseStreamBlock, PersonBlock
 from .forms import SiteFieldForm
 
@@ -133,7 +132,14 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
         FieldPanel('description'),
     ]
 
-    search_fields = [index.SearchField('first_name'), index.SearchField('last_name'), index.FilterField('locale_id')]
+    search_fields = [
+        index.FilterField('site_id'),
+        index.FilterField('locale_id'),
+        index.SearchField('first_name'),
+        index.AutocompleteField('first_name'),
+        index.SearchField('last_name'),
+        index.AutocompleteField('last_name'),
+    ]
 
     @property
     def thumb_image(self):
