@@ -25,8 +25,7 @@
           {% endif %}
 
           {% if page.date_published %}
-            <div class="mb-1">
-              <small class="text-muted"> {{ page.date_published }}</small>
+            <div class="mb-1"><small class="text-muted">{% translate 'status'|capfirst %}: {{ page.date_published }}</small>
             </div>
           {% endif %}
 
