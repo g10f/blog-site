@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-24 19:41+0000\n"
+"POT-Creation-Date: 2025-01-25 18:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,14 +251,14 @@ msgstr ""
 "Oh verdammt. Anscheinend waren wir zu beschäftigt, um irgendwelche "
 "Blogbeiträge zu schreiben. Verzeihung."
 
+msgid "date published"
+msgstr "Datum der Veröffentlichung"
+
 msgid "Previous articel"
 msgstr "Vorheriger Beitrag"
 
 msgid "Next articel"
 msgstr "Nächster Beitrag"
-
-msgid "status"
-msgstr "Stand"
 
 msgctxt "Female"
 msgid "speaker"
@@ -312,11 +312,11 @@ msgstr ""
 "Kontaktieren Sie uns per E-Mail <a href=\"mailto:%(registration_email)s?"
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 
-msgid "event venue/other"
-msgstr "Veranstaltungsort/Sonstiges"
-
 msgid "Go to registration"
 msgstr "Zur Anmeldung"
+
+msgid "event venue/other"
+msgstr "Veranstaltungsort/Sonstiges"
 
 msgid "Interested?"
 msgstr "Interessiert?"

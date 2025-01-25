@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-24 19:41+0000\n"
+"POT-Creation-Date: 2025-01-25 18:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,13 +251,13 @@ msgstr ""
 msgid "Oh, snap. Looks like we were too busy to write any blog posts. Sorry."
 msgstr ""
 
+msgid "date published"
+msgstr ""
+
 msgid "Previous articel"
 msgstr ""
 
 msgid "Next articel"
-msgstr ""
-
-msgid "status"
 msgstr ""
 
 msgctxt "Female"
@@ -306,10 +306,10 @@ msgid ""
 "subject=Anmeldung\" class=\"card-link\">%(registration_email)s</a>"
 msgstr ""
 
-msgid "event venue/other"
+msgid "Go to registration"
 msgstr ""
 
-msgid "Go to registration"
+msgid "event venue/other"
 msgstr ""
 
 msgid "Interested?"
