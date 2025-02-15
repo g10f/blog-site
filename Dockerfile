@@ -37,7 +37,6 @@ RUN chown $USERNAME:$USERNAME /opt/g10f/$PROJ_NAME/htdocs/media
 
 WORKDIR /opt/g10f/$PROJ_NAME/apps
 COPY apps .
-# COPY Docker/gunicorn.conf.py ./gunicorn.conf.py
 
 RUN chown -R $USERNAME: $VIRTUAL_ENV
 RUN chown -R $USERNAME: /opt/g10f
