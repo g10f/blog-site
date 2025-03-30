@@ -7,7 +7,6 @@ if THEME:
     INSTALLED_APPS = [THEME] + INSTALLED_APPS
 
 DEBUG = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
-SECRET_KEY = os.getenv('SECRET_KEY')
 # see https://github.com/jacobian/dj-database-url
 # Configure your database from DATABASE_URL env var
 # DATABASES = {

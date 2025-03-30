@@ -4,10 +4,10 @@ from .base import *  # noqa: F403, F401
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@3)e1x6rpp452_%&(fulgojb=4l&brmb=-$qighfw&&6&z(afv'
+#SECRET_KEY = 'django-insecure-@3)e1x6rpp452_%&(fulgojb=4l&brmb=-$qighfw&&6&z(afv'
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = ['*'] 
+ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

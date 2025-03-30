@@ -1,7 +1,7 @@
 FROM python:3.13-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 ENV VIRTUAL_ENV=/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
@@ -42,7 +42,6 @@ RUN chown -R $USERNAME: $VIRTUAL_ENV
 RUN chown -R $USERNAME: /opt/g10f
 
 USER $USERNAME
-ARG SECRET_KEY=dummy
 RUN ./manage.py collectstatic
 
 ENV DJANGO_SETTINGS_MODULE=blogsite.settings.production

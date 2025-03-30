@@ -16,10 +16,11 @@ from pathlib import Path
 
 import dj_database_url
 import sys
+from django.core.management.utils import get_random_secret_key
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
-
+SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 BLOGSITE_PAGE_SIZE = int(os.getenv('BLOGSITE_PAGE_SIZE', '8'))
 
 try:
