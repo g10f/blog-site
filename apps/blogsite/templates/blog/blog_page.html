@@ -18,7 +18,7 @@
               {% for author in page.authors %}
                 {% image author.image fill-100x100-c100 format-webp as author_img %}
                 <li class="list-inline-item">
-                  <img src="{{ author_img.url }}" width="50px" alt="{{ author_img.alt }}" class="rounded-circle"/>
+                  <img src="{{ author_img.url }}" width="50px" alt="" class="rounded-circle"/>
                   {{ author.first_name }} {{ author.last_name }}</li>
               {% endfor %}
             </ul>
