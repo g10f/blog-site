@@ -21,8 +21,12 @@ from django_recaptcha.constants import TEST_PRIVATE_KEY, TEST_PUBLIC_KEY
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
-SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
+SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 BLOGSITE_PAGE_SIZE = int(os.getenv('BLOGSITE_PAGE_SIZE', '8'))
+
+# recaptcha
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', TEST_PUBLIC_KEY)
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', TEST_PRIVATE_KEY)
 
 try:
     RUNNING_DEVSERVER = (sys.argv[1] == 'runserver')
@@ -286,10 +290,6 @@ LOGIN_REDIRECT_URL = "/admin/"
 LOGOUT_REDIRECT_URL = "/admin/"
 OIDC_RP_SIGN_ALGO = 'RS256'
 OIDC_STORE_ID_TOKEN = True
-
-# recaptcha
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', TEST_PUBLIC_KEY)
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', TEST_PRIVATE_KEY)
 
 LOGGING = {
     'version': 1,
