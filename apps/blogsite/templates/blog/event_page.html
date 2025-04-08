@@ -121,15 +121,16 @@
 
       </div>
       <div class="col-md-7">
+        {% if message %}
+          <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endif %}
         {% if page.introduction %}
           <p class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
         {% endif %}
         {% include 'includes/body.html' %}
 
         {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
-          {% if message %}
-            <div class="alert alert-success" role="alert">{{ message }}</div>
-          {% else %}
+          {% if not message %}
             <div class="card mb-3" id="registration-form">
               <div class="card-body">
                 <h2>{% translate 'Interested?' %}</h2>
