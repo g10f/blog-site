@@ -189,7 +189,7 @@ msgid ""
 "%(to_email)s\">%(to_email)s</a>."
 msgstr ""
 "Vielen Dank für Ihre Anmeldung. Falls Sie innerhalb von 4 Tagen keine "
-"Antwort von uns erhalten schreiben Sie bitte eine E-Mail an <a href=\"mailto:"
+"Antwort von uns erhalten, schreiben Sie bitte eine E-Mail an <a href=\"mailto:"
 "%(to_email)s\">%(to_email)s</a>."
 
 msgid "Text to describe the page"
