@@ -4,6 +4,7 @@ from datetime import timedelta
 from functools import partial
 from urllib.parse import urlencode, urljoin
 
+from django.utils.safestring import mark_safe
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
@@ -297,10 +298,9 @@ class EventPage(BlogPage):
 
     def serve(self, request, view=None, args=None, kwargs=None):
         from .forms import EventRegistrationForm
-
+        to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
         landing = request.GET.get('landing', "0")
         if request.method == 'POST':
-            to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
             subject = _('Registration for "%(event)s"') % {"event": self}
             customer_request = EventRegistration(event=self, subject=subject, to_email=to_email)
             form = EventRegistrationForm(request.POST, instance=customer_request, request=request)
@@ -318,7 +318,9 @@ class EventPage(BlogPage):
         context = self.get_context(request)
         context["form"] = form
         if landing == "1":
-            context["message"] = _("Thank you for your message, we will contact you as soon as possible.")
+            context["landing"] = landing
+            context["message"] = mark_safe(_("Thank you for your registration. If you do not receive a response from us within four days, please send an email to "
+                                    "<a href=\"mailto:%(to_email)s\">%(to_email)s</a>.") % {"to_email": to_email})
         return TemplateResponse(request, self.get_template(request), context)
 
     def __str__(self):
@@ -482,7 +484,7 @@ class EventRegistration(models.Model):
     message = models.TextField(_("message"))
     to_email = models.EmailField()
     is_member = models.BooleanField(_("member"), default=False)
-    send_email_copy_to_myself = models.BooleanField(_("send a copy of the registration to myself"), default=False)
+    send_email_copy_to_myself = models.BooleanField(_("send a copy of the registration to myself"), default=True)
 
     class Meta:
         verbose_name = _('Registration')

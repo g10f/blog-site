@@ -1,5 +1,4 @@
-{% extends "base.html" %}
-{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% extends "base.html" %}{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
 
 {% block social_metadata %}
   {% include 'blog/_social_metadata.html' %}
@@ -14,7 +13,8 @@
       <div class="col-12">
         <div class="mb-2">
           {% if page.date_published %}
-            <div class="mb-1"><small class="text-muted">{% translate 'date published'|capfirst %}: {{ page.date_published }}</small>
+            <div class="mb-1">
+              <small class="text-muted">{% translate 'date published'|capfirst %}: {{ page.date_published }}</small>
             </div>
           {% endif %}
 
@@ -51,15 +51,17 @@
           <div class="card-body">
             <div class="h4 card-title">{% translate 'conditions'|title %}</div>
             <p>
-              {% translate 'date'|capfirst %}: {{ page.start_date | date:"l j. F Y" }}<br>
-              {% translate 'time'|capfirst %}: {{ page.start_date | date:"G:i" }} - {{ page.end_date | date:"G:i" }}
-              {% if page.min_participants %}<br>{% translate 'minimum number of participants'|capfirst %}: {{ page.min_participants }}{% endif %}
-              {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}: {{ page.max_participants }}{% endif %}
+              {% translate 'date'|capfirst %}: {{ page.start_date | date:"l j. F Y" }}<br> {% translate 'time'|capfirst %}: {{ page.start_date | date:"G:i" }}
+              - {{ page.end_date | date:"G:i" }}
+              {% if page.min_participants %}<br>{% translate 'minimum number of participants'|capfirst %}:
+                {{ page.min_participants }}{% endif %}
+              {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}:
+                {{ page.max_participants }}{% endif %}
             </p>
             <div class="h4 card-title">  {% translate 'cost and registration'|title %}</div>
             {% if page.is_registration_expired or page.is_booked_up %}
-              <div class="card-text  text-danger"><i class="bi bi-exclamation-triangle-fill"></i>
-                {% translate 'Unfortunately, registration is no longer possible:' %}
+              <div class="card-text  text-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> {% translate 'Unfortunately, registration is no longer possible:' %}
                 <ul>
                   {% if page.is_registration_expired %}
                     <li>{% translate 'The registration period has expired.' %}</li>{% endif %}
@@ -70,25 +72,31 @@
             {% endif %}
             <p class="card-text">
               {% if not page.price and not page.price_reduced %}{% translate 'The event is free of charge' %}{% else %}
-                {% if page.price is not None %}{{ site.site_name }} {% translate 'non-members'|capfirst %}: {{ page.price }}&nbsp;€{% endif %}
-                {% if page.price_reduced is not None %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}: {{ page.price_reduced }}&nbsp;€{% endif %}
+                {% if page.price is not None %}{{ site.site_name }} {% translate 'non-members'|capfirst %}:
+                  {{ page.price }}&nbsp;€{% endif %}
+                {% if page.price_reduced is not None %}<br>{{ site.site_name }} {% translate 'members'|capfirst %}:
+                  {{ page.price_reduced }}&nbsp;€{% endif %}
               {% endif %}
             </p>
             {% if page.is_registration_open %}
               <p class="card-text">
-                {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}Registration until: {{ end_date }}.
+                {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}
+                  Registration until: {{ end_date }}.
                 {% endblocktranslate %}
                 {% endif %}
                 {% if not page.with_registration_form %}
                   <br>
                   {% if page.registration_phone_number %}
                     {% blocktranslate trimmed with registration_phone_number=page.registration_phone_number registration_email=page.registration_email|default:event_registration_email %}
-                      Contact us at the phone number <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
-                      by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                      Contact us at the phone number
+                      <a href="tel:{{ registration_phone_number }}">{{ registration_phone_number }}</a> or
+                      by email
+                      <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
                     {% endblocktranslate %}
                   {% else %}
                     {% blocktranslate trimmed with registration_email=page.registration_email|default:event_registration_email %}
-                      Contact us by email <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
+                      Contact us by email
+                      <a href="mailto:{{ registration_email }}?subject=Anmeldung" class="card-link">{{ registration_email }}</a>
                     {% endblocktranslate %}
                   {% endif %}
                 {% else %}
@@ -102,8 +110,7 @@
             {% if  page.additional_infos %}
               <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
               <div class="card-text">
-                {% translate 'event location'|capfirst %}: {{ page.location }}
-                {{ page.additional_infos | richtext }}
+                {% translate 'event location'|capfirst %}: {{ page.location }} {{ page.additional_infos | richtext }}
               </div>
             {% else %}
               <div class="h4 card-title">{% translate 'event location'|title %}</div>
@@ -120,16 +127,19 @@
         {% include 'includes/body.html' %}
 
         {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
-          <div class="card mb-3" id="registration-form">
-            <div class="card-body">
-              <h2>{% translate 'Interested?' %}</h2>
-              <p>
-                {% translate 'Register for the event:' %}
-              </p>
-              {% translate "Register" as submit_button_text %}
-              {% include 'base/customer_request.html' with form=form message=message submit_button_text=submit_button_text %}
+          {% if message %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+          {% else %}
+            <div class="card mb-3" id="registration-form">
+              <div class="card-body">
+                <h2>{% translate 'Interested?' %}</h2>
+                <p>
+                  {% translate 'Register for the event:' %}
+                </p>
+                {% translate "Register" as submit_button_text %} {% include 'base/customer_request.html' with form=form message=message submit_button_text=submit_button_text %}
+              </div>
             </div>
-          </div>
+          {% endif %}
         {% endif %}
 
       </div>
