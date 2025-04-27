@@ -22,7 +22,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, FieldRowPanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
@@ -243,9 +243,22 @@ class EventPage(BlogPage):
             # see https://docs.wagtail.org/en/stable/extending/generic_views.html#limiting-choices-via-linked-fields
             panels=[FieldPanel('speaker', widget=SiteFieldChooserViewSet(name="speaker_chooser", model="base.Speaker").widget_class(linked_fields={'site': '#id_site', }))],
             min_num=0),
-        FieldPanel('start_date'),
-        FieldPanel('end_date'),
-        "additional_dates",
+        FieldRowPanel(
+            [
+                FieldPanel('start_date'),
+                FieldPanel('end_date'),
+            ]
+        ),
+        InlinePanel("additional_dates",
+                    panels=[
+                        FieldRowPanel(
+                            [
+                                FieldPanel('start'),
+                                FieldPanel('end'),
+                            ]
+                        ),
+                    ],
+                    label=_('additional dates')),
         FieldPanel('registration_end_date'),
         FieldPanel('location'),
         FieldPanel('min_participants'),
@@ -321,7 +334,7 @@ class EventPage(BlogPage):
         if landing == "1":
             context["landing"] = landing
             context["message"] = mark_safe(_("Thank you for your registration. If you do not receive a response from us within four days, please send an email to "
-                                    "<a href=\"mailto:%(to_email)s\">%(to_email)s</a>.") % {"to_email": to_email})
+                                             "<a href=\"mailto:%(to_email)s\">%(to_email)s</a>.") % {"to_email": to_email})
         return TemplateResponse(request, self.get_template(request), context)
 
     def __str__(self):
@@ -332,6 +345,10 @@ class EventDate(models.Model):
     start = models.DateTimeField(_('start date'), default=timezone.now)
     end = models.DateTimeField(_('end date'), default=_now_plus_120_minutes)
     page = ParentalKey(EventPage, on_delete=models.CASCADE, related_name='additional_dates', verbose_name=_('additional dates'))
+
+    class Meta:
+        verbose_name = _('additional date')
+        verbose_name_plural = _('additional dates')
 
 
 class BlogIndexPage(RoutablePageMixin, Page):

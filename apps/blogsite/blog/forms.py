@@ -28,7 +28,13 @@ class EventRegistrationForm(forms.ModelForm):
     def render_email(self, instance):
         content = []
         content.append(_("Title: {title}").format(title=instance.event.title))
-        content.append(_("Date: {date}").format(date=instance.event.start_date.date()))
+        start_date = instance.event.start_date.date()
+        content.append(_("Date: {date}").format(date=start_date))
+        for additional_date in instance.event.additional_dates.all():
+            # only add if date is different
+            if start_date != additional_date.start.date():
+                start_date = additional_date.start.date()
+                content.append(_("Date: {date}").format(date=start_date))
         content.append(_("Location: {location}").format(location=instance.event.location))
         content.append(_("Name: {name}").format(name=instance.name))
         content.append(_("Telephone: {telephone}").format(telephone=instance.telephone))
