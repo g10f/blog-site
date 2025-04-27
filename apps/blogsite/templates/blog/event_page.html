@@ -53,6 +53,11 @@
             <p>
               {% translate 'date'|capfirst %}: {{ page.start_date | date:"l j. F Y" }}<br> {% translate 'time'|capfirst %}: {{ page.start_date | date:"G:i" }}
               - {{ page.end_date | date:"G:i" }}
+              {% if page.additional_dates.all %}<br>{% translate 'additional dates' %}:
+                {% for additional_date in page.additional_dates.all %}
+                  <br>{{ additional_date.start | date:"d.m.y" }}: {{ additional_date.start | date:"G:i" }} - {{ additional_date.end | date:"G:i" }}
+                {% endfor %}
+              {% endif %}
               {% if page.min_participants %}<br>{% translate 'minimum number of participants'|capfirst %}:
                 {{ page.min_participants }}{% endif %}
               {% if page.max_participants %}<br>{% translate 'maximum number of participants'|capfirst %}:
@@ -125,7 +130,8 @@
           <div class="alert alert-success" role="alert">{{ message }}</div>
         {% endif %}
         {% if page.introduction %}
-          <p class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
+          <p
+            class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
         {% endif %}
         {% include 'includes/body.html' %}
 

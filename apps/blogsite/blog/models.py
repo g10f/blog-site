@@ -245,6 +245,8 @@ class EventPage(BlogPage):
             min_num=0),
         FieldPanel('start_date'),
         FieldPanel('end_date'),
+        "additional_dates",
+        FieldPanel('registration_end_date'),
         FieldPanel('location'),
         FieldPanel('min_participants'),
         FieldPanel('max_participants'),
@@ -252,7 +254,6 @@ class EventPage(BlogPage):
         FieldPanel('price_reduced'),
         FieldPanel('is_registration_open'),
         FieldPanel('with_registration_form'),
-        FieldPanel('registration_end_date'),
         FieldPanel('registration_email'),
         FieldPanel('registration_phone_number'),
         FieldPanel('is_booked_up'),
@@ -325,6 +326,12 @@ class EventPage(BlogPage):
 
     def __str__(self):
         return f"{self.start_date.date()} - {self.title}"
+
+
+class EventDate(models.Model):
+    start = models.DateTimeField(_('start date'), default=timezone.now)
+    end = models.DateTimeField(_('end date'), default=_now_plus_120_minutes)
+    page = ParentalKey(EventPage, on_delete=models.CASCADE, related_name='additional_dates', verbose_name=_('additional dates'))
 
 
 class BlogIndexPage(RoutablePageMixin, Page):
