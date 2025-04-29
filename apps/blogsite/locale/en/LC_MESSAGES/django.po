@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-27 19:32+0000\n"
+"POT-Creation-Date: 2025-04-29 20:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,6 +171,9 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
+msgid "additional dates"
+msgstr ""
+
 msgid "authors"
 msgstr ""
 
@@ -187,9 +190,6 @@ msgid ""
 "Thank you for your registration. If you do not receive a response from us "
 "within four days, please send an email to <a href=\"mailto:"
 "%(to_email)s\">%(to_email)s</a>."
-msgstr ""
-
-msgid "additional dates"
 msgstr ""
 
 msgid "additional date"
@@ -271,6 +271,13 @@ msgid "speaker"
 msgstr ""
 
 msgid "conditions"
+msgstr ""
+
+#, python-format
+msgid "Please note the seminar consists of %(count)s events."
+msgstr ""
+
+msgid "and"
 msgstr ""
 
 msgid "cost and registration"
