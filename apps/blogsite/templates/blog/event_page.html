@@ -53,7 +53,7 @@
             <p>
               {% translate 'date'|capfirst %}: {{ page.start_date | date:"l j. F Y" }}<br> {% translate 'time'|capfirst %}: {{ page.start_date | date:"G:i" }}
               - {{ page.end_date | date:"G:i" }}
-              {% if page.additional_dates.all %}<br>{% translate 'additional dates' %}:
+              {% if page.additional_dates.all %}<br><b>{% translate 'and' %}</b>
                 {% for additional_date in page.additional_dates.all %}
                   <br>{{ additional_date.start | date:"d.m.y" }}: {{ additional_date.start | date:"G:i" }} - {{ additional_date.end | date:"G:i" }}
                 {% endfor %}
