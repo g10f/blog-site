@@ -1,14 +1,16 @@
 from django import forms
 from django.utils.translation import gettext as _
+from django_recaptcha.fields import ReCaptchaField
 from wagtail.admin.mail import send_mail
 from wagtail.models.sites import Site
 from .models import EventRegistration
 
 
 class EventRegistrationForm(forms.ModelForm):
+    captcha = ReCaptchaField(label=_("Captcha"))
     class Meta:
         model = EventRegistration
-        fields = ['name', 'telephone', 'email', 'message', 'is_member', 'send_email_copy_to_myself']
+        fields = ['name', 'telephone', 'email', 'message', 'is_member', 'send_email_copy_to_myself', 'captcha']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name and last name'}),

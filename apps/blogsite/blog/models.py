@@ -4,31 +4,31 @@ from datetime import timedelta
 from functools import partial
 from urllib.parse import urlencode, urljoin
 
-from django.utils.safestring import mark_safe
-from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey
-from taggit.models import Tag, TaggedItemBase
-
 import wagtail
 from django.conf import settings
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from django.shortcuts import redirect, render
-from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, FieldRowPanel
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from modelcluster.fields import ParentalKey
+from taggit.models import Tag, TaggedItemBase
+from wagtail.admin.panels import FieldPanel, InlinePanel, FieldRowPanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
 from wagtail.models import Page, Orderable, Site
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import RegexValidator
+from django.db.models.signals import pre_delete
+from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
+from django.utils.safestring import mark_safe
+from django.utils.timezone import now
 from ..base.blocks import BaseStreamBlock
 from ..base.models import HomePage, get_cached_path
 from ..base.views import SiteFieldChooserViewSet
