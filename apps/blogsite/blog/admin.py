@@ -1,13 +1,14 @@
 import django_filters
-from wagtail.admin.filters import WagtailFilterSet
-from wagtail.admin.viewsets.model import ModelViewSet
-
 from django.contrib import admin
+from wagtail.admin.filters import WagtailFilterSet
+from wagtail.snippets.views.snippets import SnippetViewSet
+
 from .models import EventRegistration, EventPage
 
 
 class EventFilter(WagtailFilterSet):
     event = django_filters.ModelChoiceFilter(queryset=EventPage.objects.filter(event__isnull=False).distinct().order_by('-start_date'))
+
     # email = django_filters.CharFilter(lookup_expr='icontains', label='Email')
     # year = django_filters.NumberFilter(field_name="event__start_date", lookup_expr='year', min_value=2023, label='Year')
 
@@ -25,17 +26,17 @@ class EventFilter(WagtailFilterSet):
 
     class Meta:
         model = EventRegistration
-        fields = ['event',]
+        fields = ['event', ]
 
 
-class EventRegistrationAdmin(ModelViewSet):
+class EventRegistrationAdmin(SnippetViewSet):
     icon = 'mail'
     model = EventRegistration
     add_to_admin_menu = True
     menu_icon = 'mail'
     search_fields = ('event__title', 'name', 'email', 'message', 'subject')
     list_export = ["event", "submit_time", "subject", "name", "email", "telephone", "message", "is_member"]
-    list_display = ('submit_time', 'event', 'name', 'email', )
+    list_display = ('submit_time', 'event', 'name', 'email',)
     filterset_class = EventFilter
 
     @admin.display
