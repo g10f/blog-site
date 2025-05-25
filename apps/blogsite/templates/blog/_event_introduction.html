@@ -1,6 +1,6 @@
 {% load i18n wagtailcore_tags  wagtailimages_tags %}
 {% if obj.introduction %}
-<p class="{% if obj.highlight_introduction %} text-danger{% endif %}">
+<p class="d-none d-lg-block {% if obj.highlight_introduction %} text-danger{% endif %}">
   {{ obj.introduction|truncatewords:15 }}
 </p>
 {% endif %}

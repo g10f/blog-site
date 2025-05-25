@@ -88,3 +88,24 @@ html[data-theme="dark"] .theme-icon-when-dark {
 html[data-theme="light"] .theme-icon-when-light {
   display: inline-block;
 }
+
+.g10f-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.g10f-card-img-overlay {
+  position: absolute;
+  //top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--#{$prefix}card-img-overlay-padding);
+}
+
+@media (min-width: 400px) {
+    .d-xsm-block {
+        display: block !important;
+    }
+}

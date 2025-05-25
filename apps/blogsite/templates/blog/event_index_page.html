@@ -11,15 +11,22 @@
             <div class="card mb-3 shadow">
               <div class="row g-0">
                 {% if image %}
-                  <div class="col-md-5 col-lg-4"><img src="{{ image.url }}" alt="{{ image.alt }}" class="img-fluid rounded-start"/></div>
+                  <div class="g10f-card col-sm-4 text-light">
+                    <img src="{{ image.url }}" alt="{{ image.alt }}" class="img-fluid rounded-start "/>
+                    <div class="hero-gradient-mask d-sm-none"></div>
+                    <div class="g10f-card-img-overlay d-sm-none">
+                      <div class="card-title h3">{{ event.title }}</div>
+                      <div class="card-subtitle">{{ event.subtitle }}</div>
+                    </div>
+                  </div>
                 {% endif %}
-                <div class="{% if image %}col-md-7 col-lg-7{% else %} col-md-12{% endif %}">
+                <div class="{% if image %}col-sm-8 {% else %} col-sm-12{% endif %}">
                   <div class="card-body">
-                    <div class="card-title h3">{{ event.title }}</div>
-                    <div class="card-subtitle h4">{{ event.subtitle }}</div>
+                    <div class="d-none d-sm-block card-title h3">{{ event.title }}</div>
+                    <div class="d-none d-sm-block card-subtitle">{{ event.subtitle }}</div>
                     {% include event.intro_template with obj=event %}
                     <a href="{% pageurl event %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
-                       class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
+                       class="float-end card-link stretched-link">{% translate 'Read more' %}</a>
                   </div>
                 </div>
               </div>
