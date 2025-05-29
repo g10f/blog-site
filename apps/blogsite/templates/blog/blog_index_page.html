@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags pagination %}
 
 {% block content %}
   {% include "base/include/header-hero.html" with intro=True %}
@@ -15,14 +15,14 @@
         {% for child_tag in page.get_child_tags %}
           <a class="btn btn-sm btn-outline-{% if tag == child_tag %}primary{% else %}secondary{% endif %}" role="button"
              href="{{ child_tag.url }}">{{ child_tag }}</a>
-        {% endfor %}    
+        {% endfor %}
 {#        {% for child_year in page.get_years %}#}
 {#          <a class="btn btn-sm btn-outline-{% if year == child_year|stringformat:"i" %}primary{% else %}secondary{% endif %}" role="button"#}
 {#             href="{% pageurl page %}?year={{ child_year }}">{{ child_year }}</a>#}
 {#        {% endfor %}#}
       </nav>
     {% endif %}
-  
+
 
     {% block posts %}
       <div class="row">
@@ -59,7 +59,7 @@
       <div class="container-lg">
         <div class="row">
           <div class="col-md-12">
-            {% include "includes/pagination.html" with subpages=posts %}
+            {% pagination posts %}
           </div>
         </div>
       </div>
