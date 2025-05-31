@@ -5,7 +5,7 @@
     {% if child_image %}
       <div class="g10f-card col-sm-4 {% if date > childpage.end_date %}text-white-50{% else %}text-light{% endif %}">
         <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/>
-        <div class="{% if date > childpage.end_date %}hero-gradient-mask-secondary{% else %}hero-gradient-mask{% endif %} d-sm-none"></div>
+        <div class="hero-gradient-mask d-sm-none"></div>
         <div class="g10f-card-img-overlay d-sm-none">
           <div class="card-title h3">{{ childpage.title }}</div>
           <div class="card-subtitle">{{ childpage.subtitle }}</div>

@@ -13,7 +13,7 @@
                 {% if image %}
                   <div class="g10f-card col-sm-4 {% if date > event.end_date %}text-white-50{% else %}text-light{% endif %}">
                     <img src="{{ image.url }}" alt="{{ image.alt }}" class="img-fluid rounded-start "/>
-                    <div class="{% if date > event.end_date %}hero-gradient-mask-secondary{% else %}hero-gradient-mask{% endif %} d-sm-none"></div>
+                    <div class="hero-gradient-mask d-sm-none"></div>
                     <div class="g10f-card-img-overlay d-sm-none">
                       <div class="card-title h3">{{ event.title }}</div>
                       <div class="card-subtitle">{{ event.subtitle }}</div>
