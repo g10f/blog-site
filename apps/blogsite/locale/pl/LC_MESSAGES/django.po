@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-29 20:38+0000\n"
+"POT-Creation-Date: 2025-05-31 10:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -161,6 +161,9 @@ msgstr ""
 msgid "is booked up"
 msgstr ""
 
+msgid "is cancelled"
+msgstr ""
+
 msgid "additional infos"
 msgstr ""
 
@@ -255,6 +258,12 @@ msgstr ""
 msgid "event location"
 msgstr ""
 
+msgid "was cancelled"
+msgstr ""
+
+msgid "already executed"
+msgstr ""
+
 msgid "by"
 msgstr ""
 
@@ -345,12 +354,6 @@ msgid "Visit us on"
 msgstr ""
 
 msgid "Search"
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "Forward"
 msgstr ""
 
 msgid "You searched for"

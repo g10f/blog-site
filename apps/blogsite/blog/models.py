@@ -220,6 +220,7 @@ class EventPage(BlogPage):
     registration_email = models.EmailField(_("email address for registration"), blank=True)
     registration_phone_number = models.CharField(_("phone number for registration"), blank=True, max_length=30, validators=[validate_phone])
     is_booked_up = models.BooleanField(_('is booked up'), default=False)
+    is_cancelled = models.BooleanField(_('is cancelled'), default=False)
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
     highlight_introduction = models.BooleanField(_('highlight introduction'), default=False)
@@ -270,6 +271,7 @@ class EventPage(BlogPage):
         FieldPanel('registration_email'),
         FieldPanel('registration_phone_number'),
         FieldPanel('is_booked_up'),
+        FieldPanel('is_cancelled'),
         FieldPanel('additional_infos'),
         FieldPanel('body'),
         FieldPanel('date_published'),
@@ -409,6 +411,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context = super().get_context(request, *args, **kwargs)
         year = request.GET.get('year')
         context['year'] = year
+        context['date'] = now()
         context['posts'] = self.paginate(request, self.get_posts(year=year))
         return context
 
@@ -433,6 +436,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context['year'] = year
         context['tag'] = tag
         context['posts'] = posts
+        context['date'] = now()
         return render(request, self.template, context)
 
     def get_cached_paths(self):

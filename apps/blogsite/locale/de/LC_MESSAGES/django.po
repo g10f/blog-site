@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-29 20:38+0000\n"
+"POT-Creation-Date: 2025-05-31 10:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,6 +159,9 @@ msgstr "Telefonnummer für die Registrierung"
 msgid "is booked up"
 msgstr "ist ausgebucht"
 
+msgid "is cancelled"
+msgstr "abgesagt"
+
 msgid "additional infos"
 msgstr "Zusatzinfos"
 
@@ -254,6 +257,12 @@ msgstr "Uhrzeit"
 msgid "event location"
 msgstr "Veranstaltungsort"
 
+msgid "was cancelled"
+msgstr "ausgefallen"
+
+msgid "already executed"
+msgstr "bereits durchgeführt"
+
 msgid "by"
 msgstr "von"
 
@@ -280,7 +289,8 @@ msgstr "Konditionen"
 
 #, python-format
 msgid "Please note the seminar consists of %(count)s events."
-msgstr "Bitte beachten Sie, dass das Seminar aus %(count)s Veranstaltungen besteht."
+msgstr ""
+"Bitte beachten Sie, dass das Seminar aus %(count)s Veranstaltungen besteht."
 
 msgid "and"
 msgstr ""
@@ -354,12 +364,6 @@ msgstr "Besuchen Sie uns auf"
 msgid "Search"
 msgstr "Suchen"
 
-msgid "Back"
-msgstr "Zurück"
-
-msgid "Forward"
-msgstr "Weiter"
-
 msgid "You searched for"
 msgstr "Sie suchten nach"
 
@@ -414,3 +418,6 @@ msgstr ""
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr ""
+
+#~ msgid "cancelled"
+#~ msgstr "abgesagt/ausgefallen"

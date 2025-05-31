@@ -8,4 +8,16 @@
   {% translate 'date'|capfirst %}: {{ obj.start_date | date:"l j. F Y" }}<br>
   {% translate 'time'|capfirst %}: {{ obj.start_date | date:"G:i" }} - {{ obj.end_date | date:"G:i" }}<br>
   {% if obj.location %}{% translate 'event location'|capfirst %}: {{ obj.location }}{% endif %}
+
+  {% if date > obj.end_date %}
+    {% if obj.is_cancelled %}
+      <br><span class="text-danger">{% translate 'was cancelled'|capfirst %}</span>
+      {% else %}
+      <br><span class="text-success">{% translate 'already executed'|capfirst %}</span>
+      {% endif %}
+  {% else %}
+    {% if obj.is_cancelled %}
+      <br><span class="text-danger">{% translate 'is cancelled'|capfirst %}</span>
+      {% endif %}
+  {% endif %}
 </p>

@@ -11,9 +11,9 @@
             <div class="card mb-3 shadow">
               <div class="row g-0">
                 {% if image %}
-                  <div class="g10f-card col-sm-4 text-light">
+                  <div class="g10f-card col-sm-4 {% if date > event.end_date %}text-white-50{% else %}text-light{% endif %}">
                     <img src="{{ image.url }}" alt="{{ image.alt }}" class="img-fluid rounded-start "/>
-                    <div class="hero-gradient-mask d-sm-none"></div>
+                    <div class="{% if date > event.end_date %}hero-gradient-mask-secondary{% else %}hero-gradient-mask{% endif %} d-sm-none"></div>
                     <div class="g10f-card-img-overlay d-sm-none">
                       <div class="card-title h3">{{ event.title }}</div>
                       <div class="card-subtitle">{{ event.subtitle }}</div>
@@ -21,10 +21,10 @@
                   </div>
                 {% endif %}
                 <div class="{% if image %}col-sm-8 {% else %} col-sm-12{% endif %}">
-                  <div class="card-body">
+                  <div class="card-body {% if date > event.end_date %}text-secondary{% endif %}">
                     <div class="d-none d-sm-block card-title h3">{{ event.title }}</div>
                     <div class="d-none d-sm-block card-subtitle">{{ event.subtitle }}</div>
-                    {% include event.intro_template with obj=event %}
+                    {% include event.intro_template with obj=event date=date %}
                     <a href="{% pageurl event %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
                        class="float-end card-link stretched-link">{% translate 'Read more' %}</a>
                   </div>

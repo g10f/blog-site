@@ -3,9 +3,9 @@
 <div class="card mb-3 shadow">
   <div class="row g-0">
     {% if child_image %}
-      <div class="g10f-card col-sm-4 text-light">
+      <div class="g10f-card col-sm-4 {% if date > childpage.end_date %}text-white-50{% else %}text-light{% endif %}">
         <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="img-fluid rounded-start"/>
-        <div class="hero-gradient-mask d-sm-none"></div>
+        <div class="{% if date > childpage.end_date %}hero-gradient-mask-secondary{% else %}hero-gradient-mask{% endif %} d-sm-none"></div>
         <div class="g10f-card-img-overlay d-sm-none">
           <div class="card-title h3">{{ childpage.title }}</div>
           <div class="card-subtitle">{{ childpage.subtitle }}</div>
@@ -13,10 +13,10 @@
       </div>
     {% endif %}
     <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
-      <div class="card-body">
+      <div class="card-body {% if date > childpage.end_date %}text-secondary{% endif %}">
         <h3 class="d-none d-sm-block">{{ childpage.title }}</h3>
         <div class="card-text">
-          {% include childpage.intro_template with obj=childpage %}
+          {% include childpage.intro_template with obj=childpage date=date %}
           <a href="{% pageurl childpage %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
         </div>
       </div>
