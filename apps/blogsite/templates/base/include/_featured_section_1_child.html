@@ -14,7 +14,8 @@
     {% endif %}
     <div class="col-sm-{% if child_image %}8{% else %}12{% endif %}">
       <div class="card-body {% if date > childpage.end_date %}text-secondary{% endif %}">
-        <h3 class="d-none d-sm-block">{{ childpage.title }}</h3>
+        <div class="d-none d-sm-block card-title h3">{{ childpage.title }}</div>
+        <div class="d-none d-sm-block card-subtitle">{{ childpage.subtitle }}</div>
         <div class="card-text">
           {% include childpage.intro_template with obj=childpage date=date %}
           <a href="{% pageurl childpage %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>

@@ -44,7 +44,7 @@
         <div class="row">
           {# promo #}
           {% if page.promo_image or page.promo_title or page.promo_text %}
-            <div class="col-md-5 promo">
+            <div class="col-lg-5 promo">
               {% image page.promo_image fill-800x800-c100 format-webp as promo_image %}
               <div class="card border-0 bg-dark-subtle bg-gradient">
                 {% if page.promo_image %}
@@ -61,7 +61,7 @@
           {% endif %}
 
           {#  featured section 1 #}
-          <div class="col-md-7 pt-2 pt-sm-3 pt-md-4">
+          <div class="col-lg-7 pt-2 pt-sm-3 pt-md-4">
             <h2>{{ page.featured_section_1_title }}</h2>
             {% if page.featured_section_1.localized.specific.get_child_tags %}
               <nav class="mb-2">
@@ -76,7 +76,7 @@
             <div class="featured-children">
               {% children page.featured_section_1.localized.specific page.featured_section_1_number|default:3 as featured_section_1_childpages %}
               {% for childpage in featured_section_1_childpages %}
-                {% include "base/include/_featured_section_1_child.html" %}
+                {% include "base/include/_featured_section_1_child.html" with home_page=1 %}
               {% endfor %}
             </div>
           </div>
