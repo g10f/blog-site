@@ -1,6 +1,7 @@
 import django_filters
 from django.contrib import admin
 from wagtail.admin.filters import WagtailFilterSet
+from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 from .models import EventRegistration, EventPage
