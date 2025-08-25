@@ -6,8 +6,8 @@ ENV VIRTUAL_ENV=/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install packages needed to run your application (not build deps):
-ENV RUN_DEPS="libexpat1 libjpeg62-turbo libpcre3 libpq5 mime-support postgresql-client procps zlib1g"
-ENV BUILD_DEPS="build-essential curl git libexpat1-dev libjpeg62-turbo-dev libpcre3-dev libpq-dev zlib1g-dev"
+ENV RUN_DEPS="libexpat1 libjpeg62-turbo libpq5 media-types postgresql-client procps zlib1g"
+ENV BUILD_DEPS="build-essential curl git libexpat1-dev libjpeg62-turbo-dev libpq-dev zlib1g-dev"
 RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $RUN_DEPS \
     && rm -rf /var/lib/apt/lists/*
