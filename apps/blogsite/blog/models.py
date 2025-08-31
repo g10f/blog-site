@@ -521,7 +521,7 @@ class EventRegistration(models.Model):
 
     panels = [
         FieldPanel('event'),
-        # FieldPanel('submit_time', read_only=True),
+        FieldPanel('submit_time', read_only=True),
         FieldPanel('subject'),
         FieldPanel('name'),
         FieldPanel('email'),
