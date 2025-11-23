@@ -22,6 +22,7 @@ from wagtail.models import Page, Orderable, Site
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 
+from django import forms
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.validators import RegexValidator
 from django.db.models.signals import pre_delete
@@ -341,6 +342,10 @@ class EventPage(BlogPage):
 
     def __str__(self):
         return f"{self.start_date.date()} - {self.title}"
+
+    def clean(self):
+        if self.end_date < self.start_date:
+            raise forms.ValidationError("The end date must be greater than the start date.")
 
 
 class EventDate(models.Model):
