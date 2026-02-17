@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.sitemaps",
     "django.forms",  # for overwriting attr.html
+    "django.contrib.postgres",
 
     'mozilla_django_oidc',
     'django_recaptcha',
