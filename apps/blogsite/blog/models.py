@@ -159,7 +159,7 @@ class BlogPage(Page):
     # Empty list means that no child content types are allowed.
     subpage_types = []
 
-    def serve(self, request, *args, **kwargs):
+    def set_tag(self, request):
         tag = request.GET.get('tag')
         if tag:
             try:
@@ -169,6 +169,8 @@ class BlogPage(Page):
                 messages.add_message(request, messages.INFO, msg)
                 logger.warning(f'tag {tag} does not exist')
 
+    def serve(self, request, *args, **kwargs):
+        self.set_tag(request)
         return super().serve(request, *args, **kwargs)
 
     # unklar ob das nötig ist https://docs.wagtail.org/en/stable/releases/4.0.html#changes-to-page-serve-and-page-serve-preview-methods
@@ -316,7 +318,9 @@ class EventPage(BlogPage):
         q = Q(start_date=self.start_date, date_published__lt=self.date_published) | Q(start_date__lt=self.start_date)
         return self.get_siblings(inclusive).filter(q).order_by("-start_date", "-date_published")
 
-    def serve(self, request, view=None, args=None, kwargs=None):
+    def serve(self, request, *args, **kwargs):
+        self.set_tag(request)
+
         from .forms import EventRegistrationForm
         to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
         landing = request.GET.get('landing', "0")
