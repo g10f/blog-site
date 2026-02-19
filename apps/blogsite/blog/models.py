@@ -490,7 +490,7 @@ class EventIndexPage(BlogIndexPage):
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None, year=None):
-        posts = EventPage.objects.live().descendant_of(self).order_by('-start_date')
+        posts = EventPage.objects.live().descendant_of(self).order_by('-start_date', '-date_published')
         if tag:
             posts = posts.filter(tags=tag)
         if year:
@@ -499,7 +499,7 @@ class EventIndexPage(BlogIndexPage):
 
     def get_years(self):
         years = []
-        for post in EventPage.objects.live().descendant_of(self).order_by('-start_date').dates('start_date', 'year'):
+        for post in EventPage.objects.live().descendant_of(self).order_by('-start_date', '-date_published').dates('start_date', 'year'):
             years.append(post.year)
         return years
 
