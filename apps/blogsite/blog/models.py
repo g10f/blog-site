@@ -8,6 +8,7 @@ import wagtail
 from django.conf import settings
 from django.contrib import messages
 from django.db import models
+from django.db.models import Q
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -304,14 +305,16 @@ class EventPage(BlogPage):
         return EventPage.objects.sibling_of(self, inclusive)
 
     def get_next_siblings(self, inclusive=False):
-        # Order by start_date
-        return self.get_siblings(inclusive).filter(start_date__gte=self.start_date).order_by("start_date")
+        # Order by start_date, date_published
+        # take into account more than one event with the same start_date
+        q= Q(start_date=self.start_date, date_published__gt=self.date_published) | Q(start_date__gt=self.start_date)
+        return self.get_siblings(inclusive).filter(q).order_by("start_date", "date_published")
 
     def get_prev_siblings(self, inclusive=False):
-        # Order by -start_date
-        return (
-            self.get_siblings(inclusive).filter(start_date__lte=self.start_date).order_by("-start_date")
-        )
+        # Order by -start_date, -date_published
+        # take into account more than one event with the same start_date
+        q = Q(start_date=self.start_date, date_published__lt=self.date_published) | Q(start_date__lt=self.start_date)
+        return self.get_siblings(inclusive).filter(q).order_by("-start_date", "-date_published")
 
     def serve(self, request, view=None, args=None, kwargs=None):
         from .forms import EventRegistrationForm
