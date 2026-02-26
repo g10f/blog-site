@@ -175,13 +175,13 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
 
         return translated
 
-    def full_clean(self, exclude=None, validate_unique=True):
+    def full_clean(self, exclude=None, validate_unique=True, **kwargs):
         if not self.slug:
             # Try to auto-populate slug from title
             allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
             self.slug = slugify(f'{self.first_name}-{self.last_name}', allow_unicode=allow_unicode)
 
-        return super().full_clean(exclude, validate_unique)
+        return super().full_clean(exclude, validate_unique, **kwargs)
 
 
 class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
