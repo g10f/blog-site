@@ -283,7 +283,7 @@ class EventPage(BlogPage):
 
     content_panels = Page.content_panels + [
         FieldPanel('event_template'),
-        FieldPanel('campai_event_id', read_only=False),
+        FieldPanel('campai_event_id', read_only=True),
         FieldPanel('subtitle'),
         FieldPanel('introduction'),
         FieldPanel('highlight_introduction'),
