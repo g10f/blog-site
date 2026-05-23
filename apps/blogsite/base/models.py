@@ -4,14 +4,17 @@ from urllib.parse import urlparse
 import wagtail
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
 from django.db import models
 from django.forms import CharField, forms
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_recaptcha.fields import ReCaptchaField
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, InlinePanel, PublishingPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, FieldRowPanel, InlinePanel, \
+    PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 from wagtail.contrib.settings.models import BaseSiteSetting
@@ -21,8 +24,6 @@ from wagtail.models import Page, TranslatableMixin, _copy, DraftStateMixin, Revi
 from wagtail.models import Site
 from wagtail.search import index
 
-from django.core.paginator import Paginator
-from django.utils.text import slugify
 from .blocks import BaseStreamBlock, PersonBlock
 from .forms import SiteFieldForm
 
@@ -100,13 +101,13 @@ class People(TranslatableMixin, index.Indexed, ClusterableModel):
 
         return translated
 
-    def full_clean(self, exclude=None, validate_unique=True):
+    def full_clean(self, exclude=None, validate_unique=True, **kwargs):
         if not self.slug:
             # Try to auto-populate slug from title
             allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
-            self.slug = slugify(f'{self.first_name}-{self.last_name}', allow_unicode=allow_unicode)
+            self.slug = slugify(f'{self.first_name} {self.last_name}', allow_unicode=allow_unicode)
 
-        return super().full_clean(exclude, validate_unique)
+        return super().full_clean(exclude, validate_unique, **kwargs)
 
 
 class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
@@ -179,7 +180,7 @@ class Speaker(TranslatableMixin, index.Indexed, ClusterableModel):
         if not self.slug:
             # Try to auto-populate slug from title
             allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
-            self.slug = slugify(f'{self.first_name}-{self.last_name}', allow_unicode=allow_unicode)
+            self.slug = slugify(f'{self.first_name} {self.last_name}', allow_unicode=allow_unicode)
 
         return super().full_clean(exclude, validate_unique, **kwargs)
 

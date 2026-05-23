@@ -6,7 +6,11 @@
     {% if posts %}
       {% for post in posts %}
         {% with event=post.specific %}
-          {% image event.image fill-800x600-c100 format-webp as image %}
+          {% if event.image  %}
+          {% image event.image fill-800x600-c100 format-webp as image %}{% else %}
+          {% image event.event_template.image fill-800x600-c100 format-webp as image %}
+          {% endif %}
+          {% firstof page.subtitle page.event_template.subtitle as subtitle %}
           <div class="col-12">
             <div class="card mb-3 shadow">
               <div class="row g-0">
@@ -16,14 +20,14 @@
                     <div class="hero-gradient-mask d-sm-none"></div>
                     <div class="g10f-card-img-overlay d-sm-none">
                       <div class="card-title h3">{{ event.title }}</div>
-                      <div class="card-subtitle">{{ event.subtitle }}</div>
+                      <div class="card-subtitle">{{ subtitle }}</div>
                     </div>
                   </div>
                 {% endif %}
                 <div class="{% if image %}col-sm-8 {% else %} col-sm-12{% endif %}">
                   <div class="card-body {% if date > event.end_date %}text-secondary{% endif %}">
                     <div class="d-none d-sm-block card-title h3">{{ event.title }}</div>
-                    <div class="d-none d-sm-block card-subtitle">{{ event.subtitle }}</div>
+                    <div class="d-none d-sm-block card-subtitle">{{ subtitle }}</div>
                     {% include event.intro_template with obj=event date=date %}
                     <a href="{% pageurl event %}{% if tag %}?tag={{ tag.slug }}{% endif %}"
                        class="float-end card-link stretched-link">{% translate 'Read more' %}</a>

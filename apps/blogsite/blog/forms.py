@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django_recaptcha.fields import ReCaptchaField
 from wagtail.admin.mail import send_mail
@@ -61,3 +62,11 @@ class EventRegistrationForm(forms.ModelForm):
         instance = super().save(commit=commit)
         if instance.to_email:
             self.send_mail(instance)
+
+    def clean(self):
+        super().clean()
+        event = self.instance.event
+        if not event.with_registration_form or event.is_registration_expired or not event.is_registration_open:
+            raise ValidationError(_("Registration is not allowed."))
+        elif event.is_booked_up:
+            raise ValidationError(_("Event is booked up"))

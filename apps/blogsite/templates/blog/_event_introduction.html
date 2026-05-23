@@ -1,7 +1,9 @@
 {% load i18n wagtailcore_tags  wagtailimages_tags %}
-{% if obj.introduction %}
+{% firstof obj.introduction obj.event_template.introduction as introduction %}
+
+{% if introduction %}
 <p class="d-none {% if home_page == 1 %}{% else %}d-lg-block{% endif %} {% if obj.highlight_introduction %} text-danger{% endif %}">
-  {{ obj.introduction|truncatewords:15 }}
+  {{ introduction|truncatewords:15 }}
 </p>
 {% endif %}
 <p>

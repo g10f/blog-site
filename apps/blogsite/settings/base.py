@@ -60,8 +60,11 @@ ENABLE_PLAUSIBLE = os.getenv('ENABLE_PLAUSIBLE', 'False').lower() in ('true', '1
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# Application definition
+CAMPAI_BASE_URL = os.getenv('CAMPAI_BASE_URL')
+CAMPAI_API_URL = os.getenv('CAMPAI_API_URL')
+CAMPAI_API_KEY = os.getenv('CAMPAI_API_KEY')
 
+# Application definition
 INSTALLED_APPS = [
     'blogsite',
     'blogsite.base',

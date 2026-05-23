@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-31 10:54+0000\n"
+"POT-Creation-Date: 2026-05-22 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,6 +106,12 @@ msgstr ""
 msgid "Message: {message}"
 msgstr ""
 
+msgid "Registration is not allowed."
+msgstr ""
+
+msgid "Event is booked up"
+msgstr ""
+
 msgid "Enter a valid phone number i.e. +49 (531) 123456"
 msgstr ""
 
@@ -123,6 +129,9 @@ msgstr ""
 
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
+msgstr ""
+
+msgid "additional infos"
 msgstr ""
 
 msgid "start date"
@@ -164,13 +173,13 @@ msgstr ""
 msgid "is cancelled"
 msgstr ""
 
-msgid "additional infos"
-msgstr ""
-
 msgid "Displays a registration form."
 msgstr ""
 
 msgid "highlight introduction"
+msgstr ""
+
+msgid "campai Event ID"
 msgstr ""
 
 msgid "Event"
@@ -180,6 +189,12 @@ msgid "additional dates"
 msgstr ""
 
 msgid "authors"
+msgstr ""
+
+msgid "Book now"
+msgstr ""
+
+msgid "Add to waiting list"
 msgstr ""
 
 #, python-format

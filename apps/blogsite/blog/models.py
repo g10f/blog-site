@@ -1,62 +1,63 @@
+import json
 import logging
 import re
 from datetime import timedelta
 from functools import partial
 from urllib.parse import urlencode, urljoin
 
+import markdown
+import requests
 import wagtail
+from django import forms
 from django.conf import settings
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+from django.utils.safestring import mark_safe
+from django.utils.text import slugify
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from taggit.models import Tag, TaggedItemBase
 from wagtail.admin.panels import FieldPanel, InlinePanel, FieldRowPanel
 from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
-from wagtail.models import Page, Orderable, Site
+from wagtail.models import Page, Orderable, Site, TranslatableMixin
 from wagtail.search import index
 from wagtail.signals import page_published, post_page_move
 
-from django import forms
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.validators import RegexValidator
-from django.db.models.signals import pre_delete
-from django.shortcuts import redirect, render
-from django.template.response import TemplateResponse
-from django.utils.safestring import mark_safe
-from django.utils.timezone import now
-from ..base.blocks import BaseStreamBlock
-from ..base.models import HomePage, get_cached_path
-from ..base.views import SiteFieldChooserViewSet
+from blogsite.base.blocks import BaseStreamBlock
+from blogsite.base.forms import SiteFieldForm
+from blogsite.base.models import HomePage, get_cached_path, Speaker
+from blogsite.base.views import SiteFieldChooserViewSet
 
 logger = logging.getLogger(__name__)
 
-phone_re = re.compile(
-    r'^(\+\d{1,3})?' + r'((-?\d+)|(\s?\(\d+\)\s?)|\s?\d+){1,9}$'
-)
+phone_re = re.compile(r'^(\+\d{1,3})?' + r'((-?\d+)|(\s?\(\d+\)\s?)|\s?\d+){1,9}$')
 validate_phone = RegexValidator(phone_re, _("Enter a valid phone number i.e. +49 (531) 123456"), 'invalid')
 
 
 class BlogPeopleRelationship(Orderable, models.Model):
     page = ParentalKey('BlogPage', related_name='blog_person_relationship', on_delete=models.CASCADE)
     people = models.ForeignKey('base.People', related_name='person_blog_relationship', on_delete=models.CASCADE)
-    panels = [
-        FieldPanel('people')
-    ]
+    panels = [FieldPanel('people')]
 
 
 class EventSpeakerRelationship(Orderable, models.Model):
     page = ParentalKey('EventPage', related_name='event_speaker_relationship', on_delete=models.CASCADE)
     speaker = models.ForeignKey('base.Speaker', related_name='event_speaker_relationship', on_delete=models.CASCADE)
-    panels = [
-        FieldPanel('speaker')
-    ]
+    panels = [FieldPanel('speaker')]
 
 
 class BlogPageTag(TaggedItemBase):
@@ -66,6 +67,15 @@ class BlogPageTag(TaggedItemBase):
     https://docs.wagtail.io/en/latest/reference/pages/model_recipes.html#tagging
     """
     content_object = ParentalKey('BlogPage', related_name='tagged_items', on_delete=models.CASCADE)
+
+
+class EventTemplateTag(TaggedItemBase):
+    """
+    This model allows us to create a many-to-many relationship between
+    the BlogPage object and tags. There's a longer guide on using it at
+    https://docs.wagtail.io/en/latest/reference/pages/model_recipes.html#tagging
+    """
+    content_object = ParentalKey('EventTemplate', related_name='tagged_items', on_delete=models.CASCADE)
 
 
 class AuthorPanel(InlinePanel):
@@ -126,9 +136,7 @@ class BlogPage(Page):
         with a loop on the template. If we tried to access the blog_person_
         relationship directly we'd print `blog.BlogPeopleRelationship.None`
         """
-        authors = [
-            n.people for n in self.blog_person_relationship.all()
-        ]
+        authors = [n.people for n in self.blog_person_relationship.all()]
 
         return authors
 
@@ -149,7 +157,7 @@ class BlogPage(Page):
         yield '/'
 
         # make sure all pages are purged
-        for tag in self.tags.all():
+        for tag in self.get_tags:
             yield f'/?tag={tag.slug}'
 
     # Specifies parent to BlogPage as being BlogIndexPages
@@ -202,6 +210,33 @@ def _now_plus_120_minutes():
     return timezone.now() + timedelta(minutes=120)
 
 
+class EventTemplate(TranslatableMixin, index.Indexed, ClusterableModel):
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    name = models.CharField("name", max_length=254)
+    subtitle = models.CharField(_('subtitle'), blank=True, max_length=255)
+    introduction = models.TextField(_('introduction'), help_text='Text to describe the page', blank=True)
+    image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
+    body = StreamField(BaseStreamBlock(), verbose_name=_("page body"), blank=True, use_json_field=True)
+    tags = ClusterTaggableManager(through=EventTemplateTag, blank=True)
+
+    base_form_class = SiteFieldForm
+
+    panels = [
+        FieldPanel('site'),
+        FieldPanel('name'),
+        FieldPanel('subtitle'),
+        FieldPanel('introduction'),
+        FieldPanel('image'),
+        FieldPanel('additional_infos'),
+        FieldPanel('body'),
+        FieldPanel('tags'),
+    ]
+
+    def __str__(self):
+        return self.name
+
+
 class EventPage(BlogPage):
     """
     An Event Page
@@ -212,6 +247,7 @@ class EventPage(BlogPage):
     """
     intro_template = 'blog/_event_introduction.html'
     parent_page_types = ['EventIndexPage', 'BlogIndexPage']
+    event_template = models.ForeignKey('blog.EventTemplate', null=True, blank=True, on_delete=models.SET_NULL)
     start_date = models.DateTimeField(_('start date'), default=timezone.now)
     end_date = models.DateTimeField(_('end date'), default=_now_plus_120_minutes)
     location = models.TextField(_('location'), blank=True)
@@ -228,17 +264,26 @@ class EventPage(BlogPage):
     additional_infos = wagtail.fields.RichTextField(_('additional infos'), blank=True, help_text="Write additional information's", null=True)
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
     highlight_introduction = models.BooleanField(_('highlight introduction'), default=False)
+    campai_event_id = models.CharField(_('campai Event ID'), unique=True, blank=True, null=True, default=None)
 
     search_fields = BlogPage.search_fields + [
         index.SearchField('location'),
         index.SearchField('additional_infos'),
         index.SearchField('speakers'),
+        # Pull in content from related models too
+        index.RelatedFields('event_template', [
+            index.SearchField('subtitle'),
+            index.SearchField('introduction'),
+            index.SearchField('additional_infos'),
+            index.SearchField('body'), ]),
     ]
 
     class Meta:
         verbose_name = _('Event')
 
     content_panels = Page.content_panels + [
+        FieldPanel('event_template'),
+        FieldPanel('campai_event_id', read_only=False),
         FieldPanel('subtitle'),
         FieldPanel('introduction'),
         FieldPanel('highlight_introduction'),
@@ -248,22 +293,8 @@ class EventPage(BlogPage):
             # see https://docs.wagtail.org/en/stable/extending/generic_views.html#limiting-choices-via-linked-fields
             panels=[FieldPanel('speaker', widget=SiteFieldChooserViewSet(name="speaker_chooser", model="base.Speaker").widget_class(linked_fields={'site': '#id_site', }))],
             min_num=0),
-        FieldRowPanel(
-            [
-                FieldPanel('start_date'),
-                FieldPanel('end_date'),
-            ]
-        ),
-        InlinePanel("additional_dates",
-                    panels=[
-                        FieldRowPanel(
-                            [
-                                FieldPanel('start'),
-                                FieldPanel('end'),
-                            ]
-                        ),
-                    ],
-                    label=_('additional dates')),
+        FieldRowPanel([FieldPanel('start_date'), FieldPanel('end_date'), ]),
+        InlinePanel("additional_dates", panels=[FieldRowPanel([FieldPanel('start'), FieldPanel('end'), ]), ], label=_('additional dates')),
         FieldPanel('registration_end_date'),
         FieldPanel('location'),
         FieldPanel('min_participants'),
@@ -287,18 +318,56 @@ class EventPage(BlogPage):
         FieldPanel('tags'),
     ]
 
-    def speakers(self):
-        speakers = [
-            n.speaker for n in self.event_speaker_relationship.all()
-        ]
+    @property
+    def get_tags(self):
+        """
+        Similar to the authors function above we're returning all the tags that
+        are related to the blog post into a list we can access on the template.
+        We're additionally adding a URL to access BlogPage objects with that tag
+        """
+        tags = self.tags.all()
+        if not tags and self.event_template:
+            tags = self.event_template.tags.all()
 
+        for tag in tags:
+            tag.url = urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
+        return tags
+
+    confirmed_attendees = 0
+
+    @property
+    def campai_link_text(self):
+        if self.max_participants is None:
+            return _("Book now")
+        else:
+            if self.confirmed_attendees < self.max_participants:
+                return _("Book now")
+            else:
+                return _("Add to waiting list")
+
+    def speakers(self):
+        speakers = [n.speaker for n in self.event_speaker_relationship.all()]
         return speakers
+
+    def update_campai_event_infos(self):
+        if self.campai_event_id:
+            update_or_create_event_from_campai(self)
+
+    @property
+    def campai_booking_url(self):
+        if self.campai_event_id:
+            return urljoin(settings.CAMPAI_BASE_URL, f'events/{self.campai_event_id}/checkout')
+        else:
+            return None
 
     @property
     def is_registration_expired(self):
-        if self.registration_end_date and now() > self.registration_end_date:
-            return True
         if now() > self.start_date:
+            return True
+        elif self.campai_event_id:
+            # external booking page is responsible
+            return False
+        elif self.registration_end_date and now() > self.registration_end_date:
             return True
         return False
 
@@ -309,7 +378,7 @@ class EventPage(BlogPage):
     def get_next_siblings(self, inclusive=False):
         # Order by start_date, date_published
         # take into account more than one event with the same start_date
-        q= Q(start_date=self.start_date, date_published__gt=self.date_published) | Q(start_date__gt=self.start_date)
+        q = Q(start_date=self.start_date, date_published__gt=self.date_published) | Q(start_date__gt=self.start_date)
         return self.get_siblings(inclusive).filter(q).order_by("start_date", "date_published")
 
     def get_prev_siblings(self, inclusive=False):
@@ -320,6 +389,7 @@ class EventPage(BlogPage):
 
     def serve(self, request, *args, **kwargs):
         self.set_tag(request)
+        self.update_campai_event_infos()
 
         from .forms import EventRegistrationForm
         to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
@@ -374,24 +444,12 @@ class BlogIndexPage(RoutablePageMixin, Page):
     RoutablePageMixin is used to allow for a custom sub-URL for the tag views
     defined above.
     """
-    introduction = models.TextField(
-        help_text=_('Text to describe the page'),
-        blank=True)
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
-    )
+    introduction = models.TextField(help_text=_('Text to describe the page'), blank=True)
+    image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
+                              help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
     body = StreamField(BaseStreamBlock(), verbose_name=_("page body"), blank=True, use_json_field=True)
 
-    content_panels = Page.content_panels + [
-        FieldPanel('introduction'),
-        FieldPanel('image'),
-        FieldPanel('body'),
-    ]
+    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('image'), FieldPanel('body'), ]
 
     # Specifies that only BlogPage objects can live under this index page
     subpage_types = ['BlogPage']
@@ -399,8 +457,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
     def children(self, num_pages=3):
-        return self.get_children().specific().live().order_by('-path')[:num_pages]
-        # return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
+        return self.get_children().specific().live().order_by('-path')[:num_pages]  # return BlogPage.objects.live().descendant_of(self).order_by('-date_published')
 
     # Pagination for the index page. We use the `django.core.paginator` as any
     # standard Django app would, but the difference here being we have it as a
@@ -452,11 +509,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
         return render(request, self.template, context)
 
     def get_cached_paths(self):
-        return get_cached_path(
-            items=Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct(),
-            item_attribute='slug',
-            reverse_subpage=partial(self.reverse_subpage, 'tag_archive'),
-            filter_method=self.get_posts)
+        return get_cached_path(items=Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct(), item_attribute='slug',
+                               reverse_subpage=partial(self.reverse_subpage, 'tag_archive'), filter_method=self.get_posts)
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
@@ -491,8 +545,12 @@ class EventIndexPage(BlogIndexPage):
     # If a tag is used then it will filter the posts by tag.
     def get_posts(self, tag=None, year=None):
         posts = EventPage.objects.live().descendant_of(self).order_by('-start_date', '-date_published')
+
         if tag:
-            posts = posts.filter(tags=tag)
+            if self.template:
+                posts = posts.filter(Q(tags=tag) | (Q(tags=None) & Q(event_template__tags=tag)))
+            else:
+                posts = posts.filter(tags=tag)
         if year:
             posts = posts.filter(start_date__year=year)
         return posts
@@ -514,8 +572,7 @@ class EventIndexPage(BlogIndexPage):
 
 
 class EventRegistration(models.Model):
-    event = models.ForeignKey(EventPage, related_name='event', blank=True, null=True,
-                              on_delete=models.SET_NULL)
+    event = models.ForeignKey(EventPage, related_name='event', blank=True, null=True, on_delete=models.SET_NULL)
     submit_time = models.DateTimeField(auto_now=True, verbose_name='submit_time')
     subject = models.CharField(_('subject'), max_length=255)
     name = models.CharField(verbose_name=_("first name and last name"), max_length=255)
@@ -531,19 +588,132 @@ class EventRegistration(models.Model):
         verbose_name_plural = _('Registrations')
         ordering = ['-submit_time']
 
-    panels = [
-        FieldPanel('event'),
-        FieldPanel('submit_time', read_only=True),
-        FieldPanel('subject'),
-        FieldPanel('name'),
-        FieldPanel('email'),
-        FieldPanel('telephone'),
-        FieldPanel('message'),
-        FieldPanel('is_member'),
-    ]
+    panels = [FieldPanel('event'), FieldPanel('submit_time', read_only=True), FieldPanel('subject'), FieldPanel('name'), FieldPanel('email'), FieldPanel('telephone'),
+              FieldPanel('message'), FieldPanel('is_member'), ]
 
     def __str__(self):
         return f"{self.event} {self.name}"
+
+
+def update_or_create_event_from_campai(event):
+    # campai_event must be a campai_event_id or an event_page with a campai_event_id
+    if not settings.CAMPAI_API_URL:
+        logger.error("CAMPAI_API_URL is empty")
+        return
+    if not settings.CAMPAI_API_KEY:
+        logger.error("CAMPAI_API_KEY is empty")
+        return
+
+    event_data = None
+    if isinstance(event, EventPage):
+        campai_event_id = event.campai_event_id
+        event_page = event
+    else:
+        if isinstance(event, dict):
+            event_data = event
+            campai_event_id = event["_id"]
+        else:
+            campai_event_id = event
+        try:
+            event_page = EventPage.objects.get(campai_event_id=campai_event_id)
+        except EventPage.DoesNotExist:
+            event_page = EventPage(campai_event_id=campai_event_id)
+
+    changed_fields = []
+
+    def update_field(field_name, new_value):
+        old_value = getattr(event_page, field_name)
+        if old_value != new_value:
+            setattr(event_page, field_name, new_value)
+            changed_fields.append(field_name)
+
+    def get_event_template():
+        try:
+            return EventTemplate.objects.get(name=event_data["info"]["title"])
+        except EventTemplate.DoesNotExist:
+            return None
+
+    def get_event_data(event_id):
+        url = urljoin(settings.CAMPAI_API_URL, f'booking/events/{event_id}')
+        headers = {"X-API-Key": settings.CAMPAI_API_KEY}
+        return requests.get(url, headers=headers, timeout=5).json()
+
+    def confirmed_attendees():
+        if "statistics" in event_data:
+            return event_data["statistics"]["confirmed"]
+        else:
+            return 0
+
+    def price(name):
+        if event_data["offer"]["rates"]:
+            rate = next(filter(lambda x: x["name"] == name, event_data["offer"]["rates"]), None)
+            if rate is not None and "charge" in rate and "price" in rate["charge"]:
+                return rate["charge"]["price"]["price"] / 100
+        return None
+
+    def event_speakers():
+        if "categories" in event_data["info"]:
+            speaker_tag = "Dozent:"
+            dozenten = filter(lambda x: x["name"].startswith(speaker_tag), event_data["info"]["categories"])
+            allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
+            speakers = Speaker.objects.filter(slug__in=[slugify(x["name"][len(speaker_tag):], allow_unicode=allow_unicode) for x in dozenten])
+            return [EventSpeakerRelationship(speaker_id=speaker.id) for speaker in speakers]
+        return []
+
+    def event_location():
+        if event_data and "categories" in event_data["info"]:
+            location_tag = "Ort:"
+            location_category = next(filter(lambda x: x["name"].startswith(location_tag), event_data["info"]["categories"]), None)
+            if location_category is not None:
+                return location_category["name"][len(location_tag):]
+        return ""
+
+    def get_body():
+        if event_data and "details" in event_data["info"]:
+            details_html = markdown.markdown(event_data["info"]["details"])
+            body = json.dumps([{"type": "RawHTMLBlock", "value": details_html}])
+            return body
+        else:
+            return StreamField(BaseStreamBlock()).stream_block.to_python(None)
+
+    if event_data is None:
+        event_data = get_event_data(campai_event_id)
+
+    event_page.confirmed_attendees = confirmed_attendees()
+
+    if event_data["cancelation"] is not None:
+        update_field("is_cancelled", True)
+    else:
+        update_field("is_cancelled", False)
+
+    update_field("title", event_data["info"]["title"])
+    update_field("event_template", get_event_template())
+    if not event_page.event_template:
+        update_field("introduction", event_data["info"]["description"])
+        update_field("body", get_body())
+    else:
+        update_field("introduction", "")
+        update_field("body", StreamField(BaseStreamBlock()).stream_block.to_python(None))
+
+    update_field("start_date", parse_datetime(event_data["period"]["from"]))
+    update_field("end_date", parse_datetime(event_data["period"]["to"]))
+    update_field("max_participants", event_data["settings"]["maxAttendees"])
+    update_field("price", price("Standard"))
+    update_field("price_reduced", price("Mitglieder"))
+
+    # only update speakers if really changed. Otherwise, saved draft of the page gets invalid because of unknown reason.
+    new_event_speakers = event_speakers()
+    if {x.speaker_id for x in new_event_speakers} != {x.speaker_id for x in event_page.event_speaker_relationship.all()}:
+        update_field("event_speaker_relationship", new_event_speakers)
+    update_field("location", event_location())
+
+    if event_page.id is not None:
+        if len(changed_fields) > 0:
+            event_page.latest_revision_created_at = now()
+            event_page.save_revision().publish()
+    else:
+        events = EventIndexPage.objects.all().first()
+        events.add_child(instance=event_page)
 
 
 def blog_page_changed(page):

@@ -1,6 +1,13 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-{% image page.image fill-1920x600 format-webp as image %}
+{% if page.image  %}{% image page.event_template.image fill-1920x600 format-webp as image %}
+{% image page.image fill-1920x600 format-webp as image %}{% else %}
+{% image page.event_template.image fill-1920x600 format-webp as image %}
+{% endif %}
+
+{% firstof page.subtitle page.event_template.subtitle as subtitle %}
+{% firstof page.introduction page.event_template.introduction as introduction %}
+
 {% if image %}
   <div class="container-fluid hero text-light">
     <img alt="" class="hero-image" src="{{ image.url }}">
@@ -11,7 +18,7 @@
       <div class="row ms-lg-2 text-center " style="position: relative">
         {% if hero_with_title %}
           <h1 class="mt-2">{{ page.title }}</h1>
-          {% if page.subtitle %}<p class="lead">{{ page.subtitle }}</p>{% endif %}
+          {% if subtitle %}<p class="lead">{{ subtitle }}</p>{% endif %}
         {% endif %}
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center ">
           {% if page.hero_cta_link %}
@@ -30,9 +37,9 @@
     <div class="col-md-12">
       {% if not hero_with_title or not image%}
         <h1>{{ page.title }}</h1>
-        {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+        {% if subtitle %}<p>{{ subtitle }}</p>{% endif %}
       {% endif %}
-      {% if intro %}{% if page.introduction %}<p>{{ page.introduction }}</p>{% endif %}{% endif %}
+      {% if intro %}{% if introduction %}<p>{{ introduction }}</p>{% endif %}{% endif %}
     </div>
   </div>
 </div>

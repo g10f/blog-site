@@ -1,5 +1,10 @@
 {% load i18n wagtailimages_tags wagtailcore_tags %}
-{% image childpage.image fill-800x450-c100 format-webp as child_image %}
+
+{# firstof does not work, gives a string var #}
+{% if childpage.image  %}
+{% image childpage.image fill-800x450-c100 format-webp as child_image %}{% else %}
+{% image childpage.event_template.image fill-800x450-c100 format-webp as child_image %}
+{% endif %}
 <div class="col">
   <div class="card h-100 mb-3 shadow">
     <img src="{{ child_image.url }}" alt="{{ child_image.alt }}" class="card-img-top"/>

@@ -8,6 +8,9 @@
 
   {% include "base/include/header-hero.html" %}
 
+  {% firstof page.introduction page.event_template.introduction as introduction %}
+  {% firstof page.additional_infos|richtext page.event_template.additional_infos|richtext as additional_infos %}
+
   <div class="container-lg">
     <div class="row">
       <div class="col-12">
@@ -117,10 +120,10 @@
                 {% endif %}
               </p>
             {% endif %}
-            {% if  page.additional_infos %}
+            {% if  additional_infos %}
               <div class="h4 card-title">{% translate 'event venue/other'|title %}</div>
               <div class="card-text">
-                {% translate 'event location'|capfirst %}: {{ page.location }} {{ page.additional_infos | richtext }}
+                {% translate 'event location'|capfirst %}: {{ page.location }} {{ additional_infos  }}
               </div>
             {% else %}
               <div class="h4 card-title">{% translate 'event location'|title %}</div>
@@ -134,13 +137,22 @@
         {% if message %}
           <div class="alert alert-success" role="alert">{{ message }}</div>
         {% endif %}
-        {% if page.introduction %}
+        {% if introduction %}
           <p
-            class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ page.introduction }}</p>
+            class="intro fw-bold{% if page.highlight_introduction %} text-danger{% endif %}">{{ introduction }}</p>
         {% endif %}
-        {% include 'includes/body.html' %}
+        {% if page.body %}
+          {% include 'includes/body.html' %}
+        {% else %}
+          {% include 'includes/body.html' with page=page.event_template %}
+        {% endif %}
 
-        {% if page.with_registration_form and not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
+      {% if page.campai_event_id %}
+        {% if not page.is_registration_expired %}
+          <a href="{{ page.campai_booking_url }}" class="btn btn-primary" role="button">{% translate page.campai_link_text %}</a>
+        {% endif %}
+      {% else %}
+        {% if page.with_registration_form and not page.is_booked_up and page.is_registration_open %}
           {% if not message %}
             <div class="card mb-3" id="registration-form">
               <div class="card-body">
@@ -153,6 +165,7 @@
             </div>
           {% endif %}
         {% endif %}
+      {% endif %}
 
       </div>
 

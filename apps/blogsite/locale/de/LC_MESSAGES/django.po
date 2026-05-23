@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-31 10:54+0000\n"
+"POT-Creation-Date: 2026-05-22 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,6 +104,14 @@ msgstr "Ist Mitglied: Nein"
 msgid "Message: {message}"
 msgstr "Nachricht: {message}"
 
+#| msgid "Registrations"
+msgid "Registration is not allowed."
+msgstr "Anmeldung ist zur Zeit nicht möglich"
+
+#| msgid "is booked up"
+msgid "Event is booked up"
+msgstr "Die Veranstaltung ist ausgebucht"
+
 msgid "Enter a valid phone number i.e. +49 (531) 123456"
 msgstr "Bitte eine Telefonnummer eingeben z.B. +49 (531) 123456"
 
@@ -122,6 +130,9 @@ msgstr "Datum der Veröffentlichung"
 #, python-format
 msgid "There is no tag \"%(tag)s\"."
 msgstr "Es gibt kein Tag \"%(tag)s\"."
+
+msgid "additional infos"
+msgstr "Zusatzinfos"
 
 msgid "start date"
 msgstr "Anfangsdatum"
@@ -162,14 +173,14 @@ msgstr "ist ausgebucht"
 msgid "is cancelled"
 msgstr "abgesagt"
 
-msgid "additional infos"
-msgstr "Zusatzinfos"
-
 msgid "Displays a registration form."
 msgstr "Anmeldeformular anzeigen"
 
 msgid "highlight introduction"
 msgstr "Einleitung hervorheben"
+
+msgid "campai Event ID"
+msgstr ""
 
 msgid "Event"
 msgstr "Veranstaltung"
@@ -179,6 +190,12 @@ msgstr "zusätzliche Termine"
 
 msgid "authors"
 msgstr "Autoren"
+
+msgid "Book now"
+msgstr "Jetzt buchen"
+
+msgid "Add to waiting list"
+msgstr "Auf Warteliste buchen"
 
 #, python-format
 msgid "Registration for \"%(event)s\""
@@ -419,5 +436,3 @@ msgstr ""
 msgid "Sign in with %(idp)s"
 msgstr ""
 
-#~ msgid "cancelled"
-#~ msgstr "abgesagt/ausgefallen"

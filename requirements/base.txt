@@ -2,7 +2,9 @@ django==6.0.5
 django-recaptcha
 dj-database-url
 gunicorn
+markdown
 mozilla-django-oidc
 psycopg[c]
-wagtail==7.4
+wagtail==7.4.1
 whitenoise
+requests
