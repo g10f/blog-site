@@ -5,6 +5,6 @@ gunicorn
 markdown
 mozilla-django-oidc
 psycopg[c]
-wagtail==7.4.1
+wagtail==7.4.2
 whitenoise
 requests
