@@ -305,7 +305,7 @@ class HomePage(Page):
     # Promo section of the HomePage
     promo_image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', help_text='Promo image')
     promo_title = models.CharField(null=True, blank=True, max_length=255, help_text='Title to display above the promo copy')
-    promo_text = RichTextField(null=True, blank=True, help_text='Write some promotional copy')
+    promo_text = RichTextField(null=True, blank=True, help_text='Write some promotional copy', features=['bold', 'italic', 'ol', 'ul', 'hr', 'document-link', 'link', 'button-link'])
 
     # Featured sections on the HomePage
     # You will see on templates/base/home_page.html that these are treated
