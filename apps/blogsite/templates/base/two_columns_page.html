@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  {% include "base/include/header-hero.html" with intro=True %}
+
+  <div class="container-lg">
+    <div class="row  pt-2 pt-sm-3 pt-md-4">
+      <div class="col-lg-7">
+        {% include 'includes/body.html' %}
+      </div>
+        <div class="col-lg-5">
+          {% for block in page.right_body %}
+            {% include_block block %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -266,6 +266,13 @@ class StandardPage(Page):
     search_fields = Page.search_fields + [index.SearchField('introduction'), index.SearchField('body'), ]
 
 
+class TwoColumnsPage(StandardPage):
+    right_body = StreamField(BaseStreamBlock(), verbose_name="Right Page body", blank=True, use_json_field=True)
+    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('body'), FieldPanel('image'), FieldPanel('right_body')]
+
+    search_fields = Page.search_fields + [index.SearchField('introduction'), index.SearchField('body'), index.SearchField('right_body'),]
+
+
 class PersonsPage(Page):
     """
     A generic content page. It could be used for any type of page content that only needs a title,
