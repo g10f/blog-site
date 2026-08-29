@@ -268,8 +268,7 @@ class StandardPage(Page):
 
 class TwoColumnsPage(StandardPage):
     right_body = StreamField(BaseStreamBlock(), verbose_name="Right Page body", blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('body'), FieldPanel('image'), FieldPanel('right_body')]
-
+    content_panels = Page.content_panels + [FieldPanel('introduction'), FieldPanel('image'), FieldPanel('body'), FieldPanel('right_body')]
     search_fields = Page.search_fields + [index.SearchField('introduction'), index.SearchField('body'), index.SearchField('right_body'),]
 
 
