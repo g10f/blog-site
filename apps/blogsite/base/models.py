@@ -458,6 +458,24 @@ class FormPage(AbstractEmailForm):
         ], "Email")
     ])
 
+class TwoColumnsFormPage(FormPage):
+    right_body = StreamField(BaseStreamBlock(), verbose_name="Right Page body", blank=True, use_json_field=True)
+    content_panels = (
+        AbstractEmailForm.content_panels + [
+        FieldPanel('image'),
+        FieldPanel('body'),
+        FieldPanel('right_body'),
+        InlinePanel('form_fields', label="Form fields"),
+        FieldPanel('thank_you_text'),
+        MultiFieldPanel([
+            FieldRowPanel([
+                FieldPanel('from_address', classname="col6"),
+                FieldPanel('to_address', classname="col6")
+            ]),
+            FieldPanel('subject')
+        ], "Email")
+    ])
+
 
 @register_setting
 class SocialMediaSettings(BaseSiteSetting):
