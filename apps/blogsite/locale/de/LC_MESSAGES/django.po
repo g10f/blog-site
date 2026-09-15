@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 09:46+0000\n"
+    "POT-Creation-Date: 2026-09-15 19:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,6 +66,9 @@ msgstr "Nachricht"
 msgid "Spam detected"
 msgstr "Spam entdeckt"
 
+msgid "Link Button"
+msgstr "Link-Button"
+
 #, python-brace-format
 msgid "Member of {site_name}"
 msgstr "Mitglied im {site_name}"
@@ -104,11 +107,9 @@ msgstr "Ist Mitglied: Nein"
 msgid "Message: {message}"
 msgstr "Nachricht: {message}"
 
-#| msgid "Registrations"
 msgid "Registration is not allowed."
 msgstr "Anmeldung ist zur Zeit nicht möglich"
 
-#| msgid "is booked up"
 msgid "Event is booked up"
 msgstr "Die Veranstaltung ist ausgebucht"
 
@@ -435,4 +436,3 @@ msgstr ""
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr ""
-

@@ -1,15 +1,14 @@
 from django.urls import reverse_lazy
+from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
 
 from blogsite.base.views import SiteFieldSnippetViewSet
 from draftjs_exporter.dom import DOM
 from wagtail import hooks
-from wagtail.admin.rich_text.converters.contentstate import link_entity
-from wagtail.admin.rich_text.converters.html_to_contentstate import (
-    ExternalLinkElementHandler,
-    PageLinkElementHandler,
-)
+from wagtail.admin.rich_text.converters.html_to_contentstate import PageLinkElementHandler
 from wagtail.admin.rich_text.editors.draftail import features as draftail_features
 from wagtail.rich_text import LinkHandler
+from wagtail.rich_text.pages import PageLinkHandler
 from wagtail.snippets.models import register_snippet
 from wagtail.whitelist import check_url
 
@@ -45,27 +44,44 @@ class ButtonLinkHandler(LinkHandler):
 
     @classmethod
     def expand_db_attributes(cls, attrs):
-        id_ = attrs.get('id')
-        if id_ is not None:
-            try:
-                from wagtail.models import Page
-                page = Page.objects.get(pk=id_).specific
-                href = page.full_url
-            except Exception:
-                href = '#'
-        else:
-            href = attrs.get('href', '')
-        return f'<a href="{href}" class="btn btn-primary">'
+        return cls.expand_db_attributes_many([attrs])[0]
+
+    @classmethod
+    def expand_db_attributes_many(cls, attrs_list):
+        # page buttons are rendered like normal page links (bulk query, localized url), external ones use their url
+        page_tags = iter(PageLinkHandler.expand_db_attributes_many([attrs for attrs in attrs_list if 'id' in attrs]))
+        tags = [next(page_tags) if 'id' in attrs else '<a href="%s">' % escape(attrs.get('url', '')) for attrs in attrs_list]
+        return [tag.replace('<a', '<a class="btn btn-primary"', 1) for tag in tags]
+
+    @classmethod
+    def extract_references(cls, attrs):
+        if 'id' in attrs:
+            yield from PageLinkHandler.extract_references(attrs)
+
+
+class ButtonLinkElementHandler(PageLinkElementHandler):
+    def get_attribute_data(self, attrs):
+        if 'id' in attrs:
+            return super().get_attribute_data(attrs)
+        return {'url': attrs.get('url')}
 
 
 def button_link_entity(props):
+    # External buttons store their target in `url`, not `href`: HTMLRuleset doesn't support combined selectors,
+    # so <a linktype="button" href="..."> would also match the core link rule 'a[href]' and load as a plain link.
     id_ = props.get('id')
     link_props = {'linktype': 'button'}
     if id_ is not None:
         link_props['id'] = id_
     else:
-        link_props['href'] = check_url(props.get('url', ''))
+        link_props['url'] = check_url(props.get('url', ''))
     return DOM.create_element('a', link_props, props['children'])
+
+
+@hooks.register('register_icons')
+def register_icons(icons):
+    # used by the button-link toolbar button, Wagtail has no icon that looks like a button
+    return icons + ['blogsite/icons/hand-index.svg']
 
 
 @hooks.register('register_rich_text_features')
@@ -80,8 +96,8 @@ def register_button_link_feature(features):
         draftail_features.EntityFeature(
             {
                 'type': type_,
-                'icon': 'link',
-                'description': 'Button',
+                'icon': 'hand-index',
+                'description': _('Link Button'),
                 'attributes': ['url', 'id', 'parentId'],
                 'allowlist': {
                     'href': '^(http:|https:|mailto:|#|undefined$)',
@@ -94,14 +110,13 @@ def register_button_link_feature(features):
                     'anchorLinkChooser': reverse_lazy('wagtailadmin_choose_page_anchor_link'),
                 },
             },
-            js=['wagtailadmin/js/page-chooser-modal.js'],
+            js=['wagtailadmin/js/page-chooser-modal.js', 'js/draftail-button-link.js'],
         )
     )
 
     features.register_converter_rule('contentstate', feature_name, {
         'from_database_format': {
-            'a[linktype="button"][href]': ExternalLinkElementHandler(type_),
-            'a[linktype="button"][id]': PageLinkElementHandler(type_),
+            'a[linktype="button"]': ButtonLinkElementHandler(type_),
         },
         'to_database_format': {
             'entity_decorators': {type_: button_link_entity}
