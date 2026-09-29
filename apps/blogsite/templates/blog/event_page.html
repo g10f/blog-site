@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load i18n wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% extends "base.html" %}{% load i18n static wagtailcore_tags navigation_tags wagtailimages_tags %}
 
 {% block social_metadata %}
   {% include 'blog/_social_metadata.html' %}
@@ -91,6 +91,9 @@
                   {{ page.price_reduced }}&nbsp;€{% endif %}
               {% endif %}
             </p>
+            {% if page.campai_event_id and not page.is_registration_expired %}
+              <p class="card-text">{% include 'blog/_campai_button.html' %}</p>
+            {% endif %}
             {% if page.is_registration_open %}
               <p class="card-text">
                 {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}
@@ -113,9 +116,11 @@
                     {% endblocktranslate %}
                   {% endif %}
                 {% else %}
-                  <br>
                   {% if not page.is_registration_expired and not page.is_booked_up and page.is_registration_open %}
-                    <a class="d-md-none link-primary" href="#registration-form">{% translate 'Go to registration' %}</a>
+                    <span class="d-md-none" id="registration-form-link">
+                      <br><a class="link-primary" href="#registration-form">{% translate 'Go to registration' %}</a>
+                    </span>
+                    <script src="{% static 'js/event-page.js' %}" defer></script>
                   {% endif %}
                 {% endif %}
               </p>
@@ -148,9 +153,7 @@
         {% endif %}
 
       {% if page.campai_event_id %}
-        {% if not page.is_registration_expired %}
-          <a href="{{ page.campai_booking_url }}" class="btn btn-primary" role="button">{% translate page.campai_link_text %}</a>
-        {% endif %}
+        {% include 'blog/_campai_button.html' %}
       {% else %}
         {% if page.with_registration_form and not page.is_booked_up and page.is_registration_open %}
           {% if not message %}

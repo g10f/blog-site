@@ -1,0 +1,3 @@
+{% load i18n %}{% if page.campai_event_id and not page.is_registration_expired %}
+  <a href="{{ page.campai_booking_url }}" class="btn btn-primary" role="button">{% translate page.campai_link_text %}</a>
+{% endif %}
