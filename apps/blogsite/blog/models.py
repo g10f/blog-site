@@ -647,7 +647,7 @@ def update_or_create_event_from_campai(event):
     def price(name):
         if event_data["offer"]["rates"]:
             rate = next(filter(lambda x: x["name"] == name, event_data["offer"]["rates"]), None)
-            if rate is not None and "charge" in rate and "price" in rate["charge"]:
+            if rate is not None and "charge" in rate and "price" in rate["charge"] and rate["charge"]["price"] is not None:
                 return rate["charge"]["price"]["price"] / 100
         return None
 

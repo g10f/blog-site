@@ -18,7 +18,7 @@ class Command(BaseCommand):
               "sort": {},
               "returnCount": True,
               "passedAvailability": False,
-              "hasWaitlist": True,
+              #"hasWaitlist": True,
             }
         if not settings.CAMPAI_API_URL:
             logger.error("No API_URL set in settings.py.py::settings.CAMPAI_API_URL")
