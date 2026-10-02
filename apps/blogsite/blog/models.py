@@ -644,6 +644,12 @@ def update_or_create_event_from_campai(event):
         else:
             return 0
 
+    def waitlisted():
+        if "statistics" in event_data:
+            return event_data["statistics"]["waitlisted"]
+        else:
+            return 0
+
     def price(name):
         if event_data["offer"]["rates"]:
             rate = next(filter(lambda x: x["name"] == name, event_data["offer"]["rates"]), None)
@@ -680,6 +686,8 @@ def update_or_create_event_from_campai(event):
         event_data = get_event_data(campai_event_id)
 
     event_page.confirmed_attendees = confirmed_attendees()
+    if waitlisted() >= settings.CAMPAI_MAX_WAITLISTED:
+        update_field("is_booked_up", True)
 
     if event_data["cancelation"] is not None:
         update_field("is_cancelled", True)

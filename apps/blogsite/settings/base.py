@@ -63,6 +63,7 @@ ENABLE_PLAUSIBLE = os.getenv('ENABLE_PLAUSIBLE', 'False').lower() in ('true', '1
 CAMPAI_BASE_URL = os.getenv('CAMPAI_BASE_URL')
 CAMPAI_API_URL = os.getenv('CAMPAI_API_URL')
 CAMPAI_API_KEY = os.getenv('CAMPAI_API_KEY')
+CAMPAI_MAX_WAITLISTED = int(os.getenv('CAMPAI_MAX_WAITLISTED', '10'))
 
 # Application definition
 INSTALLED_APPS = [
