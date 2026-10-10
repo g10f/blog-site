@@ -8,7 +8,6 @@ from django.core.paginator import Paginator
 from django.db import models
 from django.forms import CharField, forms
 from django.utils.text import slugify
-from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_recaptcha.fields import ReCaptchaField
 from modelcluster.fields import ParentalKey
@@ -366,11 +365,6 @@ class HomePage(Page):
 
     def __str__(self):
         return self.title
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context['date'] = now()
-        return context
 
 
 class FormField(AbstractFormField):

@@ -66,7 +66,7 @@ class EventRegistrationForm(forms.ModelForm):
     def clean(self):
         super().clean()
         event = self.instance.event
-        if not event.with_registration_form or event.is_registration_expired or not event.is_registration_open:
+        if event.registration_closed_reasons:
+            raise ValidationError(event.registration_closed_reasons)
+        if not event.with_registration_form or not event.is_registration_open:
             raise ValidationError(_("Registration is not allowed."))
-        elif event.is_booked_up:
-            raise ValidationError(_("Event is booked up"))

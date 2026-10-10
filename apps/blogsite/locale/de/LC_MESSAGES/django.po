@@ -325,6 +325,9 @@ msgstr "Die Anmeldefrist ist abgelaufen."
 msgid "The event is fully booked."
 msgstr "Die Veranstaltung ist ausgebucht."
 
+msgid "The event has been cancelled."
+msgstr "Die Veranstaltung wurde abgesagt."
+
 msgid "The event is free of charge"
 msgstr "Die Veranstaltung ist kostenfrei."
 

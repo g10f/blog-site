@@ -23,7 +23,7 @@
         <div class="d-none d-sm-block card-title h3">{{ childpage.title }}</div>
         <div class="d-none d-sm-block card-subtitle">{{ childpage.subtitle }}</div>
         <div class="card-text">
-          {% include childpage.intro_template with obj=childpage date=date %}
+          {% include childpage.intro_template with obj=childpage %}
           <a href="{% pageurl childpage %}" class="float-end card-link stretched-link ">{% translate 'Read more' %}</a>
         </div>
       </div>

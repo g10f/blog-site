@@ -1,0 +1,3 @@
+{% if event.status_text %}
+  <span class="badge {% if event.is_cancelled %}text-bg-danger{% else %}text-bg-success{% endif %}">{{ event.status_text|capfirst }}</span>
+{% endif %}

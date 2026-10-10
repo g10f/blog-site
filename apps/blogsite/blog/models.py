@@ -371,6 +371,44 @@ class EventPage(BlogPage):
             return True
         return False
 
+    @property
+    def is_past(self):
+        return now() > self.end_date
+
+    @property
+    def status_text(self):
+        """
+        Translated short status of the event for listings and the detail page.
+        None for an upcoming event that takes place as planned.
+        """
+        if self.is_cancelled:
+            return _('was cancelled') if self.is_past else _('is cancelled')
+        if self.is_past:
+            return _('already executed')
+        return None
+
+    @property
+    def registration_closed_reasons(self):
+        """
+        Translated texts explaining why registration is no longer possible.
+        An empty list means nothing prevents a registration.
+        """
+        if self.is_cancelled:
+            # the other reasons don't matter for a cancelled event
+            return [_('The event has been cancelled.')]
+        reasons = []
+        if self.is_registration_expired:
+            reasons.append(_('The registration period has expired.'))
+        if self.is_booked_up:
+            reasons.append(_('The event is fully booked.'))
+        return reasons
+
+    @property
+    def is_registration_possible(self):
+        # is_registration_open is the editor's switch for events that take registrations at all,
+        # so it is not a "closed" reason shown to visitors
+        return self.is_registration_open and not self.registration_closed_reasons
+
     def get_siblings(self, inclusive=True):
         # Overwrite BlogPage.get_siblings that we can order by start_date.
         return EventPage.objects.sibling_of(self, inclusive)
@@ -480,7 +518,6 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context = super().get_context(request, *args, **kwargs)
         year = request.GET.get('year')
         context['year'] = year
-        context['date'] = now()
         context['posts'] = self.paginate(request, self.get_posts(year=year))
         return context
 
@@ -505,7 +542,6 @@ class BlogIndexPage(RoutablePageMixin, Page):
         context['year'] = year
         context['tag'] = tag
         context['posts'] = posts
-        context['date'] = now()
         return render(request, self.template, context)
 
     def get_cached_paths(self):

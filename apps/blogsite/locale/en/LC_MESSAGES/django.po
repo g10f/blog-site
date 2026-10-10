@@ -319,6 +319,9 @@ msgstr ""
 msgid "The event is fully booked."
 msgstr ""
 
+msgid "The event has been cancelled."
+msgstr ""
+
 msgid "The event is free of charge"
 msgstr ""
 
