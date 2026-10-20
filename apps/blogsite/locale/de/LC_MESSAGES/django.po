@@ -292,10 +292,10 @@ msgstr ""
 msgid "date published"
 msgstr "Datum der Veröffentlichung"
 
-msgid "Previous articel"
+msgid "Previous article"
 msgstr "Vorheriger Beitrag"
 
-msgid "Next articel"
+msgid "Next article"
 msgstr "Nächster Beitrag"
 
 msgctxt "Female"

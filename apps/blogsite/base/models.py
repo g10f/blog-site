@@ -6,9 +6,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db import models
+from django.db.models import Q
 from django.forms import CharField, forms
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_recaptcha.fields import ReCaptchaField
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -16,6 +17,7 @@ from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel, 
     PublishingPanel
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
+from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.settings.models import BaseSiteSetting
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.fields import RichTextField, StreamField
@@ -202,7 +204,7 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
         if self.site:
             return '{} - {}'.format(_("Site Logo"), self.site)
         else:
-            return _("Site Logo")
+            return str(_("Site Logo"))
 
     def get_preview_template(self, request, mode_name):
         return "base.html"
@@ -231,7 +233,7 @@ class FooterText(DraftStateMixin, RevisionMixin, PreviewableMixin, TranslatableM
         if self.site:
             return '{} - {}'.format(_("footer text"), self.site)
         else:
-            return _("footer text")
+            return str(_("footer text"))
 
     def get_preview_template(self, request, mode_name):
         return "base.html"
@@ -503,7 +505,20 @@ def get_cached_path(items, item_attribute, reverse_subpage, filter_method):
             for page in paginator.page_range:
                 yield f'{subpage}?page={page}'
 
-    paginator = Paginator(filter_method(), 12)
+    paginator = Paginator(filter_method(), settings.BLOGSITE_PAGE_SIZE)
     if paginator.num_pages > 1:
         for page in paginator.page_range:
             yield f'/?page={page}'
+
+
+def purge_index_pages(index_pages):
+    # Purge the index pages and the home pages featuring one of them in a single request
+    index_pages = list({index_page.pk: index_page for index_page in index_pages}.values())  # drop duplicates
+    index_page_ids = [index_page.pk for index_page in index_pages]
+    home_pages = HomePage.objects.live().filter(
+        Q(featured_section_1__in=index_page_ids) | Q(featured_section_2__in=index_page_ids))
+
+    batch = PurgeBatch()
+    batch.add_pages(index_pages)
+    batch.add_pages(home_pages)
+    batch.purge()

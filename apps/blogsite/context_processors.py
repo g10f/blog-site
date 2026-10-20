@@ -4,6 +4,8 @@ from django.conf import settings as site_settings
 
 from wagtail.models import Site
 
+from blogsite import __version__
+
 log = logging.getLogger(__name__)
 
 
@@ -17,5 +19,6 @@ def settings(request):
         'hero_with_title': site_settings.HERO_WITH_TITLE,
         'event_registration_email': site_settings.EVENT_REGISTRATION_EMAIL,
         'event_registration_phone_number': site_settings.EVENT_REGISTRATION_PHONE_NUMBER,
-        'enable_plausible': site_settings.ENABLE_PLAUSIBLE
+        'enable_plausible': site_settings.ENABLE_PLAUSIBLE,
+        'version': __version__,
     }

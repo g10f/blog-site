@@ -18,7 +18,9 @@
               {% for author in page.authors %}
                 {% image author.image fill-100x100-c100 format-webp as author_img %}
                 <li class="list-inline-item">
-                  <img src="{{ author_img.url }}" width="50px" alt="" class="rounded-circle"/>
+                  {% if author_img %}
+                    <img src="{{ author_img.url }}" width="50" alt="" class="rounded-circle"/>
+                  {% endif %}
                   {{ author.first_name }} {{ author.last_name }}</li>
               {% endfor %}
             </ul>
@@ -48,6 +50,6 @@
     </div>
   </div>
 
-  {% include "includes/page_navigation.html" with slug=page.tag.slug slug_name='tag' previous=_("Previous articel") next=_("Next articel") %}
+  {% include "includes/page_navigation.html" with slug=page.tag.slug slug_name='tag' previous=_("Previous article") next=_("Next article") %}
 
 {% endblock content %}

@@ -1,5 +1,4 @@
 import django_filters
-from django.contrib import admin
 from wagtail.admin.filters import WagtailFilterSet
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
@@ -39,7 +38,3 @@ class EventRegistrationAdmin(SnippetViewSet):
     list_export = ["event", "submit_time", "subject", "name", "email", "telephone", "message", "is_member"]
     list_display = ('submit_time', 'event', 'name', 'email',)
     filterset_class = EventFilter
-
-    @admin.display
-    def event(self, obj):
-        return f"{obj.page}-{obj.page.specific.start_date.date()}"

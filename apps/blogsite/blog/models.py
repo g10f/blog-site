@@ -12,6 +12,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ImproperlyConfigured
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Q
@@ -30,16 +31,15 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from taggit.models import Tag, TaggedItemBase
 from wagtail.admin.panels import FieldPanel, InlinePanel, FieldRowPanel
-from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
 from wagtail.models import Page, Orderable, Site, TranslatableMixin
 from wagtail.search import index
-from wagtail.signals import page_published, post_page_move
+from wagtail.signals import page_published, page_unpublished, post_page_move
 
 from blogsite.base.blocks import BaseStreamBlock
 from blogsite.base.forms import SiteFieldForm
-from blogsite.base.models import HomePage, get_cached_path, Speaker
+from blogsite.base.models import get_cached_path, purge_index_pages, Speaker
 from blogsite.base.views import SiteFieldChooserViewSet
 
 logger = logging.getLogger(__name__)
@@ -351,7 +351,12 @@ class EventPage(BlogPage):
 
     def update_campai_event_infos(self):
         if self.campai_event_id:
-            update_or_create_event_from_campai(self)
+            try:
+                update_or_create_event_from_campai(self)
+            except Exception:
+                # the page is shown with the stored data, if campai is not reachable or returns unexpected data.
+                # Only a warning, because an error would send a mail to the admins on every request.
+                logger.warning(f'updating the event {self.campai_event_id} from campai failed', exc_info=True)
 
     @property
     def campai_booking_url(self):
@@ -427,7 +432,9 @@ class EventPage(BlogPage):
 
     def serve(self, request, *args, **kwargs):
         self.set_tag(request)
-        self.update_campai_event_infos()
+        # the preview shows the unsaved changes of the editor, which must not be published by the campai update
+        if not getattr(request, 'is_preview', False):
+            self.update_campai_event_infos()
 
         from .forms import EventRegistrationForm
         to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
@@ -456,7 +463,7 @@ class EventPage(BlogPage):
         return TemplateResponse(request, self.get_template(request), context)
 
     def __str__(self):
-        return f"{self.start_date.date()} - {self.title}"
+        return f"{timezone.localtime(self.start_date).date()} - {self.title}"
 
     def clean(self):
         if self.end_date < self.start_date:
@@ -545,8 +552,14 @@ class BlogIndexPage(RoutablePageMixin, Page):
         return render(request, self.template, context)
 
     def get_cached_paths(self):
-        return get_cached_path(items=Tag.objects.filter(blog_blogpagetag_items__isnull=False).distinct(), item_attribute='slug',
-                               reverse_subpage=partial(self.reverse_subpage, 'tag_archive'), filter_method=self.get_posts)
+        # tags of the posts and of the event templates, which events without own tags use
+        tags = Tag.objects.filter(Q(blog_blogpagetag_items__isnull=False) | Q(blog_eventtemplatetag_items__isnull=False)).distinct()
+        yield from get_cached_path(items=tags, item_attribute='slug',
+                                   reverse_subpage=partial(self.reverse_subpage, 'tag_archive'), filter_method=self.get_posts)
+        # the pagination links don't keep the year, so only the first page of a year is cached.
+        # Including the years of unpublished posts, whose year page may still be in the cache.
+        for year in self.get_years(live=False):
+            yield f'/?year={year}'
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
@@ -567,9 +580,12 @@ class BlogIndexPage(RoutablePageMixin, Page):
         tags = sorted(set(tags))
         return tags
 
-    def get_years(self):
+    def get_years(self, live=True):
+        posts = BlogPage.objects.descendant_of(self)
+        if live:
+            posts = posts.live()
         years = []
-        for post in BlogPage.objects.live().descendant_of(self).order_by('-date_published').dates('date_published', 'year'):
+        for post in posts.order_by('-date_published').dates('date_published', 'year'):
             years.append(post.year)
         return years
 
@@ -583,17 +599,18 @@ class EventIndexPage(BlogIndexPage):
         posts = EventPage.objects.live().descendant_of(self).order_by('-start_date', '-date_published')
 
         if tag:
-            if self.template:
-                posts = posts.filter(Q(tags=tag) | (Q(tags=None) & Q(event_template__tags=tag)))
-            else:
-                posts = posts.filter(tags=tag)
+            # an event without own tags uses the tags of its event template
+            posts = posts.filter(Q(tags=tag) | (Q(tags=None) & Q(event_template__tags=tag)))
         if year:
             posts = posts.filter(start_date__year=year)
         return posts
 
-    def get_years(self):
+    def get_years(self, live=True):
+        posts = EventPage.objects.descendant_of(self)
+        if live:
+            posts = posts.live()
         years = []
-        for post in EventPage.objects.live().descendant_of(self).order_by('-start_date', '-date_published').dates('start_date', 'year'):
+        for post in posts.order_by('-start_date', '-date_published').dates('start_date', 'year'):
             years.append(post.year)
         return years
 
@@ -631,29 +648,51 @@ class EventRegistration(models.Model):
         return f"{self.event} {self.name}"
 
 
+def get_campai_event_index():
+    # New campai events are added to the EventIndexPage configured with CAMPAI_EVENT_INDEX_PAGE_ID,
+    # without configuration to the first one, which is only unambiguous with a single EventIndexPage.
+    if settings.CAMPAI_EVENT_INDEX_PAGE_ID:
+        return EventIndexPage.objects.get(pk=settings.CAMPAI_EVENT_INDEX_PAGE_ID)
+
+    event_indexes = EventIndexPage.objects.order_by('pk')
+    if event_indexes.count() > 1:
+        logger.warning("There are several EventIndexPages, new campai events are added to the first one. "
+                       "Set CAMPAI_EVENT_INDEX_PAGE_ID to choose one.")
+    event_index = event_indexes.first()
+    if event_index is None:
+        raise ImproperlyConfigured("There is no EventIndexPage for the campai events.")
+    return event_index
+
+
 def update_or_create_event_from_campai(event):
-    # campai_event must be a campai_event_id or an event_page with a campai_event_id
+    # event must be an event_page with a campai_event_id or the campai event data from the event list
     if not settings.CAMPAI_API_URL:
-        logger.error("CAMPAI_API_URL is empty")
-        return
+        raise ImproperlyConfigured("CAMPAI_API_URL is empty")
     if not settings.CAMPAI_API_KEY:
-        logger.error("CAMPAI_API_KEY is empty")
-        return
+        raise ImproperlyConfigured("CAMPAI_API_KEY is empty")
 
     event_data = None
+    # only set for a new event_page, which is added to this EventIndexPage at the end
+    event_index = None
     if isinstance(event, EventPage):
         campai_event_id = event.campai_event_id
         event_page = event
     else:
-        if isinstance(event, dict):
-            event_data = event
-            campai_event_id = event["_id"]
-        else:
-            campai_event_id = event
+        event_data = event
+        campai_event_id = event["_id"]
         try:
             event_page = EventPage.objects.get(campai_event_id=campai_event_id)
         except EventPage.DoesNotExist:
             event_page = EventPage(campai_event_id=campai_event_id)
+            event_index = get_campai_event_index()
+
+    # event templates and speakers are looked up in the site and locale of the event
+    if event_index is None:
+        site = event_page.get_site()
+        locale = event_page.locale
+    else:
+        site = event_index.get_site()
+        locale = event_index.locale
 
     changed_fields = []
 
@@ -664,15 +703,14 @@ def update_or_create_event_from_campai(event):
             changed_fields.append(field_name)
 
     def get_event_template():
-        try:
-            return EventTemplate.objects.get(name=event_data["info"]["title"])
-        except EventTemplate.DoesNotExist:
-            return None
+        return EventTemplate.objects.filter(site=site, locale=locale, name=event_data["info"]["title"]).first()
 
     def get_event_data(event_id):
         url = urljoin(settings.CAMPAI_API_URL, f'booking/events/{event_id}')
         headers = {"X-API-Key": settings.CAMPAI_API_KEY}
-        return requests.get(url, headers=headers, timeout=5).json()
+        response = requests.get(url, headers=headers, timeout=5)
+        response.raise_for_status()
+        return response.json()
 
     def confirmed_attendees():
         if "statistics" in event_data:
@@ -698,7 +736,7 @@ def update_or_create_event_from_campai(event):
             speaker_tag = "Dozent:"
             dozenten = filter(lambda x: x["name"].startswith(speaker_tag), event_data["info"]["categories"])
             allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
-            speakers = Speaker.objects.filter(slug__in=[slugify(x["name"][len(speaker_tag):], allow_unicode=allow_unicode) for x in dozenten])
+            speakers = Speaker.objects.filter(site=site, slug__in=[slugify(x["name"][len(speaker_tag):], allow_unicode=allow_unicode) for x in dozenten])
             return [EventSpeakerRelationship(speaker_id=speaker.id) for speaker in speakers]
         return []
 
@@ -751,51 +789,51 @@ def update_or_create_event_from_campai(event):
         update_field("event_speaker_relationship", new_event_speakers)
     update_field("location", event_location())
 
-    if event_page.id is not None:
+    if event_index is None:
         if len(changed_fields) > 0:
+            # The campai changes are published on the live page. A draft of an editor would be replaced by this
+            # revision, so the campai changes are saved on top of the draft as a new draft revision.
+            draft = event_page.get_latest_revision_as_object() if event_page.has_unpublished_changes else None
             event_page.latest_revision_created_at = now()
             event_page.save_revision().publish()
+            if draft is not None:
+                for field_name in changed_fields:
+                    if field_name == "event_speaker_relationship":
+                        # new relationship objects, because the ones above belong to the live page
+                        draft.event_speaker_relationship = event_speakers()
+                    else:
+                        setattr(draft, field_name, getattr(event_page, field_name))
+                draft.save_revision()
     else:
-        events = EventIndexPage.objects.all().first()
-        events.add_child(instance=event_page)
+        event_page.locale = locale
+        event_index.add_child(instance=event_page)
 
 
-def blog_page_changed(page):
-    # we have EventPage and BlogPage pages
-    # with blog index pages
-    if page.__class__ == EventPage:
-        blog_page = page.blogpage
-    elif page.__class__ == BlogPage:
-        blog_page = page
-    else:
-        return
-
-    # Find all the live BlogIndexPages and HomePages that contain this blog_page
-    batch = PurgeBatch()
-
-    home_pages = list(HomePage.objects.live())
-    for blog_index in BlogIndexPage.objects.live():
-        if blog_page in blog_index.get_posts():
-            batch.add_page(blog_index)
-            for home_page in home_pages.copy():
-                if blog_index.page_ptr in [home_page.featured_section_1, home_page.featured_section_2]:
-                    batch.add_page(home_page)
-                    home_pages.remove(home_page)
-
-    # Purge all the blog indexes and home pages we found in a single request
-    batch.purge()
+def blog_page_changed(blog_page, parent_page_before=None):
+    # Purge all the live BlogIndexPages and EventIndexPages containing this blog_page (BlogPage or EventPage),
+    # ignoring whether the blog_page itself is live, so that an unpublished blog_page disappears from the indexes as
+    # well. After a move, the index the blog_page was moved away from is purged too.
+    # specific(), so that an EventIndexPage enumerates its cached paths with its own get_posts and get_years.
+    blog_indexes = list(BlogIndexPage.objects.live().ancestor_of(blog_page).specific())
+    if parent_page_before is not None:
+        blog_indexes += BlogIndexPage.objects.live().ancestor_of(parent_page_before, inclusive=True).specific()
+    purge_index_pages(blog_indexes)
 
 
-@receiver(page_published)
-def page_published_handler(instance, **kwargs):
+# page_published, page_unpublished and post_page_move are sent with the specific class as sender
+@receiver([page_published, page_unpublished], sender=BlogPage)
+@receiver([page_published, page_unpublished], sender=EventPage)
+def blog_page_published_handler(instance, **kwargs):
     blog_page_changed(instance)
 
 
-@receiver(pre_delete)
-def page_deleted_handler(instance, **kwargs):
+@receiver(post_page_move, sender=BlogPage)
+@receiver(post_page_move, sender=EventPage)
+def blog_page_moved_handler(instance, parent_page_before, **kwargs):
+    blog_page_changed(instance.specific, parent_page_before)
+
+
+# deleting an EventPage deletes its BlogPage parent row as well, so BlogPage covers both
+@receiver(pre_delete, sender=BlogPage)
+def blog_page_deleted_handler(instance, **kwargs):
     blog_page_changed(instance)
-
-
-@receiver(post_page_move)
-def page_post_page_move_handler(instance, **kwargs):
-    blog_page_changed(instance.specific)

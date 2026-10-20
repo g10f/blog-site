@@ -6,7 +6,9 @@
     {# hero #}
     {% image page.image fill-1920x600 format-webp as image %}
     <div class="container-fluid hero text-light">
-      <img alt="" class="hero-image" src="{{ image.url }}">
+      {% if image %}
+        <img alt="" class="hero-image" src="{{ image.url }}">
+      {% endif %}
       {% if hero_with_title %}
         <div class="hero-gradient-mask"></div>
       {% endif %}

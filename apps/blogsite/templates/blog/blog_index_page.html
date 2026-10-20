@@ -32,7 +32,9 @@
               {% image blog.image fill-850x450-c50 format-webp as image %}
               <div class="col-md-6">
                 <div class="card mb-3 shadow">
-                  <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
+                  {% if image %}
+                    <img src="{{ image.url }}" alt="{{ image.alt }}" class="card-img-top"/>
+                  {% endif %}
                   <div class="card-body">
                     <h2 class="card-title">{{ blog.title }}</h2>
                     <div class="card-text">{% include blog.intro_template with obj=blog %}</div>
