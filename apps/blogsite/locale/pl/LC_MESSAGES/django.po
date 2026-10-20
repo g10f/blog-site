@@ -443,3 +443,7 @@ msgstr ""
 #: blogsite/blog/models.py
 msgid "confirmed attendees"
 msgstr ""
+
+#: blogsite/blog/models.py
+msgid "booked up"
+msgstr ""

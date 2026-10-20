@@ -414,12 +414,14 @@ class EventPage(BlogPage):
     def status_text(self):
         """
         Translated short status of the event for listings and the detail page.
-        None for an upcoming event that takes place as planned.
+        None for an upcoming event that takes place as planned and isn't booked up.
         """
         if self.is_cancelled:
             return _('was cancelled') if self.is_past else _('is cancelled')
         if self.is_past:
             return _('already executed')
+        if self.is_booked_up:
+            return _('booked up')
         return None
 
     @property

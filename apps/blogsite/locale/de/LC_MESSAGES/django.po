@@ -451,3 +451,7 @@ msgstr "Die Referenten werden in campai gepflegt."
 #: blogsite/blog/models.py
 msgid "confirmed attendees"
 msgstr "bestätigte Teilnehmer"
+
+#: blogsite/blog/models.py
+msgid "booked up"
+msgstr "ausgebucht"

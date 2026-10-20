@@ -1,0 +1,19 @@
+// Separators "·" between the links of the footer text (a .nav in the FooterText snippet) and before the version.
+// They are decoration only, so screen readers skip them (empty alternative text of the generated content).
+.copyright .nav-item {
+  display: flex;
+  // on the baseline of the link text like the separator before the version
+  align-items: baseline;
+}
+
+.copyright .nav-item + .nav-item::before,
+.footer-version::before {
+  content: "·";
+  content: "·" / "";
+  color: var(--#{$prefix}secondary-color);
+}
+
+// the links of the footer text have a padding of .5rem already
+.footer-version::before {
+  padding-right: .5rem;
+}
