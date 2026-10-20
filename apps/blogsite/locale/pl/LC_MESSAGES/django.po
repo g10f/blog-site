@@ -431,3 +431,15 @@ msgstr ""
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr ""
+
+#: blogsite/blog/models.py
+msgid "Maintained in campai."
+msgstr ""
+
+#: blogsite/blog/models.py
+msgid "The speakers are maintained in campai."
+msgstr ""
+
+#: blogsite/blog/models.py
+msgid "confirmed attendees"
+msgstr ""

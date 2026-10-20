@@ -6,13 +6,12 @@ from functools import partial
 from urllib.parse import urlencode, urljoin
 
 import markdown
-import requests
 import wagtail
 from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Q
@@ -30,7 +29,9 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from taggit.models import Tag, TaggedItemBase
+from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.admin.panels import FieldPanel, InlinePanel, FieldRowPanel
+from wagtail.contrib.frontend_cache.utils import PurgeBatch
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import StreamField
 from wagtail.models import Page, Orderable, Site, TranslatableMixin
@@ -210,6 +211,35 @@ def _now_plus_120_minutes():
     return timezone.now() + timedelta(minutes=120)
 
 
+# Fields of an EventPage linked to a campai event, which are overwritten by the sync with the data from campai.
+# Editors can't change them in the admin.
+# is_booked_up is not one of them: the sync only sets it, and only an editor can reset it.
+CAMPAI_FIELDS = ['title', 'event_template', 'introduction', 'body', 'start_date', 'end_date', 'location',
+                 'max_participants', 'price', 'price_reduced', 'is_cancelled']
+
+
+class EventPageForm(WagtailAdminPageForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.campai_event_id:
+            for field_name in CAMPAI_FIELDS:
+                if field_name in self.fields:
+                    # a disabled field keeps the value of the page, whatever is submitted
+                    self.fields[field_name].disabled = True
+                    self.fields[field_name].help_text = _('Maintained in campai.')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # The speakers are an inline formset, which can't be disabled like a field.
+        formset = self.formsets.get('event_speaker_relationship')
+        if self.instance.campai_event_id and formset is not None and formset.is_valid():
+            speaker_ids = {form.cleaned_data['speaker'].pk for form in formset.forms
+                           if form.cleaned_data.get('speaker') and not form.cleaned_data.get('DELETE')}
+            if speaker_ids != {relationship.speaker_id for relationship in self.instance.event_speaker_relationship.all()}:
+                raise ValidationError(_('The speakers are maintained in campai.'))
+        return cleaned_data
+
+
 class EventTemplate(TranslatableMixin, index.Indexed, ClusterableModel):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     name = models.CharField("name", max_length=254)
@@ -265,6 +295,10 @@ class EventPage(BlogPage):
     with_registration_form = models.BooleanField("with_registration_form", default=True, help_text=_('Displays a registration form.'))
     highlight_introduction = models.BooleanField(_('highlight introduction'), default=False)
     campai_event_id = models.CharField(_('campai Event ID'), unique=True, blank=True, null=True, default=None)
+    # set by the campai sync, see update_campai_statistics
+    confirmed_attendees = models.PositiveIntegerField(_('confirmed attendees'), default=0, editable=False)
+
+    base_form_class = EventPageForm
 
     search_fields = BlogPage.search_fields + [
         index.SearchField('location'),
@@ -333,8 +367,6 @@ class EventPage(BlogPage):
             tag.url = urljoin(self.get_parent().get_url_parts()[2], f'tags/{tag.slug}/')
         return tags
 
-    confirmed_attendees = 0
-
     @property
     def campai_link_text(self):
         if self.max_participants is None:
@@ -349,14 +381,12 @@ class EventPage(BlogPage):
         speakers = [n.speaker for n in self.event_speaker_relationship.all()]
         return speakers
 
-    def update_campai_event_infos(self):
-        if self.campai_event_id:
-            try:
-                update_or_create_event_from_campai(self)
-            except Exception:
-                # the page is shown with the stored data, if campai is not reachable or returns unexpected data.
-                # Only a warning, because an error would send a mail to the admins on every request.
-                logger.warning(f'updating the event {self.campai_event_id} from campai failed', exc_info=True)
+    def with_content_json(self, content):
+        # The number of confirmed attendees is updated without a revision (see update_campai_statistics), so the
+        # value of an older revision must not overwrite it, e.g. when an editor publishes a draft.
+        obj = super().with_content_json(content)
+        obj.confirmed_attendees = self.confirmed_attendees
+        return obj
 
     @property
     def campai_booking_url(self):
@@ -432,9 +462,6 @@ class EventPage(BlogPage):
 
     def serve(self, request, *args, **kwargs):
         self.set_tag(request)
-        # the preview shows the unsaved changes of the editor, which must not be published by the campai update
-        if not getattr(request, 'is_preview', False):
-            self.update_campai_event_infos()
 
         from .forms import EventRegistrationForm
         to_email = self.registration_email if self.registration_email else settings.EVENT_REGISTRATION_EMAIL
@@ -664,27 +691,27 @@ def get_campai_event_index():
     return event_index
 
 
-def update_or_create_event_from_campai(event):
-    # event must be an event_page with a campai_event_id or the campai event data from the event list
-    if not settings.CAMPAI_API_URL:
-        raise ImproperlyConfigured("CAMPAI_API_URL is empty")
-    if not settings.CAMPAI_API_KEY:
-        raise ImproperlyConfigured("CAMPAI_API_KEY is empty")
+def update_campai_statistics(event_page, event_data):
+    # The number of confirmed attendees changes with every booking. It is saved without a new revision, so that the
+    # revision history isn't flooded and drafts of editors are not affected (see EventPage.with_content_json).
+    confirmed_attendees = (event_data.get("statistics") or {}).get("confirmed", 0)
+    if confirmed_attendees == event_page.confirmed_attendees:
+        return False
+    event_page.confirmed_attendees = confirmed_attendees
+    if event_page.id is not None:
+        EventPage.objects.filter(pk=event_page.pk).update(confirmed_attendees=confirmed_attendees)
+    return True
 
-    event_data = None
-    # only set for a new event_page, which is added to this EventIndexPage at the end
-    event_index = None
-    if isinstance(event, EventPage):
-        campai_event_id = event.campai_event_id
-        event_page = event
-    else:
-        event_data = event
-        campai_event_id = event["_id"]
-        try:
-            event_page = EventPage.objects.get(campai_event_id=campai_event_id)
-        except EventPage.DoesNotExist:
-            event_page = EventPage(campai_event_id=campai_event_id)
-            event_index = get_campai_event_index()
+
+def update_or_create_event_from_campai(event_data):
+    # event_data is an event of the campai event list
+    event_index = None  # only set for a new event_page, which is added to this EventIndexPage at the end
+    campai_event_id = event_data["_id"]
+    try:
+        event_page = EventPage.objects.get(campai_event_id=campai_event_id)
+    except EventPage.DoesNotExist:
+        event_page = EventPage(campai_event_id=campai_event_id)
+        event_index = get_campai_event_index()
 
     # event templates and speakers are looked up in the site and locale of the event
     if event_index is None:
@@ -704,25 +731,6 @@ def update_or_create_event_from_campai(event):
 
     def get_event_template():
         return EventTemplate.objects.filter(site=site, locale=locale, name=event_data["info"]["title"]).first()
-
-    def get_event_data(event_id):
-        url = urljoin(settings.CAMPAI_API_URL, f'booking/events/{event_id}')
-        headers = {"X-API-Key": settings.CAMPAI_API_KEY}
-        response = requests.get(url, headers=headers, timeout=5)
-        response.raise_for_status()
-        return response.json()
-
-    def confirmed_attendees():
-        if "statistics" in event_data:
-            return event_data["statistics"]["confirmed"]
-        else:
-            return 0
-
-    def waitlisted():
-        if "statistics" in event_data:
-            return event_data["statistics"]["waitlisted"]
-        else:
-            return 0
 
     def price(name):
         if event_data["offer"]["rates"]:
@@ -756,11 +764,11 @@ def update_or_create_event_from_campai(event):
         else:
             return StreamField(BaseStreamBlock()).stream_block.to_python(None)
 
-    if event_data is None:
-        event_data = get_event_data(campai_event_id)
+    # before the content, so that a published revision keeps the new statistics
+    statistics_changed = update_campai_statistics(event_page, event_data)
 
-    event_page.confirmed_attendees = confirmed_attendees()
-    if waitlisted() >= settings.CAMPAI_MAX_WAITLISTED:
+    # only set, an editor resets it in the admin
+    if (event_data.get("statistics") or {}).get("waitlisted", 0) >= settings.CAMPAI_MAX_WAITLISTED:
         update_field("is_booked_up", True)
 
     if event_data["cancelation"] is not None:
@@ -804,6 +812,11 @@ def update_or_create_event_from_campai(event):
                     else:
                         setattr(draft, field_name, getattr(event_page, field_name))
                 draft.save_revision()
+        elif statistics_changed:
+            # the statistics are shown on the event page only, a published revision purges it anyway
+            batch = PurgeBatch()
+            batch.add_page(event_page)
+            batch.purge()
     else:
         event_page.locale = locale
         event_index.add_child(instance=event_page)

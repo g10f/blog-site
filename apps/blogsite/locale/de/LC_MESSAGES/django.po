@@ -439,3 +439,15 @@ msgstr ""
 #, python-format
 msgid "Sign in with %(idp)s"
 msgstr ""
+
+#: blogsite/blog/models.py
+msgid "Maintained in campai."
+msgstr "Wird in campai gepflegt."
+
+#: blogsite/blog/models.py
+msgid "The speakers are maintained in campai."
+msgstr "Die Referenten werden in campai gepflegt."
+
+#: blogsite/blog/models.py
+msgid "confirmed attendees"
+msgstr "bestätigte Teilnehmer"
