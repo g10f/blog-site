@@ -368,14 +368,19 @@ class EventPage(BlogPage):
         return tags
 
     @property
+    def is_waitlist_only(self):
+        # All places are taken, but Campai still takes bookings for the waiting list
+        # (until the sync sets is_booked_up).
+        if not self.campai_event_id or self.max_participants is None:
+            return False
+        return self.confirmed_attendees >= self.max_participants
+
+    @property
     def campai_link_text(self):
-        if self.max_participants is None:
-            return _("Book now")
+        if self.is_waitlist_only:
+            return _("Add to waiting list")
         else:
-            if self.confirmed_attendees < self.max_participants:
-                return _("Book now")
-            else:
-                return _("Add to waiting list")
+            return _("Book now")
 
     def speakers(self):
         speakers = [n.speaker for n in self.event_speaker_relationship.all()]
@@ -414,7 +419,7 @@ class EventPage(BlogPage):
     def status_text(self):
         """
         Translated short status of the event for listings and the detail page.
-        None for an upcoming event that takes place as planned and isn't booked up.
+        None for an upcoming event that takes place as planned and still has free places.
         """
         if self.is_cancelled:
             return _('was cancelled') if self.is_past else _('is cancelled')
@@ -422,6 +427,8 @@ class EventPage(BlogPage):
             return _('already executed')
         if self.is_booked_up:
             return _('booked up')
+        if self.is_waitlist_only and self.is_registration_possible:
+            return _('waiting list')
         return None
 
     @property
@@ -767,6 +774,7 @@ def update_or_create_event_from_campai(event_data):
             return StreamField(BaseStreamBlock()).stream_block.to_python(None)
 
     # before the content, so that a published revision keeps the new statistics
+    was_waitlist_only = event_page.is_waitlist_only
     statistics_changed = update_campai_statistics(event_page, event_data)
 
     # only set, an editor resets it in the admin
@@ -815,10 +823,14 @@ def update_or_create_event_from_campai(event_data):
                         setattr(draft, field_name, getattr(event_page, field_name))
                 draft.save_revision()
         elif statistics_changed:
-            # the statistics are shown on the event page only, a published revision purges it anyway
+            # A published revision purges the event page and the index pages anyway. Without one, the event page is
+            # purged here, and the index pages only when the "waiting list" badge shown there appears or
+            # disappears, not with every booking.
             batch = PurgeBatch()
             batch.add_page(event_page)
             batch.purge()
+            if event_page.is_waitlist_only != was_waitlist_only:
+                blog_page_changed(event_page)
     else:
         event_page.locale = locale
         event_index.add_child(instance=event_page)

@@ -443,3 +443,7 @@ msgstr ""
 #: blogsite/blog/models.py
 msgid "booked up"
 msgstr ""
+
+#: blogsite/blog/models.py
+msgid "waiting list"
+msgstr ""
