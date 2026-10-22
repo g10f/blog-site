@@ -33,7 +33,7 @@ The entrypoint of the image evaluates `DJANGO_MIGRATE=on` (runs the migrations o
 Development
 -----------
     python3 -m venv .venv
-    .venv/bin/pip install -r requirements.txt
+    .venv/bin/pip install -r requirements/dev.txt
     cd apps
     ../.venv/bin/python manage.py migrate
     ../.venv/bin/python manage.py createsuperuser
@@ -42,6 +42,14 @@ Development
 Machine specific settings go into `apps/blogsite/settings/local.py`, which is not in git.
 
 The CSS is built from `apps/static` with gulp (`npm install`, `npx gulp`).
+
+The Python dependencies are listed in `requirements/base.in`. `requirements/base.txt` (installed in the Docker image)
+and `requirements/dev.txt` (the same plus the dev tools) are generated from it with pip-tools, with every package
+pinned. After changing `base.in`, or to update the packages:
+
+    .venv/bin/pip-compile --strip-extras requirements/base.in      # add --upgrade or --upgrade-package <name>
+    .venv/bin/pip-compile --strip-extras requirements/dev.in
+    .venv/bin/pip-sync requirements/dev.txt
 
 Release
 -------

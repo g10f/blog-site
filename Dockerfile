@@ -12,13 +12,12 @@ RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $RUN_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /
-COPY requirements requirements
+COPY requirements/base.txt /requirements.txt
 
 RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && python3 -m venv ${VIRTUAL_ENV} \
-    && pip install -U pip wheel \
+    && pip install -U pip \
     && pip install --no-cache-dir -r /requirements.txt \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*

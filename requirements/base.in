@@ -1,0 +1,12 @@
+# Direct dependencies of the app. base.txt is generated from this file with all
+# transitive dependencies pinned: pip-compile --strip-extras requirements/base.in
+django==6.1.2
+django-recaptcha
+dj-database-url
+gunicorn
+markdown
+mozilla-django-oidc
+psycopg[c]
+wagtail==8.0.1
+whitenoise
+requests
