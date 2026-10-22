@@ -47,8 +47,8 @@ The Python dependencies are listed in `requirements/base.in`. `requirements/base
 and `requirements/dev.txt` (the same plus the dev tools) are generated from it with pip-tools, with every package
 pinned. After changing `base.in`, or to update the packages:
 
-    .venv/bin/pip-compile --strip-extras requirements/base.in      # add --upgrade or --upgrade-package <name>
-    .venv/bin/pip-compile --strip-extras requirements/dev.in
+    .venv/bin/pip-compile requirements/base.in      # add --upgrade or --upgrade-package <name>
+    .venv/bin/pip-compile requirements/dev.in
     .venv/bin/pip-sync requirements/dev.txt
 
 Release
