@@ -5,3 +5,16 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  # Maintain the Python packages: Dependabot updates requirements/*.in where a version is pinned there
+  # and recompiles base.txt/dev.txt with pip-compile.
+  - package-ecosystem: "pip"
+    directory: "/requirements"
+    schedule:
+      interval: "weekly"
+    groups:
+      # minor and patch updates in one PR per week, major updates one PR each
+      python-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
