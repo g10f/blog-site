@@ -8,17 +8,19 @@ const config = {
     srcCss: ['./apps/static/scss/main.scss'], buildCss: './apps/static/css'
 };
 
+// quietDeps: no deprecation warnings from Bootstrap's scss. silenceDeprecations 'import': Bootstrap 5
+// only works with @import; sass is limited to ^1 in package.json, Dart Sass 3 removes @import.
 function buildStyles() {
     return gulp.src(config.srcCss)
         .pipe(sourcemaps.init())
-        .pipe(sass({includePaths: 'node_modules'}).on('error', sass.logError))
+        .pipe(sass({loadPaths: ['node_modules'], quietDeps: true, silenceDeprecations: ['import']}).on('error', sass.logError))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(config.buildCss))
 }
 
 function buildMinStyles() {
     return gulp.src(config.srcCss)
-        .pipe(sass({includePaths: 'node_modules', outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass({loadPaths: ['node_modules'], quietDeps: true, silenceDeprecations: ['import'], style: 'compressed'}).on('error', sass.logError))
         .pipe(rename({extname: '.min.css'}))
         .pipe(gulp.dest(config.buildCss))
 }
