@@ -1,11 +1,14 @@
+import json
 import logging
-from datetime import timedelta
+import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils.timezone import now
+from django.utils.timezone import localtime, now
 
 from blogsite.blog.models import EventPage, update_or_create_event_from_campai
 
@@ -15,6 +18,14 @@ logger = logging.getLogger(__name__)
 PAGE_SIZE = 500
 # events which are over for longer than this are not synced anymore
 SYNC_PAST_DAYS = 31
+# Campai is unreachable for a few minutes now and then. Such an outage is only logged as a warning; it is logged as an
+# error (which mails the admins) when it lasts longer than OUTAGE_ERROR_AFTER, and then at most every
+# OUTAGE_ERROR_INTERVAL.
+OUTAGE_ERROR_AFTER = timedelta(minutes=10)
+OUTAGE_ERROR_INTERVAL = timedelta(hours=1)
+# The start of the current outage is kept in a file, because every cron run is a new process. The file is in the
+# container, so a new container starts without an outage.
+OUTAGE_FILE = Path(tempfile.gettempdir()) / 'sync_campai_events.outage'
 
 
 class Command(BaseCommand):
@@ -69,6 +80,14 @@ class Command(BaseCommand):
         while True:
             try:
                 response = requests.post(url, json=data | {"offset": len(events)}, headers=headers, timeout=10)
+            except (requests.ConnectionError, requests.Timeout) as e:
+                self.campai_unreachable(e)
+                return None
+            if response.status_code >= 500:
+                self.campai_unreachable(f"Campai answered {url} with HTTP {response.status_code}.")
+                return None
+
+            try:
                 response.raise_for_status()
                 page = response.json()
             except Exception as e:
@@ -85,7 +104,61 @@ class Command(BaseCommand):
                 # campai returns fewer events than it counts, don't ask forever
                 break
 
+        self.campai_reachable()
         if len(events) != page["count"]:
             logger.error(f"The campai event list is incomplete: {len(events)} of {page['count']} events")
             return None
         return events
+
+    def campai_unreachable(self, error):
+        # Logs a warning for a short outage and an error for a long one, see OUTAGE_ERROR_AFTER.
+        current_time = now()
+        outage = read_outage()
+        if outage is None:
+            outage = {"since": current_time, "last_error": None}
+
+        duration = current_time - outage["since"]
+        since = f"{localtime(outage['since']):%Y-%m-%d %H:%M}"
+        if duration < OUTAGE_ERROR_AFTER:
+            logger.warning(f"Campai is unreachable since {since}: {error}")
+        elif outage["last_error"] is None or current_time - outage["last_error"] >= OUTAGE_ERROR_INTERVAL:
+            minutes = int(duration.total_seconds() // 60)
+            logger.error(f"Campai is unreachable for {minutes} minutes (since {since}): {error}")
+            outage["last_error"] = current_time
+        else:
+            # the admins already got a mail for this outage less than OUTAGE_ERROR_INTERVAL ago
+            logger.warning(f"Campai is still unreachable since {since}: {error}")
+        write_outage(outage)
+
+    def campai_reachable(self):
+        outage = read_outage()
+        if outage is None:
+            return
+        logger.info(f"Campai is reachable again after an outage since {localtime(outage['since']):%Y-%m-%d %H:%M}.")
+        OUTAGE_FILE.unlink(missing_ok=True)
+
+
+def read_outage():
+    # Returns the current outage as {"since": datetime, "last_error": datetime or None}, or None without an outage.
+    try:
+        data = json.loads(OUTAGE_FILE.read_text())
+        last_error = data["last_error"]
+        return {
+            "since": datetime.fromisoformat(data["since"]),
+            "last_error": datetime.fromisoformat(last_error) if last_error else None,
+        }
+    except FileNotFoundError:
+        return None
+    except (ValueError, KeyError, TypeError) as e:
+        # a broken file must not stop the sync, the outage then starts again with this run
+        logger.warning(f"Could not read {OUTAGE_FILE}, ignoring it: {e}")
+        return None
+
+
+def write_outage(outage):
+    last_error = outage["last_error"]
+    data = {
+        "since": outage["since"].isoformat(),
+        "last_error": last_error.isoformat() if last_error else None,
+    }
+    OUTAGE_FILE.write_text(json.dumps(data))
