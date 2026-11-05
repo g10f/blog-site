@@ -64,6 +64,8 @@ CAMPAI_BASE_URL = os.getenv('CAMPAI_BASE_URL')
 CAMPAI_API_URL = os.getenv('CAMPAI_API_URL')
 CAMPAI_API_KEY = os.getenv('CAMPAI_API_KEY')
 CAMPAI_MAX_WAITLISTED = int(os.getenv('CAMPAI_MAX_WAITLISTED', '10'))
+# The website stops offering the booking of a campai event this many hours before the event starts.
+CAMPAI_BOOKING_CLOSE_HOURS = int(os.getenv('CAMPAI_BOOKING_CLOSE_HOURS', '0'))
 # EventIndexPage for new campai events, needed if there is more than one EventIndexPage
 CAMPAI_EVENT_INDEX_PAGE_ID = os.getenv('CAMPAI_EVENT_INDEX_PAGE_ID')
 

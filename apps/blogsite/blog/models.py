@@ -215,7 +215,7 @@ def _now_plus_120_minutes():
 # Editors can't change them in the admin.
 # is_booked_up is not one of them: the sync only sets it, and only an editor can reset it.
 CAMPAI_FIELDS = ['title', 'event_template', 'introduction', 'body', 'start_date', 'end_date', 'location',
-                 'max_participants', 'price', 'price_reduced', 'is_cancelled']
+                 'max_participants', 'price', 'price_reduced', 'is_cancelled', 'registration_end_date']
 
 
 class EventPageForm(WagtailAdminPageForm):
@@ -401,13 +401,26 @@ class EventPage(BlogPage):
             return None
 
     @property
+    def registration_deadline(self):
+        """
+        The end of the registration period, or None if registering is possible until the event starts.
+        For a campai event, registration_end_date holds the booking deadline set in campai (written by the sync). It
+        takes precedence over CAMPAI_BOOKING_CLOSE_HOURS, which only applies to events without a deadline in campai.
+        """
+        if self.registration_end_date:
+            return self.registration_end_date
+        if self.campai_event_id and settings.CAMPAI_BOOKING_CLOSE_HOURS > 0:
+            return self.start_date - timedelta(hours=settings.CAMPAI_BOOKING_CLOSE_HOURS)
+        return None
+
+    @property
     def is_registration_expired(self):
+        # For a campai event, the booking itself happens on campai's page, so this only stops the website from
+        # linking to it.
         if now() > self.start_date:
             return True
-        elif self.campai_event_id:
-            # external booking page is responsible
-            return False
-        elif self.registration_end_date and now() > self.registration_end_date:
+        deadline = self.registration_deadline
+        if deadline is not None and now() > deadline:
             return True
         return False
 
@@ -765,6 +778,21 @@ def update_or_create_event_from_campai(event_data):
                 return location_category["name"][len(location_tag):]
         return ""
 
+    def booking_deadline():
+        # The end of the booking period set in campai. toType "start" is campai's default (booking until the event
+        # starts) and means that no deadline is set in campai, so CAMPAI_BOOKING_CLOSE_HOURS applies (see
+        # EventPage.registration_deadline). Other types ("date", "relativeStart") come with the computed date in "to".
+        availability = event_data["offer"].get("availability") or {}
+        if availability.get("toType") == "start" or not availability.get("to"):
+            return None
+        deadline = parse_datetime(availability["to"])
+        # An unreadable date must not silently keep the booking open. The sync logs the error for this event and
+        # goes on with the others.
+        if deadline is None or timezone.is_naive(deadline):
+            raise ValueError(f'The booking deadline {availability["to"]!r} of campai event {campai_event_id} '
+                             f'is not a date with a time zone.')
+        return deadline
+
     def get_body():
         if event_data and "details" in event_data["info"]:
             details_html = markdown.markdown(event_data["info"]["details"])
@@ -797,6 +825,7 @@ def update_or_create_event_from_campai(event_data):
 
     update_field("start_date", parse_datetime(event_data["period"]["from"]))
     update_field("end_date", parse_datetime(event_data["period"]["to"]))
+    update_field("registration_end_date", booking_deadline())
     update_field("max_participants", event_data["settings"]["maxAttendees"])
     update_field("price", price("Standard"))
     update_field("price_reduced", price("Mitglieder"))

@@ -98,7 +98,7 @@
             {% endif %}
             {% if page.is_registration_possible %}
               <p class="card-text">
-                {% if page.registration_end_date %}{% blocktranslate trimmed with end_date=page.registration_end_date %}
+                {% if page.registration_deadline %}{% blocktranslate trimmed with end_date=page.registration_deadline %}
                   Registration until: {{ end_date }}.
                 {% endblocktranslate %}
                 {% endif %}
