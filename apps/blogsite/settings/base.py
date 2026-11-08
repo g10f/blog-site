@@ -265,6 +265,9 @@ WAGTAIL_I18N_ENABLED = os.getenv('WAGTAIL_I18N_ENABLED', 'True').lower() in ('tr
 WAGTAIL_SITE_NAME = os.getenv('WAGTAIL_SITE_NAME', 'The Blog Site')
 
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # i.e. 20MB
+# Wagtail's default list plus svg, so that a logo can be a vector graphic and stays sharp at any size; the
+# logo templates keep it an SVG with preserve-svg. Only editors upload images.
+WAGTAILIMAGES_EXTENSIONS = ["avif", "gif", "jpg", "jpeg", "png", "webp", "svg"]
 
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ('en', "English"),

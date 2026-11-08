@@ -1,7 +1,7 @@
 {% load i18n navigation_tags wagtailsettings_tags wagtailimages_tags static %}
 {% get_settings %}
 {% get_site_logo as site_logo %}
-{% image site_logo.image_footer max-90x90 format-webp as site_logo_image %}
+{% image site_logo.image_footer max-90x90 format-webp preserve-svg as site_logo_image %}
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
   <div class="col-md-10 d-flex align-items-center">

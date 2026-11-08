@@ -1,11 +1,12 @@
 {% load i18n navigation_tags wagtailcore_tags wagtailimages_tags static %}
 {% get_site_logo as site_logo %}
+{# preserve-svg: an SVG logo is only scaled and stays an SVG instead of being converted to webp #}
 {% if logo_size == 'small' %}
-  {% image site_logo.image_header max-525x165 format-webp as site_logo_image %}
+  {% image site_logo.image_header max-525x165 format-webp preserve-svg as site_logo_image %}
 {% elif logo_size == 'big' %}
-  {% image site_logo.image_header max-1050x330 format-webp as site_logo_image %}
+  {% image site_logo.image_header max-1050x330 format-webp preserve-svg as site_logo_image %}
 {% else %}
-  {% image site_logo.image_header max-700x220 format-webp as site_logo_image %}
+  {% image site_logo.image_header max-700x220 format-webp preserve-svg as site_logo_image %}
 {% endif %}
 <header>
   <div class="container-lg py-4 d-none d-sm-block">
