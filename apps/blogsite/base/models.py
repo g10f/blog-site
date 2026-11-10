@@ -363,18 +363,6 @@ class HomePage(Page):
                     ]),
             ], heading="Featured homepage sections", classname="collapsible")]
 
-    # The home page is the parent of the menu pages but is shown in the menu next to them (tags/top_menu.html).
-    # Its title names the site (admin, <h1>), so the menu entry gets its own text.
-    menu_title = models.CharField(
-        _('menu title'), max_length=255, blank=True,
-        help_text=_('Text of the menu entry of the home page. If empty, "Homepage" is shown.'))
-
-    promote_panels = [
-        MultiFieldPanel([FieldPanel('slug'), FieldPanel('seo_title'), FieldPanel('search_description')],
-                        heading=_('For search engines')),
-        MultiFieldPanel([FieldPanel('show_in_menus'), FieldPanel('menu_title')], heading=_('For site menus')),
-    ]
-
     search_fields = Page.search_fields + [index.SearchField('body'), ]
 
     def __str__(self):
@@ -486,21 +474,44 @@ class TwoColumnsFormPage(FormPage):
 
 
 @register_setting
-class SocialMediaSettings(BaseSiteSetting):
+class SiteSettings(BaseSiteSetting):
+    """Settings of a site (called SocialMediaSettings up to blog-site 2.3)."""
+
+    # The home page is the parent of the menu pages but is shown in the menu next to them (tags/top_menu.html).
+    # Its title names the site (admin, <h1>), so its menu entry gets its own text. It is kept here and not on the
+    # page, so that it works whatever page type the home page of a site has.
+    home_menu_title = models.CharField(
+        _('menu title of the home page'), max_length=255, blank=True,
+        help_text=_('Text of the menu entry of the home page. If empty, "Homepage" is shown.'))
+
     facebook = models.URLField(blank=True, help_text='Your Facebook page URL')
     instagram = models.URLField(blank=True, help_text='Your Instagram URL')
     youtube = models.URLField(blank=True, help_text='Your YouTube channel or user account URL')
-    twitter = models.URLField(blank=True, help_text='Your Twitter page URL')
+    x = models.URLField('X', blank=True, help_text='Your X profile URL, e.g. https://x.com/name')
+
+    panels = [
+        MultiFieldPanel([FieldPanel('home_menu_title')], heading=_('Navigation')),
+        MultiFieldPanel([FieldPanel('facebook'), FieldPanel('instagram'), FieldPanel('youtube'), FieldPanel('x')],
+                        heading=_('Social media')),
+    ]
+
+    class Meta:
+        verbose_name = _('website')
+        verbose_name_plural = _('website')
 
     @property
     def social_media(self):
-        return [{'id': 'facebook', 'url': self.facebook}, {'id': 'instagram', 'url': self.instagram}, {'id': 'youtube', 'url': self.youtube},
-                {'id': 'twitter', 'url': self.twitter}, ]
+        # id: the symbol in includes/symbols.html, name: shown to the visitor
+        return [{'id': 'facebook', 'name': 'Facebook', 'url': self.facebook},
+                {'id': 'instagram', 'name': 'Instagram', 'url': self.instagram},
+                {'id': 'youtube', 'name': 'YouTube', 'url': self.youtube},
+                {'id': 'x', 'name': 'X', 'url': self.x}, ]
 
     @property
-    def twitter_site(self):
-        if self.twitter:
-            return urlparse(self.twitter)[2][1:]
+    def x_handle(self):
+        """The account name from the X URL, for the twitter:site meta tag (X still reads the twitter:* tags)."""
+        if self.x:
+            return urlparse(self.x)[2][1:]
         return None
 
 

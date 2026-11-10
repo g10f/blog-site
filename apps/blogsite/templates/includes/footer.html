@@ -20,13 +20,13 @@
   </div>
 
   <ul class="nav col-md-2 justify-content-end list-unstyled d-flex">
-    {% for social_media in settings.base.SocialMediaSettings.social_media %}
+    {% for social_media in settings.base.SiteSettings.social_media %}
       {% if social_media.url %}
         <li class="ms-3">
           <a class="text-muted" href="{{ social_media.url }}">
             <svg class="bi" width="24" height="24">
-              <title>{{ social_media.id }}</title>
-              <desc>{% translate 'Visit us on' %} {{ social_media.id }}</desc>
+              <title>{{ social_media.name }}</title>
+              <desc>{% translate 'Visit us on' %} {{ social_media.name }}</desc>
               <use xlink:href="#{{ social_media.id }}"></use>
             </svg>
           </a>

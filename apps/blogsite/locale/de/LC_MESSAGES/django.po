@@ -57,13 +57,22 @@ msgstr "Fußzeilen"
 msgid "FooterText for the site already exists"
 msgstr "Fusszeile für die Website existiert schon"
 
-msgid "menu title"
-msgstr "Menütitel"
+msgid "menu title of the home page"
+msgstr "Menütitel der Startseite"
 
 msgid ""
 "Text of the menu entry of the home page. If empty, \"Homepage\" is shown."
 msgstr ""
 "Text des Menüeintrags der Startseite. Wenn leer, wird „Startseite“ angezeigt."
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Social media"
+msgstr "Social Media"
+
+msgid "website"
+msgstr "Website"
 
 msgid "Captcha"
 msgstr ""

@@ -1,8 +1,9 @@
-{% load navigation_tags wagtailcore_tags i18n %}
+{% load navigation_tags wagtailcore_tags wagtailsettings_tags i18n %}
 {% get_site_root as site_root %}
 {% if site_root.show_in_menus %}
-  {# menu_title is a field of HomePage; site_root is already the version in the current language #}
-  {% with menu_title=site_root.specific.menu_title %}
+  {# the menu title of the home page is kept in the settings of the site (SiteSettings) #}
+  {% get_settings %}
+  {% with menu_title=settings.base.SiteSettings.home_menu_title %}
     <li class="nav-item" role="none">
       <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}" role="menuitem" aria-current="page">{% if menu_title %}{{ menu_title }}{% else %}{% translate 'Homepage' %}{% endif %}</a>
     </li>

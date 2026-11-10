@@ -9,9 +9,9 @@
   <meta property="og:image" content="{{ site.root_url }}{{ image.url }}" />
   <meta property="og:image:alt" content="{{ image.alt }}"/>
 {% endif %}
-{% if settings.base.SocialMediaSettings.twitter_site %}
+{% if settings.base.SiteSettings.x_handle %}
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@{{ settings.base.SocialMediaSettings.twitter_site }}" />
+  <meta name="twitter:site" content="@{{ settings.base.SiteSettings.x_handle }}" />
   <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}{{ title }}{% endif %}" />
   <meta name="twitter:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.introduction %}{{ self.introduction | truncatechars:200 }}{% endif %}" />
   {% if image %}
