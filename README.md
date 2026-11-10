@@ -7,6 +7,16 @@ The image `ghcr.io/g10f/blog-site` is the base image for theme repositories: a t
 `FROM ghcr.io/g10f/blog-site:<version>`, adds a small Django app with its templates and styles and
 selects it with `THEME=<app>`.
 
+Features
+--------
+- Page types: home page, standard and two-column pages, contact forms (with reCAPTCHA), person lists,
+  blog index and blog posts with tags and authors.
+- Events with several dates, online registration (CSV export in the admin) and optional sync with Campai.
+- Several sites in one instance: logo, footer text, people, speakers and event templates are kept per site.
+- Optional admin login with an external identity provider (OpenID Connect); the `roles` claim is mapped to
+  Django groups.
+- Search, `sitemap.xml`, Varnish purge on publishing, optional Plausible statistics.
+
 Configuration
 -------------
 The settings are read from environment variables, the most important ones:
@@ -62,6 +72,7 @@ tag and pushes both. The CI checks that the tag matches `__version__` and builds
 `ghcr.io/g10f/blog-site:X.Y.Z` (and `latest`) natively for amd64 and arm64. A push without a tag does
 not start the CI.
 
-Afterwards `git release` runs `./post-release.sh X.Y.Z`, which sets the new version in the theme
-repositories checked out next to this one (not committed). Commit them once the CI has built the
-image.
+Afterwards `git release` runs `./post-release.sh X.Y.Z`: it waits for the image, then sets the new version
+in the `FROM` line of each theme repository checked out next to this one, commits it and runs
+`git release X.Y.Z` there. A theme that is not ready (not on `main`, uncommitted changes, behind origin) is
+skipped with a message; run the script again after fixing it. `.skip-release` excludes a theme.
