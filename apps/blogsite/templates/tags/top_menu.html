@@ -5,10 +5,11 @@
   {% get_settings %}
   {% with menu_title=settings.base.SiteSettings.home_menu_title %}
     <li class="nav-item" role="none">
-      <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}" role="menuitem" aria-current="page">{% if menu_title %}{{ menu_title }}{% else %}{% translate 'Homepage' %}{% endif %}</a>
+      <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}" role="menuitem"{% if is_home %} aria-current="page"{% endif %}>{% if menu_title %}{{ menu_title }}{% else %}{% translate 'Homepage' %}{% endif %}</a>
     </li>
   {% endwith %}
 {% endif %}
+{# aria-current: "page" on the link of the current page, "true" on the section the current page is in #}
 {% for item in menuitems %}
   {% with menuitem=item.localized %}
     <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}" role="none">
@@ -18,7 +19,7 @@
         {# Used to display child menu items #}
       {% else %}
         <a class="nav-link{% if menuitem.active %} active{% endif %}{#% if forloop.first %} ps-0{% endif %#}" href="{% pageurl menuitem %}" role="menuitem"
-           aria-current="page">{{ menuitem.title }}</a>
+           {% if menuitem.active %}aria-current="{% if menuitem.url_path == calling_page.url_path %}page{% else %}true{% endif %}"{% endif %}>{{ menuitem.title }}</a>
       {% endif %}
     </li>
   {% endwith %}
