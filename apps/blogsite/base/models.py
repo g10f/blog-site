@@ -363,6 +363,18 @@ class HomePage(Page):
                     ]),
             ], heading="Featured homepage sections", classname="collapsible")]
 
+    # The home page is the parent of the menu pages but is shown in the menu next to them (tags/top_menu.html).
+    # Its title names the site (admin, <h1>), so the menu entry gets its own text.
+    menu_title = models.CharField(
+        _('menu title'), max_length=255, blank=True,
+        help_text=_('Text of the menu entry of the home page. If empty, "Homepage" is shown.'))
+
+    promote_panels = [
+        MultiFieldPanel([FieldPanel('slug'), FieldPanel('seo_title'), FieldPanel('search_description')],
+                        heading=_('For search engines')),
+        MultiFieldPanel([FieldPanel('show_in_menus'), FieldPanel('menu_title')], heading=_('For site menus')),
+    ]
+
     search_fields = Page.search_fields + [index.SearchField('body'), ]
 
     def __str__(self):
