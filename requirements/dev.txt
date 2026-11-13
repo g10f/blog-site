@@ -132,7 +132,7 @@ laces==0.1.2
     # via
     #   -c requirements/base.txt
     #   wagtail
-markdown==3.11.2
+markdown==3.11.3
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.in
