@@ -30,7 +30,8 @@ The settings are read from environment variables, the most important ones:
 | `WAGTAIL_SITE_NAME`                | name of the site in the admin                                 |
 | `WAGTAILADMIN_BASE_URL`            | base URL of the admin, used in mails                          |
 | `WAGTAILFRONTENDCACHE_LOCATION`    | Varnish cache that is purged on publishing                    |
-| `LANGUAGE_CODE`                    | default language, `de`                                        |
+| `LANGUAGE_CODE`                    | default language (no prefix in the URL), `de`                 |
+| `WAGTAIL_CONTENT_LANGUAGES`        | languages, default `en,English;de,German;pl,Polish`           |
 | `OIDC_OP_*`, `OIDC_RP_*`           | OpenID Connect login for the admin                            |
 | `CAMPAI_*`                         | event booking with Campai                                     |
 | `EMAIL_HOST`, `DEFAULT_FROM_EMAIL` | mail server and sender                                        |

@@ -16,6 +16,7 @@ from pathlib import Path
 
 import dj_database_url
 import sys
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.utils import get_random_secret_key
 from django_recaptcha.constants import TEST_PRIVATE_KEY, TEST_PUBLIC_KEY
 
@@ -208,6 +209,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
+# The default language: its pages have no language prefix in the URL and the texts of the site are in it.
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'de')
 
 TIME_ZONE = 'Europe/Berlin'
@@ -271,11 +273,27 @@ WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # i.e. 20MB
 # logo templates keep it an SVG with preserve-svg. Only editors upload images.
 WAGTAILIMAGES_EXTENSIONS = ["avif", "gif", "jpg", "jpeg", "png", "webp", "svg"]
 
-WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
-    ('en', "English"),
-    ('de', "German"),
-    ('pl', "Polish")
-]
+# The languages of the site as "code,name;code,name". A site in one language only lists that language (e.g.
+# "pl,Polish" together with LANGUAGE_CODE=pl), then the other languages have no URLs and are not offered in the admin.
+def parse_languages(value):
+    # "en,English;de,German" -> [('en', 'English'), ('de', 'German')]. Spaces around the parts and empty entries
+    # (e.g. a ";" at the end) are ignored, so that a small typo does not end in a site that does not start.
+    languages = []
+    for entry in value.split(';'):
+        if not entry.strip():
+            continue
+        if ',' not in entry:
+            raise ImproperlyConfigured(
+                f'WAGTAIL_CONTENT_LANGUAGES has the entry "{entry}", which is not of the form "code,name" '
+                f'(e.g. "pl,Polish").')
+        code, name = entry.split(',', 1)
+        languages.append((code.strip(), name.strip()))
+    return languages
+
+
+DEFAULT_LANGUAGES = 'en,English;de,German;pl,Polish'
+# an empty variable means the default languages, not a site without languages
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = parse_languages(os.getenv('WAGTAIL_CONTENT_LANGUAGES') or DEFAULT_LANGUAGES)
 # Search
 # https://docs.wagtail.io/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {
