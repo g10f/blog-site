@@ -30,8 +30,7 @@ function copyJavaScriptFiles() {
     // UTF-8 strings, which corrupts any non-text bytes (e.g. the font binaries below).
     return gulp.src([
         './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
-        './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map',
-        './node_modules/jquery/dist/jquery.min.js'], {encoding: false})
+        './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map'], {encoding: false})
         .pipe(gulp.dest('./apps/static/js/vendor'))
 }
 

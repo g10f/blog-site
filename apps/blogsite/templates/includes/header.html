@@ -65,7 +65,7 @@
             {% for translation in page.get_translations.live %}
               {% get_language_info for translation.locale.language_code as lang %}
               <li class="nav-item">
-                <a class="nav-link" href="{% pageurl translation %}" rel="alternate" hreflang="{{ language_code }}">
+                <a class="nav-link" href="{% pageurl translation %}" rel="alternate" hreflang="{{ translation.locale.language_code }}">
                   {{ lang.name_local }}
                 </a>
               </li>

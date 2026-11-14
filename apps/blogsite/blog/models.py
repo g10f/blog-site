@@ -675,7 +675,7 @@ class EventIndexPage(BlogIndexPage):
 
 class EventRegistration(models.Model):
     event = models.ForeignKey(EventPage, related_name='event', blank=True, null=True, on_delete=models.SET_NULL)
-    submit_time = models.DateTimeField(auto_now=True, verbose_name='submit_time')
+    submit_time = models.DateTimeField(auto_now_add=True, verbose_name='submit_time')
     subject = models.CharField(_('subject'), max_length=255)
     name = models.CharField(verbose_name=_("first name and last name"), max_length=255)
     email = models.EmailField()
