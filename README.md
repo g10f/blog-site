@@ -37,8 +37,8 @@ The settings are read from environment variables, the most important ones:
 
 See `apps/blogsite/settings/base.py` and `production.py` for all variables.
 
-The entrypoint of the image evaluates `DJANGO_MIGRATE=on` (runs the migrations on start),
-`DJANGO_CREATE_SUPERUSER=on` and `DJANGO_LOAD_INITIAL_DATA=on` (only if there are no users yet).
+The entrypoint of the image evaluates `DJANGO_MIGRATE=on` (runs the migrations on start)
+and `DJANGO_CREATE_SUPERUSER=on` (creates a superuser, only if there are no users yet).
 
 Development
 -----------

@@ -4,21 +4,21 @@
   {# the menu title of the home page is kept in the settings of the site (SiteSettings) #}
   {% get_settings %}
   {% with menu_title=settings.base.SiteSettings.home_menu_title %}
-    <li class="nav-item" role="none">
-      <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}" role="menuitem"{% if is_home %} aria-current="page"{% endif %}>{% if menu_title %}{{ menu_title }}{% else %}{% translate 'Homepage' %}{% endif %}</a>
+    <li class="nav-item">
+      <a class="nav-link{% if is_home %} active{% endif %}" href="{% pageurl site_root %}"{% if is_home %} aria-current="page"{% endif %}>{% if menu_title %}{{ menu_title }}{% else %}{% translate 'Homepage' %}{% endif %}</a>
     </li>
   {% endwith %}
 {% endif %}
 {# aria-current: "page" on the link of the current page, "true" on the section the current page is in #}
 {% for item in menuitems %}
   {% with menuitem=item.localized %}
-    <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}" role="none">
+    <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}">
       {% if menuitem.show_dropdown %}
         <a class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" href="#" id="dropdown-{{ menuitem.pk }}" data-bs-toggle="dropdown" aria-expanded="false">{{ menuitem.title }}</a>
         {% top_menu_children parent=menuitem %}
         {# Used to display child menu items #}
       {% else %}
-        <a class="nav-link{% if menuitem.active %} active{% endif %}{#% if forloop.first %} ps-0{% endif %#}" href="{% pageurl menuitem %}" role="menuitem"
+        <a class="nav-link{% if menuitem.active %} active{% endif %}{#% if forloop.first %} ps-0{% endif %#}" href="{% pageurl menuitem %}"
            {% if menuitem.active %}aria-current="{% if menuitem.url_path == calling_page.url_path %}page{% else %}true{% endif %}"{% endif %}>{{ menuitem.title }}</a>
       {% endif %}
     </li>

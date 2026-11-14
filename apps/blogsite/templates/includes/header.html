@@ -23,7 +23,7 @@
       </a>
       <nav class="d-inline-flex mt-2 mt-sm-0 ms-sm-auto">
         <form action="/search" method="get" role="search">
-          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
+          <input name="q" type="search" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
         </form>
       </nav>
@@ -47,7 +47,7 @@
       </button>
 
       <div class="collapse navbar-collapse pt-2 pt-md-0" id="navbar-main">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" role="menubar">
+        <ul class="navbar-nav main-menu me-auto mb-2 mb-md-0">
           {# main_menu is defined in base/templatetags/navigation_tags.py #}
           {% get_site_root as site_root %}
           {% top_menu parent=site_root calling_page=self %}
@@ -56,7 +56,7 @@
           {% include 'includes/_color_mode_button.html' %}
         </ul>
         <form action="/search" method="get" class="search d-sm-none" role="search">
-          <input name="q" type="text" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
+          <input name="q" type="search" class="form-control" placeholder="{% translate 'Search' %}" aria-label="{% translate 'Search' %}"
                  autocomplete="off">
         </form>
         {% if wagtail_i18n_enabled and page and page.get_translations.live %}

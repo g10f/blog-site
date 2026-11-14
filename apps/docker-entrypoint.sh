@@ -6,19 +6,12 @@ if [ "$DJANGO_MIGRATE" = "on" ]; then
 	./manage.py migrate --noinput
 fi
 
-if  [ "$DJANGO_CREATE_SUPERUSER" = "on" ] || [ "$DJANGO_LOAD_INITIAL_DATA" = "on"  ]; then
+# a superuser is only created in a database without users, not on every start
+if [ "$DJANGO_CREATE_SUPERUSER" = "on" ]; then
   user_count=$(./manage.py user_count)
 
   if [[ $user_count -eq 0 ]]; then
-
-    if  [ "$DJANGO_CREATE_SUPERUSER" = "on" ]; then
-      ./manage.py createsuperuser --noinput
-    fi
-
-    if [ "$DJANGO_LOAD_INITIAL_DATA" = "on" ]; then
-      ./manage.py loaddata dummy-data
-    fi
-
+    ./manage.py createsuperuser --noinput
   fi
 fi
 
