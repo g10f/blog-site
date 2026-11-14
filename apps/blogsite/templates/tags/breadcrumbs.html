@@ -3,7 +3,7 @@
   <nav aria-label="breadcrumb">
     {% if ancestors %}
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/"><i class="bi-house" aria-hidden="true"></i><span class="visually-hidden" aria-hidden="false">Home</span></a>
+        <li class="breadcrumb-item"><a href="/"><svg class="bi" width="1em" height="1em" style="vertical-align: -.125em" aria-hidden="true"><use href="#house"></use></svg><span class="visually-hidden" aria-hidden="false">Home</span></a>
         </li>
         {% for ancestor in ancestors|slice:"1:" %}
           {% if forloop.last %}

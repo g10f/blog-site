@@ -11,7 +11,7 @@
       {% else %}
         <svg class="bi" width="30" height="24">
           <title>{{ wagtail_site_name }}</title>
-          <use xlink:href="#journal-richtext"></use>
+          <use href="#journal-richtext"></use>
         </svg>
       {% endif %}
     </a>
@@ -27,7 +27,7 @@
             <svg class="bi" width="24" height="24">
               <title>{{ social_media.name }}</title>
               <desc>{% translate 'Visit us on' %} {{ social_media.name }}</desc>
-              <use xlink:href="#{{ social_media.id }}"></use>
+              <use href="#{{ social_media.id }}"></use>
             </svg>
           </a>
         </li>

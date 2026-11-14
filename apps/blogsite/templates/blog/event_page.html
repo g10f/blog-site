@@ -77,7 +77,7 @@
             <div class="h4 card-title">  {% translate 'cost and registration'|title %}</div>
             {% if page.registration_closed_reasons %}
               <div class="card-text  text-danger">
-                <i class="bi bi-exclamation-triangle-fill"></i> {% translate 'Unfortunately, registration is no longer possible:' %}
+                <svg class="bi" width="1em" height="1em" style="vertical-align: -.125em" aria-hidden="true"><use href="#exclamation-triangle-fill"></use></svg> {% translate 'Unfortunately, registration is no longer possible:' %}
                 <ul>
                   {% for reason in page.registration_closed_reasons %}
                     <li>{{ reason }}</li>

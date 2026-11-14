@@ -11764,7 +11764,7 @@ html {
     border-bottom: 0.25rem solid #003366;
   }
 }
-.theme-toggle * {
+.theme-toggle > * {
   display: none;
 }
 

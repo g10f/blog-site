@@ -81,7 +81,8 @@ $utilities: map-merge(
 );
 
 // color mode button
-.theme-toggle * {
+// only the icons themselves, not the paths inside the svg of the icon that is shown
+.theme-toggle > * {
   display: none;
 }
 
