@@ -14,7 +14,8 @@
   {% with menuitem=item.localized %}
     <li class="nav-item{% if menuitem.show_dropdown %} dropdown{% endif %}">
       {% if menuitem.show_dropdown %}
-        <a class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" href="#" id="dropdown-{{ menuitem.pk }}" data-bs-toggle="dropdown" aria-expanded="false">{{ menuitem.title }}</a>
+        <a class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" href="#" id="dropdown-{{ menuitem.pk }}" data-bs-toggle="dropdown" aria-expanded="false"
+           {% if menuitem.active %}aria-current="true"{% endif %}>{{ menuitem.title }}</a>
         {% top_menu_children parent=menuitem %}
         {# Used to display child menu items #}
       {% else %}
