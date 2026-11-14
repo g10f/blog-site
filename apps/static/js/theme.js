@@ -7,8 +7,8 @@
         if (currentTheme) {
             setTheme(currentTheme);
         } else {
-            const default_theme = document.documentElement.getAttribute('data-default-theme');
-            setTheme(default_theme);
+            // nothing chosen yet: follow the light/dark setting of the browser
+            setTheme("auto");
         }
     }
 
