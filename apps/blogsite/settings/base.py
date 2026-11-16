@@ -131,6 +131,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     "core.middleware.PathBasedCsrfViewMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # after AuthenticationMiddleware: it asks whether the user is logged in
+    'core.middleware.EditorCookieMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -325,6 +327,16 @@ WAGTAILADMIN_BASE_URL = os.getenv('WAGTAILADMIN_BASE_URL', 'https://example.com'
 # core.middleware.DownstreamCacheControlMiddleware and will not be cached.
 CSRF_REQUIRED_PATHS = (
     "/login",
+    "/admin",
+    "/django-admin",
+)
+
+# The cookie that core.middleware.EditorCookieMiddleware gives to a logged-in editor. The web server in front
+# of the cache lets requests with this cookie pass the cache with their cookies (userbar on the public pages);
+# its configuration has to use the same name.
+EDITOR_COOKIE_NAME = "editor"
+# Requests to these paths set the cookie; the login redirects to LOGIN_REDIRECT_URL, which is one of them.
+EDITOR_COOKIE_SET_PATHS = (
     "/admin",
     "/django-admin",
 )
