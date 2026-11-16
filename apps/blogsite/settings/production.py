@@ -23,6 +23,8 @@ OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_RP_CLIENT_SECRET', '')
 OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_OP_JWKS_ENDPOINT', '')
 OIDC_OP_LOGOUT_URL_METHOD = os.getenv('OIDC_OP_LOGOUT_URL_METHOD', '')
 OIDC_OP_NAME = os.getenv('OIDC_OP_NAME', '')
+# Keycloak sends the username and the name only with the scope "profile": "openid email profile"
+OIDC_RP_SCOPES = os.getenv('OIDC_RP_SCOPES', 'openid email')
 
 
 try:
