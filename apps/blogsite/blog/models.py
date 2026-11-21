@@ -5,7 +5,6 @@ from datetime import timedelta
 from functools import partial
 from urllib.parse import urlencode, urljoin
 
-import markdown
 import wagtail
 from django import forms
 from django.conf import settings
@@ -42,6 +41,7 @@ from blogsite.base.blocks import BaseStreamBlock
 from blogsite.base.forms import SiteFieldForm
 from blogsite.base.models import get_cached_path, purge_index_pages, Speaker
 from blogsite.base.views import SiteFieldChooserViewSet
+from blogsite.blog.campai_text import campai_details_html
 
 logger = logging.getLogger(__name__)
 
@@ -725,6 +725,22 @@ def update_campai_statistics(event_page, event_data):
     return True
 
 
+def campai_details_body(event_data):
+    """
+    The body of an event page from the details of the campai event (Markdown), as a rich text block with only
+    what the editor of Wagtail knows (campai_text.py). As JSON, an empty list without details.
+    """
+    if event_data and "details" in event_data["info"]:
+        return json.dumps([{"type": "paragraph_block", "value": campai_details_html(event_data["info"]["details"])}])
+    return json.dumps([])
+
+
+def stream_content(value):
+    """The blocks of a StreamField value or of its JSON as (type, value) pairs, without the ids of the blocks."""
+    blocks = json.loads(value) if isinstance(value, str) else list(value.raw_data)
+    return [(block["type"], block["value"]) for block in blocks]
+
+
 def update_or_create_event_from_campai(event_data):
     # event_data is an event of the campai event list
     event_index = None  # only set for a new event_page, which is added to this EventIndexPage at the end
@@ -793,13 +809,6 @@ def update_or_create_event_from_campai(event_data):
                              f'is not a date with a time zone.')
         return deadline
 
-    def get_body():
-        if event_data and "details" in event_data["info"]:
-            details_html = markdown.markdown(event_data["info"]["details"])
-            body = json.dumps([{"type": "RawHTMLBlock", "value": details_html}])
-            return body
-        else:
-            return StreamField(BaseStreamBlock()).stream_block.to_python(None)
 
     # before the content, so that a published revision keeps the new statistics
     was_waitlist_only = event_page.is_waitlist_only
@@ -816,12 +825,19 @@ def update_or_create_event_from_campai(event_data):
 
     update_field("title", event_data["info"]["title"])
     update_field("event_template", get_event_template())
+    def update_body(new_body):
+        # compared by content: the stored body is a StreamValue with ids, the new one JSON; compared as they are,
+        # they always differ, and every sync would save a new revision
+        if stream_content(event_page.body) != stream_content(new_body):
+            event_page.body = new_body
+            changed_fields.append("body")
+
     if not event_page.event_template:
         update_field("introduction", event_data["info"]["description"])
-        update_field("body", get_body())
+        update_body(campai_details_body(event_data))
     else:
         update_field("introduction", "")
-        update_field("body", StreamField(BaseStreamBlock()).stream_block.to_python(None))
+        update_body(json.dumps([]))
 
     update_field("start_date", parse_datetime(event_data["period"]["from"]))
     update_field("end_date", parse_datetime(event_data["period"]["to"]))

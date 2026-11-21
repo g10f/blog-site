@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
@@ -9,6 +11,7 @@ from draftjs_exporter.dom import DOM
 from wagtail import hooks
 from wagtail.admin.rich_text.converters.html_to_contentstate import PageLinkElementHandler
 from wagtail.admin.rich_text.editors.draftail import features as draftail_features
+from wagtail.models import Page
 from wagtail.permissions import register_permission_policy
 from wagtail.rich_text import LinkHandler
 from wagtail.rich_text.pages import PageLinkHandler
@@ -130,3 +133,48 @@ def register_button_link_feature(features):
             'entity_decorators': {type_: button_link_entity}
         }
     })
+
+
+# Editors may change and publish every page of their site (blogsite/base/editors.py), and Wagtail ties deleting
+# and unpublishing to these rights. So deleting and unpublishing follow the right to add instead: whoever may not
+# add a page at its place may not remove it either. An editor who may add only blog posts can delete a blog post
+# but not the imprint, which he couldn't add again; an advanced editor can; and as nobody but a superuser may add
+# pages at the top of the tree, only a superuser can take the home page of a site (and with it the site) offline.
+# Groups that may add pages everywhere (e.g. the editors of the other blog instances) keep all their rights.
+STRUCTURE_PAGE_MESSAGE = _("You can't delete or unpublish the page “%(title)s”, as you may not add pages at its "
+                           "place. Please contact the operator of the website.")
+
+
+def may_add_at_place_of(user, page):
+    parent = page.get_parent()
+    return parent is not None and parent.permissions_for_user(user).can_add_subpage()
+
+
+def refuse_unless_may_add_at_place(request, pages):
+    if request.user.is_superuser:
+        return None
+    for page in pages:
+        if not may_add_at_place_of(request.user, page):
+            messages.error(request, STRUCTURE_PAGE_MESSAGE % {"title": page.get_admin_display_title()})
+            parent = page.get_parent()
+            if parent is None:
+                return redirect("wagtailadmin_home")
+            return redirect("wagtailadmin_explore", parent.pk)
+    return None
+
+
+@hooks.register("before_delete_page")
+def only_deleted_where_may_add(request, page):
+    return refuse_unless_may_add_at_place(request, [page])
+
+
+@hooks.register("before_unpublish_page")
+def only_unpublished_where_may_add(request, page):
+    return refuse_unless_may_add_at_place(request, [page])
+
+
+@hooks.register("before_bulk_action")
+def only_removed_in_bulk_where_may_add(request, action_type, objects, action_class_instance):
+    if action_type in ("delete", "unpublish") and all(isinstance(obj, Page) for obj in objects):
+        return refuse_unless_may_add_at_place(request, objects)
+    return None

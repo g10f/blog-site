@@ -476,3 +476,12 @@ msgstr "ausgebucht"
 #: blogsite/blog/models.py
 msgid "waiting list"
 msgstr "Warteliste"
+
+#: blogsite/base/wagtail_hooks.py
+msgid ""
+"You can't delete or unpublish the page “%(title)s”, as you may not add pages "
+"at its place. Please contact the operator of the website."
+msgstr ""
+"Die Seite „%(title)s“ können Sie nicht löschen oder depublizieren, weil Sie "
+"an dieser Stelle keine Seiten anlegen dürfen. Bitte wenden Sie sich an den "
+"Betreiber der Website."

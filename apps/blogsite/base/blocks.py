@@ -1,9 +1,7 @@
 from wagtail.blocks import (
     CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
 )
-from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.blocks.field_block import RawHTMLBlock
 
 
 class YouTubeVideoBlock(StructBlock):
@@ -88,10 +86,8 @@ class BaseStreamBlock(StreamBlock):
     image_block = ImageBlock()
     video_block = YouTubeVideoBlock()
     block_quote = BlockQuote()
-    embed_block = EmbedBlock(
-        help_text='Insert an embed URL e.g https://www.youtube.com/embed/SGJFWirQ3ks',
-        icon="media",
-        template="blocks/embed_block.html")
-    RawHTMLBlock = RawHTMLBlock(
-        help_text='Insert raw HTML e.g. <iframe>..</iframe>',
-        )
+    # no embed_block: an oEmbed embeds YouTube without the privacy mode and any other provider, which the privacy
+    # policy of the sites would have to name; videos go into the video_block (youtube-nocookie.com). The rich text
+    # has no "embed" either (WAGTAILADMIN_RICH_TEXT_EDITORS in settings/base.py).
+    # no raw HTML block: it lets editors put scripts and content of other providers into a page, which reach the
+    # admin sessions of the other organisations of an instance and are not named in the privacy policy

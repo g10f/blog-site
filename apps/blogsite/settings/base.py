@@ -315,6 +315,18 @@ WAGTAILFRONTENDCACHE_LANGUAGES = [l[0] for l in LANGUAGES]
 
 WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
 
+# The rich text features of every field without features of its own: Wagtail's defaults without "embed". An
+# embed (oEmbed) brings YouTube without the privacy mode and any other provider into a page, which the privacy
+# policy of the sites would have to name; videos go into the video block (youtube-nocookie.com).
+WAGTAILADMIN_RICH_TEXT_EDITORS = {
+    'default': {
+        'WIDGET': 'wagtail.admin.rich_text.DraftailRichTextArea',
+        'OPTIONS': {
+            'features': ['h2', 'h3', 'h4', 'bold', 'italic', 'ol', 'ul', 'hr', 'link', 'document-link', 'image'],
+        },
+    },
+}
+
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = os.getenv('WAGTAILADMIN_BASE_URL', 'https://example.com')
