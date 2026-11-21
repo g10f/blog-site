@@ -2,15 +2,23 @@ from django.urls import reverse_lazy
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
+from blogsite.base.models import FooterText, People, SiteLogo, Speaker
+from blogsite.base.site import SitePermissionPolicy
 from blogsite.base.views import SiteFieldSnippetViewSet
 from draftjs_exporter.dom import DOM
 from wagtail import hooks
 from wagtail.admin.rich_text.converters.html_to_contentstate import PageLinkElementHandler
 from wagtail.admin.rich_text.editors.draftail import features as draftail_features
+from wagtail.permissions import register_permission_policy
 from wagtail.rich_text import LinkHandler
 from wagtail.rich_text.pages import PageLinkHandler
 from wagtail.snippets.models import register_snippet
 from wagtail.whitelist import check_url
+
+# The snippets that belong to a site: an editor only reaches those of his own sites (see SitePermissionPolicy).
+# Registered before the viewsets below, as Wagtail requires.
+for site_model in (People, Speaker, SiteLogo, FooterText):
+    register_permission_policy(site_model, SitePermissionPolicy(site_model), exact_class=True)
 
 
 class SpeakerViewSet(SiteFieldSnippetViewSet):
