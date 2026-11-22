@@ -138,9 +138,9 @@ class CreateSiteTest(SiteTemplateMixin, TestCase):
         self.assertEqual(len(re.findall(r'<img [^>]*class="[^"]*\blogo-light\b', html)), 3)
         self.assertEqual(len(re.findall(r'<img [^>]*class="[^"]*\blogo-dark\b', html)), 3)
         self.assertIn("[data-bs-theme=dark] .logo-dark", html)
-        # the footer logo is shown with 64 pixels, the SVG is delivered as it is
+        # the footer logo is shown with 48 pixels, the SVG is delivered as it is
         footer = html[html.index("<footer"):]
-        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="64" height="64" class="me-3 logo-light"')
+        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="48" height="48" class="me-3 logo-light"')
 
     def test_site_without_dark_logo_shows_its_logo_in_both_modes(self):
         # sites created before the dark variant existed have none: only the normal logo, without logo-light/-dark
@@ -151,7 +151,7 @@ class CreateSiteTest(SiteTemplateMixin, TestCase):
         html = response.content.decode()
         self.assertNotRegex(html, r'<img [^>]*class="[^"]*\blogo-(light|dark)\b')
         footer = html[html.index("<footer"):]
-        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="64" height="64" class="me-3"')
+        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="48" height="48" class="me-3"')
 
     def test_failure_after_the_pictures_leaves_no_files(self):
         # the database is rolled back by the transaction, the media files are removed by create_site itself
