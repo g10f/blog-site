@@ -22,6 +22,12 @@
     {% endif %}
     <link rel="stylesheet" href="{% if debug %}{% static 'css/main.css' %}{% else %}{% static 'css/main.min.css' %}{% endif %}">
     {% include "includes/fonts.html" %}
+    {# a logo with a dark variant (SiteLogo.image_header_dark/image_footer_dark) shows the one of the color mode #}
+    <style>
+      .logo-dark { display: none; }
+      [data-bs-theme=dark] .logo-dark { display: inline; }
+      [data-bs-theme=dark] .logo-light { display: none; }
+    </style>
     <script src="{% static 'js/theme.js' %}"></script>
     {% block extra_head %}
       {% if enable_plausible %}

@@ -17,7 +17,11 @@ from blogsite.blog.models import BlogIndexPage, BlogPage
 
 # The files of a site template (like the template of "django-admin startproject"). The theme brings its own in
 # <theme package>/site_template/, e.g. afd_theme/site_template/ in the repo afd-blog.
-TEMPLATE_FILES = ["logo-header.png", "logo-footer.png", "footer.html", "impressum.html", "datenschutzerklaerung.html"]
+# The logos have to be SVG files and the favicon a PNG (the names are fixed): base.html converts the favicon, which
+# Wagtail can't do for an SVG.
+TEMPLATE_FILES = ["logo-header.svg", "logo-header-dark.svg", "logo-footer.svg", "logo-footer-dark.svg", "logo-ico.png",
+                  "image-home.jpg", "image-articles.jpg", "footer.html",
+                  "impressum.html", "datenschutzerklaerung.html"]
 
 # The footer of the template links to these addresses, so the slugs are fixed.
 IMPRINT_SLUG = "impressum"
@@ -29,7 +33,8 @@ EXAMPLE_POST_INTRODUCTION = ("Dies ist ein Beispiel. Ändern Sie diesen Beitrag 
 
 class Command(BaseCommand):
     help = ("Creates a new site with a fixed structure: home page, 'Artikel' (blog index) with an example post, "
-            "a page for the people, imprint and privacy policy, all as drafts; and its own logo, footer, "
+            "a page for the people, imprint and privacy policy, all as drafts, with pictures on the home page and "
+            "'Artikel'; and its own logo, footer, "
             "collection and editor group (blogsite/base/editors.py). Texts and pictures come from the site "
             "template of the theme (<theme>/site_template/) or --template. Nothing is taken from other sites.")
 
@@ -75,10 +80,13 @@ class Command(BaseCommand):
             text = (template_dir / file_name).read_text(encoding="utf-8")
             return Template(text).render(Context({"site_name": site_name}))
 
+        # The revisions are saved at the end, when the pictures are set: the editor sees the latest revision.
+        pages = []
+
         def add_draft(parent, page):
             page.live = False
             parent.add_child(instance=page)
-            page.save_revision()
+            pages.append(page)
             return page
 
         home = add_draft(root, HomePage(title=site_name, slug=home_slug, show_in_menus=True))
@@ -103,32 +111,49 @@ class Command(BaseCommand):
         try:
             def add_image(file_name, title):
                 with open(template_dir / file_name, "rb") as file:
-                    image = Image.objects.create(title=title, collection=collection,
-                                                 file=ImageFile(file, name=f"{home_slug}-{file_name}"))
-                images.append(image)
+                    image = Image(title=title, collection=collection,
+                                  file=ImageFile(file, name=f"{home_slug}-{file_name}"))
+                    # listed before it is saved: saving stores the file first, so a failure while writing the row
+                    # would otherwise leave the file in the media storage
+                    images.append(image)
+                    image.save()
                 return image
 
-            header = add_image("logo-header.png", f"{site_name} Logo")
-            footer_image = add_image("logo-footer.png", f"{site_name} Logo klein")
+            header = add_image("logo-header.svg", f"{site_name} Logo")
+            footer_image = add_image("logo-footer.svg", f"{site_name} Logo klein")
+            header_dark = add_image("logo-header-dark.svg", f"{site_name} Logo dunkler Modus")
+            footer_dark = add_image("logo-footer-dark.svg", f"{site_name} Logo klein dunkler Modus")
+            favicon = add_image("logo-ico.png", f"{site_name} Favicon")
+            home.image = add_image("image-home.jpg", f"{site_name} Bild der Startseite")
+            blog_index.image = add_image("image-articles.jpg", f"{site_name} Bild der Artikel")
+            home.save()
+            blog_index.save()
+            for page in pages:
+                page.save_revision()
             logo = SiteLogo.objects.create(site=site, image_header=header, image_footer=footer_image,
-                                           image_ico=footer_image, live=True)
+                                           image_header_dark=header_dark, image_footer_dark=footer_dark,
+                                           image_ico=favicon, live=True)
             logo.save_revision().publish()
             footer = FooterText.objects.create(site=site, body=render("footer.html"), live=True)
             footer.save_revision().publish()
         except Exception:
-            # the database is rolled back, the files in the media storage are not
+            # the database is rolled back, the files in the media storage are not; only files that were stored
+            # (_committed) are deleted, an image that failed before has no file there yet
             for image in images:
-                image.file.delete(save=False)
+                if image.file._committed:
+                    image.file.delete(save=False)
             raise
 
         self.stdout.write(f"site {site.pk} {hostname} with the template {template_dir}; pages (all drafts):")
         for page in Page.objects.descendant_of(home, inclusive=True).order_by("path"):
             self.stdout.write(f"  {page.pk} {page.specific_class.__name__} '{page.title}' {page.url_path}")
-        self.stdout.write("logo, footer text")
+        self.stdout.write("logo, footer text, pictures of the home page and of 'Artikel'")
         for line in done:
             self.stdout.write(line)
         self.stdout.write(
-            "Next: fill in the [placeholders] of the imprint and the privacy policy and publish the pages; the "
+            "Next: fill in the [placeholders] of the imprint and the privacy policy, replace the example pictures "
+            "and publish the pages; make the logo with the name of the organisation (see the README of the site "
+            "template) and replace it under Settings > Site logo; add the "
             "domain in the inventory and in the Keycloak client, the roles "
             f"{' and '.join(role for _, role in editor_groups(options['group'], options['role']))} in Keycloak; "
             "the domain as a site in Plausible (statistics, named in the privacy policy). In a new instance turn "

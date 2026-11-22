@@ -3,17 +3,23 @@
 {# preserve-svg: an SVG logo is only scaled and stays an SVG instead of being converted to webp #}
 {% if logo_size == 'small' %}
   {% image site_logo.image_header max-525x165 format-webp preserve-svg as site_logo_image %}
+  {% image site_logo.image_header_dark max-525x165 format-webp preserve-svg as site_logo_dark_image %}
 {% elif logo_size == 'big' %}
   {% image site_logo.image_header max-1050x330 format-webp preserve-svg as site_logo_image %}
+  {% image site_logo.image_header_dark max-1050x330 format-webp preserve-svg as site_logo_dark_image %}
 {% else %}
   {% image site_logo.image_header max-700x220 format-webp preserve-svg as site_logo_image %}
+  {% image site_logo.image_header_dark max-700x220 format-webp preserve-svg as site_logo_dark_image %}
 {% endif %}
 <header>
   <div class="container-lg py-4 d-none d-sm-block">
     <div class="d-flex flex-column flex-sm-row align-items-center ">
       <a href="{% url 'wagtail_serve' '' %}" class="d-flex align-items-center text-dark text-decoration-none">
         {% if site_logo_image %}
-          <img src="{{ site_logo_image.url }}" width="{% widthratio site_logo_image.width 2 1 %}" height="{% widthratio site_logo_image.height 2 1 %}" class="me-3" alt="{{ wagtail_site_name }}">
+          <img src="{{ site_logo_image.url }}" width="{% widthratio site_logo_image.width 2 1 %}" height="{% widthratio site_logo_image.height 2 1 %}" class="me-3{% if site_logo_dark_image %} logo-light{% endif %}" alt="{{ wagtail_site_name }}">
+          {% if site_logo_dark_image %}
+            <img src="{{ site_logo_dark_image.url }}" width="{% widthratio site_logo_dark_image.width 2 1 %}" height="{% widthratio site_logo_dark_image.height 2 1 %}" class="me-3 logo-dark" alt="{{ wagtail_site_name }}">
+          {% endif %}
         {% else %}
           <svg class="bi me-2" width="75" height="60" viewBox="0 0 118 94" role="img">
             <use href="#journal-richtext"></use>
@@ -33,7 +39,10 @@
     <div class="container-lg ps-sm-0">
       <a class="navbar-brand d-sm-none" href="{% url 'wagtail_serve' '' %}">
         {% if site_logo_image %}
-          <img src="{{ site_logo_image.url }}" alt="{{ wagtail_site_name }}" width="{% widthratio site_logo_image.width 3 1 %}" height="{% widthratio site_logo_image.height 3 1 %}" class="me-3">
+          <img src="{{ site_logo_image.url }}" alt="{{ wagtail_site_name }}" width="{% widthratio site_logo_image.width 3 1 %}" height="{% widthratio site_logo_image.height 3 1 %}" class="me-3{% if site_logo_dark_image %} logo-light{% endif %}">
+          {% if site_logo_dark_image %}
+            <img src="{{ site_logo_dark_image.url }}" alt="{{ wagtail_site_name }}" width="{% widthratio site_logo_dark_image.width 3 1 %}" height="{% widthratio site_logo_dark_image.height 3 1 %}" class="me-3 logo-dark">
+          {% endif %}
         {% else %}
           <svg class="bi me-2" width="60" height="48" viewBox="0 0 118 94" role="img">
             <use href="#journal-richtext"></use>

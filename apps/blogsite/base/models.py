@@ -191,12 +191,20 @@ class SiteLogo(DraftStateMixin, RevisionMixin, PreviewableMixin, models.Model):
     image_header = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
     image_footer = models.ForeignKey('wagtailimages.Image', on_delete=models.CASCADE, related_name='+', help_text='Format 700 x 200')
     image_ico = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.CASCADE, related_name='+', help_text='Favicon')
+    # A logo has to work on a dark background too (dark color mode); the AfD design manual asks for a version with
+    # a white word mark there. Without one, the normal logo is shown in both modes.
+    image_header_dark = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL,
+                                          related_name='+', help_text='Header logo for the dark color mode (optional)')
+    image_footer_dark = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL,
+                                          related_name='+', help_text='Footer logo for the dark color mode (optional)')
 
     base_form_class = SiteFieldForm
     panels = [
         FieldPanel('site'),
         FieldPanel('image_header'),
+        FieldPanel('image_header_dark'),
         FieldPanel('image_footer'),
+        FieldPanel('image_footer_dark'),
         FieldPanel('image_ico')
     ]
 

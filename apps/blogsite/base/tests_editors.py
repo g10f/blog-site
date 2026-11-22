@@ -1,8 +1,10 @@
 """The editor group of a site (editors.py), the protection of the structure pages and the command create_site."""
+import re
 import shutil
 import tempfile
 from io import StringIO
 from pathlib import Path
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
@@ -12,7 +14,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from wagtail.images.permissions import permission_policy as image_policy
 from wagtail.documents.permissions import permission_policy as document_policy
-from wagtail.images.tests.utils import get_test_image_file
+from wagtail.images.tests.utils import get_test_image_file, get_test_image_file_jpeg
 from wagtail.models import Collection, GroupPagePermission, Page, Site
 
 from blogsite.base.editors import get_or_create_collection, set_editor_groups
@@ -27,6 +29,8 @@ User = get_user_model()
 IMPRINT = "<p>{{ site_name }}<br/>p. Adr. [Name des Verantwortlichen]</p>"
 PRIVACY = "<h2>Geltungsbereich</h2><p>{{ site_name }}, [E-Mail-Adresse]</p>"
 FOOTER = '<a href="/impressum/">Impressum</a> <a href="/datenschutzerklaerung/">Datenschutzerklärung</a>'
+SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}">' \
+      '<rect width="{width}" height="{height}" fill="{fill}"/></svg>'
 
 
 class SiteTemplateMixin:
@@ -37,8 +41,13 @@ class SiteTemplateMixin:
         cls.temp_dir = Path(tempfile.mkdtemp())
         cls.template_dir = cls.temp_dir / "site_template"
         cls.template_dir.mkdir()
-        for name in ("logo-header.png", "logo-footer.png"):
-            (cls.template_dir / name).write_bytes(get_test_image_file().file.getvalue())
+        for name, width, height in (("logo-header.svg", 2000, 660), ("logo-header-dark.svg", 2000, 660),
+                                    ("logo-footer.svg", 800, 800), ("logo-footer-dark.svg", 800, 800)):
+            fill = "#fff" if "dark" in name else "#000"
+            (cls.template_dir / name).write_text(SVG.format(width=width, height=height, fill=fill), encoding="utf-8")
+        (cls.template_dir / "logo-ico.png").write_bytes(get_test_image_file().file.getvalue())
+        for name in ("image-home.jpg", "image-articles.jpg"):
+            (cls.template_dir / name).write_bytes(get_test_image_file_jpeg().file.getvalue())
         (cls.template_dir / "impressum.html").write_text(IMPRINT, encoding="utf-8")
         (cls.template_dir / "datenschutzerklaerung.html").write_text(PRIVACY, encoding="utf-8")
         (cls.template_dir / "footer.html").write_text(FOOTER, encoding="utf-8")
@@ -107,11 +116,60 @@ class CreateSiteTest(SiteTemplateMixin, TestCase):
         logo = SiteLogo.objects.get(site=self.site)
         collection = Collection.objects.get(name="Fraktion Neustadt")
         self.assertEqual(logo.image_header.collection, collection)
-        self.assertEqual(logo.image_ico, logo.image_footer)
+        # the logos stay SVGs; the favicon is a PNG of its own, as base.html converts it to PNG
+        self.assertTrue(logo.image_header.is_svg())
+        self.assertTrue(logo.image_footer.is_svg())
+        self.assertFalse(logo.image_ico.is_svg())
         self.assertTrue(logo.live)
         footer = FooterText.objects.get(site=self.site)
         self.assertIn('href="/datenschutzerklaerung/"', footer.body)
         self.assertTrue(footer.live)
+
+    def test_logo_for_the_dark_color_mode(self):
+        logo = SiteLogo.objects.get(site=self.site)
+        self.assertNotEqual(logo.image_header_dark, logo.image_header)
+        self.assertNotEqual(logo.image_footer_dark, logo.image_footer)
+        # both variants are on the page, the CSS in base.html shows the one of the color mode
+        self.home.specific.save_revision().publish()
+        response = self.client.get("/", headers={"host": "new.example.com"})
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode()
+        # header, header on small screens, footer
+        self.assertEqual(len(re.findall(r'<img [^>]*class="[^"]*\blogo-light\b', html)), 3)
+        self.assertEqual(len(re.findall(r'<img [^>]*class="[^"]*\blogo-dark\b', html)), 3)
+        self.assertIn("[data-bs-theme=dark] .logo-dark", html)
+        # the footer logo is shown with 64 pixels, the SVG is delivered as it is
+        footer = html[html.index("<footer"):]
+        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="64" height="64" class="me-3 logo-light"')
+
+    def test_site_without_dark_logo_shows_its_logo_in_both_modes(self):
+        # sites created before the dark variant existed have none: only the normal logo, without logo-light/-dark
+        SiteLogo.objects.filter(site=self.site).update(image_header_dark=None, image_footer_dark=None)
+        self.home.specific.save_revision().publish()
+        response = self.client.get("/", headers={"host": "new.example.com"})
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode()
+        self.assertNotRegex(html, r'<img [^>]*class="[^"]*\blogo-(light|dark)\b')
+        footer = html[html.index("<footer"):]
+        self.assertRegex(footer, r'<img src="[^"]+\.svg" width="64" height="64" class="me-3"')
+
+    def test_failure_after_the_pictures_leaves_no_files(self):
+        # the database is rolled back by the transaction, the media files are removed by create_site itself
+        files_before = sorted((self.temp_dir / "media").rglob("*.*"))
+        with mock.patch.object(FooterText.objects, "create", side_effect=RuntimeError("failure for the test")):
+            with self.assertRaisesMessage(RuntimeError, "failure for the test"):
+                self.create_site(hostname="f.example.com")
+        self.assertEqual(sorted((self.temp_dir / "media").rglob("*.*")), files_before)
+        self.assertFalse(Site.objects.filter(hostname="f.example.com").exists())
+
+    def test_pictures_of_the_home_page_and_the_articles(self):
+        # the editor works on the latest revision, so the picture has to be in there, not only in the page
+        collection = Collection.objects.get(name="Fraktion Neustadt")
+        for title in ("AfD-Fraktion Neustadt", "Artikel"):
+            page = self.page(title)
+            self.assertEqual(page.image.collection, collection)
+            self.assertEqual(page.revisions.count(), 1)
+            self.assertEqual(page.get_latest_revision_as_object().image, page.image)
 
     def test_editor_groups_with_roles(self):
         for name, role in (("Fraktion Neustadt Redaktion", "fraktion-neustadt-redaktion"),
@@ -147,7 +205,7 @@ class CreateSiteTest(SiteTemplateMixin, TestCase):
     def test_incomplete_template_is_refused(self):
         empty = self.temp_dir / "empty"
         empty.mkdir(exist_ok=True)
-        with self.assertRaisesMessage(CommandError, "lacks logo-header.png"):
+        with self.assertRaisesMessage(CommandError, "lacks logo-header.svg"):
             self.create_site(hostname="x.example.com", template=str(empty))
         self.assertFalse(Site.objects.filter(hostname="x.example.com").exists())
 
